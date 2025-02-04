@@ -1,12 +1,17 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CustomUpdateComponent } from './solutions/custom-update/custom-update.component';
+import { SolutionsModule } from './solutions/solutions.module';
 
+
+export class AppModule {}
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, SolutionsModule, CustomUpdateComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent {
   title = 'AngularT';
+  
 }

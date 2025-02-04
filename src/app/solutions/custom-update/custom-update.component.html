@@ -1,0 +1,23 @@
+<h1>Custom Update Script</h1>
+
+<div class="container">
+    <button (click)="sendDataToAPI()">¡Let's Update Data! 🚀</button>
+</div>
+<div class="container">
+    <h2>Cargar Archivo CSV</h2>
+    <input type="file" (change)="onFileChange($event)" accept=".csv" />
+    <div *ngIf="segmentedRecords.length > 0">
+        <h3>Datos Segmentados en Bloques de 100</h3>
+        <div *ngFor="let block of segmentedRecords; let i = index">
+            <h4>Bloque {{ i + 1 }}</h4>
+            <pre>{{ block | json }}</pre>
+        </div>
+    </div>
+    <!-- <div *ngIf="csvRecords.length > 0">
+        <h3>Data to Upload</h3>|
+        <pre>{{ csvRecords | json }}</pre>
+    </div> -->
+</div>
+    
+<pre>{{ customResponse | json }}</pre>
+

@@ -1,0 +1,24 @@
+    .container {
+        text-align: center;
+        margin-top: 50px;
+    }
+    
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    
+    button:hover {
+        background-color: #0056b3;
+    }
+    pre{
+        /* display: flex;
+        justify-content: center; */
+        padding-left: 15rem;
+    }
+    
