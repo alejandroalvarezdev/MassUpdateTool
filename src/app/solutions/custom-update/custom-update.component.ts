@@ -5,9 +5,13 @@ import { CommonModule } from '@angular/common'; // Importa CommonModule
 import Papa from 'papaparse';
 import { from } from 'rxjs';
 import { concatMap, delay } from 'rxjs/operators';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 // --- Components --- 
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 
 
@@ -15,7 +19,15 @@ import {MatIconModule} from '@angular/material/icon';
 export class AppModule {}
 @Component({
   selector: 'app-custom-update',
-  imports: [SolutionsModule,CommonModule,MatButtonModule,MatIconModule],
+  imports: [
+    SolutionsModule,
+    CommonModule,
+    MatButtonModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule
+  ],
   templateUrl: './custom-update.component.html',
   styleUrl: './custom-update.component.css',
 })
@@ -24,10 +36,14 @@ export class CustomUpdateComponent {
 customResponse : any; 
 csvRecords: any[] = [];  // Aquí almacenaremos los registros leídos
 segmentedRecords: any[][] = []; // Array para almacenar los bloques de 100
+form: FormGroup;
 
 
-
-  constructor(private consume:ConsumeService){
+  constructor(private consume:ConsumeService,private fb: FormBuilder){
+    this.form = this.fb.group({
+      name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+    });
   }
   ngOnInit(){
   
@@ -44,6 +60,13 @@ segmentedRecords: any[][] = []; // Array para almacenar los bloques de 100
         },
         header: true,  // Si la primera fila contiene los encabezados
       });
+    }
+  }
+  onSubmit() {
+    if (this.form.valid) {
+      console.log('Form Submitted!', this.form.value);
+    } else {
+      console.log('Form is invalid');
     }
   }
   segmentData(): void {
