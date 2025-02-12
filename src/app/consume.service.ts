@@ -16,8 +16,8 @@ export class ConsumeService {
     
   };
 
-  massiveUpdate(data: any): Observable<any> {
-    let url = 'http://localhost:4000/api/zoho/MassiveUpdate';
+  massiveUpdate(module:any,data: any): Observable<any> {
+    let url = 'http://localhost:3000/api/zoho/MassiveUpdate/'+module;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });

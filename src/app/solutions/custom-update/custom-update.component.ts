@@ -3,7 +3,8 @@ import { SolutionsModule } from '../solutions.module';
 import { ConsumeService } from '../../consume.service';
 import { CommonModule } from '@angular/common'; // Importa CommonModule
 import Papa from 'papaparse';
-
+import { from } from 'rxjs';
+import { concatMap, delay } from 'rxjs/operators';
 // --- Components --- 
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
@@ -24,32 +25,12 @@ customResponse : any;
 csvRecords: any[] = [];  // Aquí almacenaremos los registros leídos
 segmentedRecords: any[][] = []; // Array para almacenar los bloques de 100
 
-data2Update:any = {"data": [
-        {
-            "id": "6010835000348955011",
-            "Calle": "High"
-        },
-        {
-            "id": "6010835000348715001",
-            "Calle": "Medium"
-        },
-        {
-            "id": "6010835000348691011",
-            "Calle": "Low"
-        }
-        ]
-      }
+
 
   constructor(private consume:ConsumeService){
   }
   ngOnInit(){
-    
-    //   const entriesArray = Object.entries(response);
-
-    //   console.log(response.data[0]  );
-    //   console.log(typeof(entriesArray));
-    //   this.customResponse = response.data[0]; 
-    // });
+  
   }
   onFileChange(event: any): void {
     const file = event.target.files[0];
@@ -76,20 +57,30 @@ data2Update:any = {"data": [
   }
 
   sendDataToAPI(): void {
-    this.segmentedRecords.forEach((block, index) => {
-      const payload = { data: block }; // Estructura esperada por Zoho
-
-      this.consume.massiveUpdate(payload).subscribe(
-        (response) => {
-          console.log(`Bloque ${index + 1} enviado con éxito`, response);
-        },
-        (error) => {
-          console.error(`Error al enviar el bloque ${index + 1}`, error);
-        }
-      );
-    });
+    from(this.segmentedRecords)
+    .pipe(
+      concatMap((block, index) => 
+        this.sendBlockWithDelay(block, index)
+      )
+    )
+    .subscribe();
   }
+  sendBlockWithDelay(block: any[], index: number) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        const payload = { data: block };
+        this.consume.massiveUpdate("Leads",payload).subscribe(
+          (response) => {
+            console.log(`Bloque ${index + 1} enviado con éxito`, response);
+            resolve(true);
+          },
+          (error) => {
+            console.error(`Error al enviar el bloque ${index + 1}`, error);
+            resolve(false);
+          }
+        );
+      }, 5000); // Delay de 5 segundos
+    });
 
-
-  
+  }
 }
