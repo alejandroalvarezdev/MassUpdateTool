@@ -1,17 +1,39 @@
 <h1>Custom Update Script</h1>
 
-<div class="container">
+<!-- <div class="container">
     <button (click)="sendDataToAPI()">¡Let's Update Data! 🚀</button>
-</div>
+</div> -->
 <div class="container">
     <h2>Cargar Archivo CSV</h2>
     <input type="file" (change)="onFileChange($event)" accept=".csv" />
-    <div *ngIf="segmentedRecords.length > 0">
-        <h3>Datos Segmentados en Bloques de 100</h3>
-        <div *ngFor="let block of segmentedRecords; let i = index">
-            <h4>Bloque {{ i + 1 }}</h4>
-            <pre>{{ block | json }}</pre>
+
+    
+    <div *ngIf="segmentedRecords.length > 0" class="form-container">
+        <h3>Introduce el APIName del módulo a actualizar</h3>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <mat-form-field appearance="fill">
+                <mat-label>ApiName</mat-label>
+                <input matInput formControlName="name" placeholder="ej.Leads" />
+                <mat-error *ngIf="form.get('name')?.hasError('required')">El ApiName es obligatorio</mat-error>
+            </mat-form-field>
+        
+        
+            <button *ngIf="form.valid" mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+                ¡Let's Update Data! 🚀
+            </button>
+            <button *ngIf="form.invalid" mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+                ¿Que módulo quieres actualizar? 🤔
+            </button>
+            </form>
         </div>
+        
+    <div *ngIf="segmentedRecords.length > 0">
+        <h3>Datos Segmentados en Bloques </h3>
+        
+        <div class="datamodel" *ngIf="datamodel.length > 0">
+            <pre>{{ datamodel[0] | json }}</pre>
+        </div>
+
     </div>
     <!-- <div *ngIf="csvRecords.length > 0">
         <h3>Data to Upload</h3>|

@@ -37,12 +37,11 @@ customResponse : any;
 csvRecords: any[] = [];  // Aquí almacenaremos los registros leídos
 segmentedRecords: any[][] = []; // Array para almacenar los bloques de 100
 form: FormGroup;
-
+datamodel:any;
 
   constructor(private consume:ConsumeService,private fb: FormBuilder){
     this.form = this.fb.group({
       name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
     });
   }
   ngOnInit(){
@@ -65,6 +64,7 @@ form: FormGroup;
   onSubmit() {
     if (this.form.valid) {
       console.log('Form Submitted!', this.form.value);
+      this.sendDataToAPI();
     } else {
       console.log('Form is invalid');
     }
@@ -77,6 +77,7 @@ form: FormGroup;
     }
 
     console.log('Registros segmentados:', this.segmentedRecords);
+    this.datamodel = this.segmentedRecords.pop();
   }
 
   sendDataToAPI(): void {
