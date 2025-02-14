@@ -93,7 +93,7 @@ datamodel:any;
     return new Promise(resolve => {
       setTimeout(() => {
         const payload = { data: block };
-        this.consume.massiveUpdate("Leads",payload).subscribe(
+        this.consume.massiveUpdate(this.form.value.name,payload).subscribe(
           (response) => {
             console.log(`Bloque ${index + 1} enviado con éxito`, response);
             resolve(true);
@@ -103,7 +103,7 @@ datamodel:any;
             resolve(false);
           }
         );
-      }, 5000); // Delay de 5 segundos
+      }, 1000); // Delay de 5 segundos
     });
 
   }
