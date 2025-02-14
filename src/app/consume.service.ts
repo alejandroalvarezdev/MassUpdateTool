@@ -25,4 +25,14 @@ export class ConsumeService {
     return this.http.put(url, JSON.stringify(data), { headers });
 };
 
+  singleUpdate(module:any,recordID:number,data: any): Observable<any> {
+    
+    let url = `/api/zoho/SingleUpdate/${module}/${recordID}`;;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.put(url, JSON.stringify(data), { headers });
+
+  }
+
 }

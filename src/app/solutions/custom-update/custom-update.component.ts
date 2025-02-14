@@ -16,6 +16,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 
 
 
+
 export class AppModule {}
 @Component({
   selector: 'app-custom-update',
@@ -26,7 +27,8 @@ export class AppModule {}
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    
   ],
   templateUrl: './custom-update.component.html',
   styleUrl: './custom-update.component.css',
@@ -39,9 +41,14 @@ segmentedRecords: any[][] = []; // Array para almacenar los bloques de 100
 form: FormGroup;
 datamodel:any;
 
+updateOptions: any[] = [
+  {name: 'MultiUpdate', sound: '¡100*100 records * 1 object!'}  
+];
+
   constructor(private consume:ConsumeService,private fb: FormBuilder){
     this.form = this.fb.group({
       name: ['', Validators.required],
+      updateType:['',Validators.required]
     });
   }
   ngOnInit(){
@@ -105,6 +112,9 @@ datamodel:any;
         );
       }, 1000); // Delay de 5 segundos
     });
-
+    
   }
+
+
+  
 }
