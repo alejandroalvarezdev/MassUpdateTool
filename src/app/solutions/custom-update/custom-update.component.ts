@@ -48,7 +48,7 @@ updateOptions: any[] = [
   constructor(private consume:ConsumeService,private fb: FormBuilder){
     this.form = this.fb.group({
       name: ['', Validators.required],
-      updateType:['',Validators.required]
+      // updateType:['',Validators.required]
     });
   }
   ngOnInit(){

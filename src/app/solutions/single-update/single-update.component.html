@@ -1,1 +1,29 @@
 <p>single-update works!</p>
+
+<div class="container">
+    <h2>Cargar Archivo CSV</h2>
+    <input type="file" (change)="onFileChange($event)" accept=".csv" />
+</div>
+
+<div class="form-container">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="fill">
+            <mat-label>ApiName</mat-label>
+            <input matInput formControlName="name" placeholder="ej.Leads" />
+            <mat-error *ngIf="form.get('name')?.hasError('required')">El ApiName es obligatorio</mat-error>
+        </mat-form-field>
+        
+    
+        <button *ngIf="form.valid" mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+            ¡Let's Update Data! 🚀
+        </button>
+        <button *ngIf="form.invalid" mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+            ¿Que módulo quieres actualizar? 🤔
+        </button>
+    </form>
+</div>
+<div class="datamodel" *ngIf="csvRecords.length > 0">
+    <pre>data:[ 
+{{  csvRecords[0] | json }}
+        ]</pre>
+</div>
