@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { SinglePostComponent } from './single-post.component';
 
-import { SingleUpdateComponent } from './single-update.component';
 
-describe('SingleUpdateComponent', () => {
-  let component: SingleUpdateComponent;
-  let fixture: ComponentFixture<SingleUpdateComponent>;
+describe('SinglePostComponent', () => {
+  let component: SinglePostComponent;
+  let fixture: ComponentFixture<SinglePostComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SingleUpdateComponent]
+      imports: [SinglePostComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SingleUpdateComponent);
+    fixture = TestBed.createComponent(SinglePostComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
