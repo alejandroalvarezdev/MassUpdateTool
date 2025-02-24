@@ -9,6 +9,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import Papa from 'papaparse';
 import { concatMap, from } from 'rxjs';
 
+import {estimacionesMapping} from '../single-update/EstimacionesMapping'
+
 interface Estimaciones{};
 
 @Component({
@@ -31,7 +33,7 @@ export class SinglePostComponent {
   // Global 
   csvRecords: any[] = [];  // Aquí almacenaremos los registros leídos
   form: FormGroup;
- 
+  
 
 
   constructor(private consume:ConsumeService,private fb: FormBuilder){
@@ -72,17 +74,20 @@ export class SinglePostComponent {
   }
   
   mapWithTransform<T>(
-    data: any,
+    data: any, 
     mapping: { [K in keyof T]: { key: string; transform?: (value: any) => any } }
   ): T {
     return Object.fromEntries(
       Object.keys(mapping).map((key) => {
-        const { key: originalKey, transform } = mapping[key as keyof T];  // ✅ Se tipa la clave
+        const { key: originalKey, transform } = mapping[key as keyof T];
         return [key, transform ? transform(data[originalKey]) : data[originalKey]];
       })
-    ) as T;  // Forzamos el tipo final a T para que coincida con la interfaz
+    ) as T;
   }
-  
+  // Transform to API Name Model 
+  transformEstimacionesModel(apiData: any): Estimaciones {
+    return this.mapWithTransform<Estimaciones>(apiData, estimacionesMapping);
+  }
   
   launchData(record: any, index: number) {
     return new Promise(resolve => {
@@ -113,6 +118,8 @@ export class SinglePostComponent {
           }, {});
         
         const payload = { "data":[transformedObj] };
+        
+        
         // const mergedObj = Object.assign({}, record, this.segmentRelationShips(record) );
 
         // console.log(`Registro ${index + 1} enviado con éxito`);
@@ -137,6 +144,7 @@ export class SinglePostComponent {
     
     });
   }
+  
   
 
 
