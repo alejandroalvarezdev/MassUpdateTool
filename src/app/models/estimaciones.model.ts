@@ -1,101 +1,102 @@
 export interface Estimaciones {
-    OwnerID: string;
-    ContractID: string;
-    ContractNumber: string;
-    "Admin Fee": number;
-    "Cargo financiero": number;
-    "CDPs Autorizados": string[];
-    "Certificado de Vida Closing Cost": number;
-    "Certificado de Vida en Sobreprecio": number;
-    "Closing Cost Pagado": number;
-    Club: string;
-    "Club Semanal": string;
-    contract_bridge_id: string;
-    "Contrato Anterior": string;
-    "Costo de venta del contrato previo": number;
-    "Créditos Vacacionales": number;
-    "Cuota Anual USD": number;
-    "Down Payment": number;
-    "Enganche Inicial": number;
-    "Enganche Total": number;
-    "Equity transferred": number;
-    Etiqueta: string;
-    "Fecha de primera Mensualidad": Date;
-    "Fecha Primer Uso": Date;
-    "Fecha Expiración": Date;
-    "Fecha Primer Pago": Date;
-    "Fecha Segundo Pago": Date;
-    "Fecha Tercer Pago": Date;
-    "Fecha Cuarto Pago": Date;
-    "Fecha Quinto Pago": Date;
-    "Fecha Sexto Pago": Date;
-    "Fecha Séptimo Pago": Date;
-    "Fecha Octavo Pago": Date;
-    "Fecha Noveno Pago": Date;
-    "Fecha Decimo Pago": Date;
-    "Fecha Decimo Primer Pago": Date;
-    "Fecha Decimo Segundo Pago": Date;
-    "Fecha Primer Pickup": Date;
-    "Fecha Segundo Pickup": Date;
-    "Fecha Tercer Pickup": Date;
-    "Fecha Cuarto Pickup": Date;
-    "Fecha Quinto Pickup": Date;
-    "Fecha Sexto Pickup": Date;
-    "Fecha Último Pickup": Date;
-    "Flyback en Sobreprecio": number;
-    Fundación: number;
-    "ID de la Sala": string;
-    "Importe a Financiar": number;
-    "Importe de la Mensualidad": number;
-    "Importe FlyBack en CC": number;
-    "Importe Primer Pago": number;
-    "Importe Segundo Pago": number;
-    "Importe Tercer Pago": number;
-    "Importe Cuarto Pago": number;
-    "Importe Quinto Pago": number;
-    "Importe Sexto Pago": number;
-    "Importe Séptimo Pago": number;
-    "Importe Octavo Pago": number;
-    "Importe Noveno Pago": number;
-    "Importe Decimo Pago": number;
-    "Importe Decimo primer Pago": number;
-    "Importe Decimo Segundo Pago": number;
-    "Importe Primer Pago Pickup": number;
-    "Importe Segundo Pago Pickup": number;
-    "Importe Tercer  Pago Pickup": number;
-    "Importe Cuarto  Pago Pickup": number;
-    "Importe Quinto Pago Pickup": number;
-    "Importe Sexto Pago Pickup": number;
-    "Importe Rentsure": number;
-    "Instrumento de pago": string;
-    "Interest Rate/Yr": number;
-    "Membresía Club Semanal": string;
-    Meses: number;
-    Moneda: string;
-    "No. Serie Tablet": string;
-    "Nombre de la Sala": string;
-    Oportunidad: string;
-    "Pickup Autorizados": string[];
-    "Precio Mínimo de venta": number;
-    "Precio Tablet": number;
-    "Precio Venta": number;
-    "Puntos anteriores": number;
-    "Puntos Totales": number;
-    Rentsure: string;
-    "Tasa de cambio": number;
-    "Tipo de Cambio Alterno": number;
-    "Tasa de Cambio Alterna": number;
-    "Tipo de ajuste": string;
-    "Tipo de contrato": string;
-    "Tipo de membresía": string;
-    "Tipo de Venta": string;
-    "Tipo Tablet": string;
-    "Total CDP": number;
-    "Total Closing Cost": number;
-    "Total Pickup": number;
-    "Trade In": number;
-    "Transfer Fee": number;
-    "Última Fecha de CDP": Date;
-    MortgageID: string;
-}
 
+        "OwnerID": string;                                // Línea única (Único)
+        "ContractID": string;                             // Línea única (Único)
+        "ContractNumber": string;                         // Línea única (Único)
+        "AdminFee": number;                               // Moneda
+        "Cargo financiero": number;                       // Moneda
+        "CDPs Autorizados": string[];                     // Lista de selección (String)
+        "Certificado de Vida Closing Cost": number;       // Moneda
+        "Certificado de Vida en Sobreprecio": number;      // Moneda
+        "Closing Cost Pagado": number;                     // Moneda
+        "Club": string;                                   // Lista de selección (String)
+        "Club Semanal": string;                           // Lista de selección (String)
+        "contract_bridge_id": string;                     // Línea única (Único)
+        "Contrato Anterior": string;                      // Buscar
+        "Costo de venta del contrato previo": number;      // Decimal
+        "Créditos Vacacionales": number;                  // Número
+        "Cuota Anual USD": number;                        // Decimal
+        "Down Payment": number;                           // Porcentaje
+        "Enganche Inicial": number;                       // Moneda
+        "Enganche Total": number;                         // Moneda
+        "Equity transferred": number;                     // Moneda
+        "Etiqueta": string;                               // Línea única
+        "Fecha de primera Mensualidad": Date;             // Fecha
+        "Fecha del Primer Uso": Date;                     // Fecha
+        "Fecha Expiración": Date;                         // Fecha
+        "Fecha Primer Pago": Date;                        // Fecha
+        "Fecha Segundo Pago": Date;                       // Fecha
+        "Fecha Tercer Pago": Date;                        // Fecha
+        "Fecha Cuarto Pago": Date;                        // Fecha
+        "Fecha Quinto Pago": Date;                        // Fecha
+        "Fecha Sexto Pago": Date;                         // Fecha
+        "Fecha Séptimo Pago": Date;                       // Fecha
+        "Fecha Octavo Pago": Date;                        // Fecha
+        "Fecha Noveno Pago": Date;                        // Fecha
+        "Fecha Decimo Pago": Date;                        // Fecha
+        "Fecha Decimo Primer Pago": Date;                 // Fecha
+        "Fecha Decimo Segundo Pago": Date;                // Fecha
+        "Fecha Primer Pago Pickup": Date;                 // Fecha
+        "Fecha Segundo Pago Pickup": Date;                // Fecha
+        "Fecha Tercer Pago Pickup": Date;
+        "Fecha Cuarto Pago Pickup":Date;                 // Fecha
+        "Fecha Quinto Pago Pickup": Date;                 // Fecha
+        "Fecha Sexto Pago Pickup": Date;                  // Fecha
+        "Fecha Último Pickup": Date;                      // Fecha
+        "Flyback en Sobreprecio": string;                  // Formula
+        "Fundación": number;                              // Moneda
+        "Importe a Financiar": number;                     // Moneda
+        "Importe de la Mensualidad": number;               // Moneda
+        "Importe FlyBack en CC": number;                   // Moneda
+        "Importe Primer Pago": number;                     // Moneda
+        "Importe Segundo Pago": number;                    // Moneda
+        "Importe Tercer Pago": number;                     // Moneda
+        "Importe Cuarto Pago": number;                     // Moneda
+        "Importe Quinto Pago": number;                     // Moneda
+        "Importe Sexto Pago": number;                     // Moneda
+        "Importe Séptimo Pago": number;                   // Moneda
+        "Importe Octavo Pago": number;                    // Moneda
+        "Importe Noveno Pago": number;                    // Moneda
+        "Importe Decimo Pago": number;                    // Moneda
+        "Importe Decimo Primer Pago": number;             // Moneda
+        "Importe Decimo Segundo Pago": number;            // Moneda
+        "Importe Primer Pago Pickup": number;             // Moneda
+        "Importe Segundo Pago Pickup": number;            // Moneda
+        "Importe Tercer Pago Pickup": number;             // Moneda
+        "Importe Cuarto Pago Pickup": number;             // Moneda
+        "Importe Quinto Pago Pickup": number;             // Moneda
+        "Importe Sexto Pago Pickup": number;              // Moneda
+        "Importe Rentsure": number;                       // Moneda
+        "Instrumento de pago": string;                    // Lista de selección (String)
+        "Interest Rate/Yr": number;                       // Porcentaje
+        "Membresía Club Semanal": string;                 // Línea única
+        "Meses": number;                                  // Número
+        "Moneda": string;                                 // Lista de selección (String)
+        "No. Serie Tablet": string;                       // Línea única
+        "Nombre de la Sala": string;                      // Lista de selección (String)
+        "Oportunidad": string;                            // Buscar
+        "Pickup Autorizados": string[];                   // Lista de selección (String)
+        "Precio Mínimo de venta": number;                 // Moneda
+        "Precio Tablet": number;                          // Moneda
+        "Precio Venta": number;                           // Moneda
+        "Puntos Anteriores": number;                      // Número
+        "Puntos Totales": number;                         // Número
+        "Rentsure": string;                               // Lista de selección (String)
+        "Tasa de cambio": number;                         // Decimal
+        "Tipo de Cambio Alterno": string;                 // Lista de selección (String)
+        "Tasa de Cambio Alterna": number;                 // Decimal
+        "Tipo de ajuste": string;                         // Lista de selección (String)
+        "Tipo de Contrato": string;                       // Lista de selección (String)
+        "Tipo de membresía": string;                      // Lista de selección (String)
+        "Tipo de Venta": string;                          // Lista de selección (String)
+        "Tipo Tablet": string;                            // Buscar
+        "Total CDP": number;                              // Moneda
+        "Total Closing Cost": number;                     // Moneda
+        "Total Pickup": number;                           // Moneda
+        "Trade In": number;                               // Moneda
+        "Transfer Fee": number;                           // Moneda
+        "Última Fecha de CDP": Date;                      // Fecha
+        "MortgageID": string;                             // Línea única
+
+
+}

@@ -62,4 +62,8 @@ pre{
     .datamodel{
         font-size: 2em;
     }
-    
+    .encode{
+        color: aliceblue;
+        display: flex;
+        justify-content: center;
+    }

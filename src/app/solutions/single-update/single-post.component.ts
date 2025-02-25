@@ -1,15 +1,20 @@
-import { Component } from '@angular/core';
+//CORE
+import { Component, OnInit } from '@angular/core';
 import { SolutionsModule } from '../solutions.module';
-import { ConsumeService } from '../../consume.service';
+import { ConsumeService } from '../../services/consume.service';
 import { CommonModule } from '@angular/common';
+// Components
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+//CSV Parser
 import Papa from 'papaparse';
 import { concatMap, from } from 'rxjs';
+//SQID
+import Sqids from 'sqids';
+import { EstimacionesMaperService } from '../../services/estimaciones-maper.service';
 
-import {estimacionesMapping} from '../single-update/EstimacionesMapping'
 
 interface Estimaciones{};
 
@@ -28,19 +33,32 @@ interface Estimaciones{};
 
 
 
-export class SinglePostComponent {
+export class SinglePostComponent implements OnInit {
 
   // Global 
   csvRecords: any[] = [];  // Aquí almacenaremos los registros leídos
   form: FormGroup;
   
 
+  encodesquids:any;
 
-  constructor(private consume:ConsumeService,private fb: FormBuilder){
+
+  constructor(private consume:ConsumeService,private fb: FormBuilder, private estimacionesMap:EstimacionesMaperService){
       this.form = this.fb.group({
         name: ['', Validators.required],
         // updateType:['',Validators.required]
       });
+    }
+    ngOnInit() {
+      const sqids = new Sqids({
+        alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+      })
+      const id = sqids.encode([869301]) // "XRKUdQ"
+      const numbers = sqids.decode(id) // [1, 2, 3]; 
+      this.encodesquids = id; 
+
+      console.warn(id);
+      
     }
 
   onFileChange(event: any): void {
@@ -73,21 +91,12 @@ export class SinglePostComponent {
       .subscribe();
   }
   
-  mapWithTransform<T>(
-    data: any, 
-    mapping: { [K in keyof T]: { key: string; transform?: (value: any) => any } }
-  ): T {
-    return Object.fromEntries(
-      Object.keys(mapping).map((key) => {
-        const { key: originalKey, transform } = mapping[key as keyof T];
-        return [key, transform ? transform(data[originalKey]) : data[originalKey]];
-      })
-    ) as T;
-  }
+
+
+  
+  
   // Transform to API Name Model 
-  transformEstimacionesModel(apiData: any): Estimaciones {
-    return this.mapWithTransform<Estimaciones>(apiData, estimacionesMapping);
-  }
+
   
   launchData(record: any, index: number) {
     return new Promise(resolve => {
@@ -124,9 +133,13 @@ export class SinglePostComponent {
 
         // console.log(`Registro ${index + 1} enviado con éxito`);
         // console.log(`Data ${payload}`);
-        console.warn(payload);
-        // console.log("Merged payload" , mergedObj)
+        // console.log(this.transformEstimacionesModel(transformedObj));
         
+        console.log("Original",payload);
+        console.warn(this.estimacionesMap.mapearEstimacion(transformedObj)); 
+        
+        // console.log("Merged payload" , mergedObj)
+
         
         // this.consume.singleUpdate(this.form.value.name, payload).subscribe(
         //   (response) => {

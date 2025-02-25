@@ -1,6 +1,6 @@
 import { Component, NgModule } from '@angular/core';
 import { SolutionsModule } from '../solutions.module';
-import { ConsumeService } from '../../consume.service';
+import { ConsumeService } from '../../services/consume.service';
 import { CommonModule } from '@angular/common'; // Importa CommonModule
 import Papa from 'papaparse';
 import { from } from 'rxjs';

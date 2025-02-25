@@ -22,6 +22,12 @@
         </button>
     </form>
 </div>
+
+<div class="encode">
+    
+    <p>Encoded with squids:{{this.encodesquids}}</p>
+</div>
+
 <div class="datamodel" *ngIf="csvRecords.length > 0">
     <pre>data:[ 
 {{  csvRecords[1] | json }}
