@@ -34,5 +34,12 @@ export class ConsumeService {
     return this.http.post(url, JSON.stringify(data), { headers });
 
   }
+  upsertRecord(module:any,data:any){
+    let url = `http://localhost:3000/api/zoho/SinglePost/${module}`
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(url, JSON.stringify(data), { headers });
+  }
 
 }

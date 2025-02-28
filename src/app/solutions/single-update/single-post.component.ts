@@ -8,6 +8,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatCardModule} from '@angular/material/card';
+import {MatIconModule} from '@angular/material/icon';
 //CSV Parser
 import Papa from 'papaparse';
 import { concatMap, from } from 'rxjs';
@@ -26,7 +29,10 @@ interface Estimaciones{};
       MatInputModule,
       FormsModule,
       ReactiveFormsModule,
-      MatFormFieldModule,],
+      MatFormFieldModule,
+      MatSlideToggleModule,
+      MatCardModule,
+      MatIconModule],
   templateUrl: './single-post.component.html',
   styleUrl: './single-post.component.css'
 })
@@ -38,8 +44,12 @@ export class SinglePostComponent implements OnInit {
   // Global 
   csvRecords: any[] = [];  // Aquí almacenaremos los registros leídos
   form: FormGroup;
-  
+  //File Controller 
+  selectedFile: File | null = null;
+  //toggle button
+  isChecked = true;
 
+//Squids
   encodesquids:any;
 
 
@@ -94,10 +104,6 @@ export class SinglePostComponent implements OnInit {
 
 
   
-  
-  // Transform to API Name Model 
-
-  
   launchData(record: any, index: number) {
     return new Promise(resolve => {
       console.log(`Enviando...`); // Mostrar cada registro en consola
@@ -133,24 +139,27 @@ export class SinglePostComponent implements OnInit {
 
         // console.log(`Registro ${index + 1} enviado con éxito`);
         // console.log(`Data ${payload}`);
-        // console.log(this.transformEstimacionesModel(transformedObj));
         
-        console.log("Original",payload);
-        console.warn(this.estimacionesMap.mapearEstimacion(transformedObj)); 
         
         // console.log("Merged payload" , mergedObj)
 
+        if (this.isChecked == true) {
+          this.consume.upsertRecord(this.form.value.name, payload).subscribe(
+            (response) => {
+              console.log(`Registro ${index + 1} enviado con éxito`, response);
+              resolve(true);
+            },
+            (error) => {
+              console.error(`Error al enviar el registro ${index + 1}`, error);
+              console.error(`Failed payload ${JSON.stringify(payload)}`);
+              resolve(false);
+            }
+          );
+        }else{
+          console.log("Original",payload);
+          console.warn("Parsed", transformedObj);
+        }
         
-        // this.consume.singleUpdate(this.form.value.name, payload).subscribe(
-        //   (response) => {
-        //     console.log(`Registro ${index + 1} enviado con éxito`, response);
-        //     resolve(true);
-        //   },
-        //   (error) => {
-        //     console.error(`Error al enviar el registro ${index + 1}`, error);
-        //     resolve(false);
-        //   }
-        // );
         resolve(true);
       }, 500); // Simula una espera de 500ms por cada envío
   

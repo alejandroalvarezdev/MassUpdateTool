@@ -1,4 +1,5 @@
-<p>single-update works!</p>
+
+<mat-slide-toggle [(ngModel)]="isChecked">Send manager</mat-slide-toggle>
 
 <div class="container">
     <h2>Cargar Archivo CSV</h2>
@@ -12,6 +13,28 @@
             <input matInput formControlName="name" placeholder="ej.Leads" />
             <mat-error *ngIf="form.get('name')?.hasError('required')">El ApiName es obligatorio</mat-error>
         </mat-form-field>
+
+            <!-- <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Subir archivo</mat-label>
+                <div matSuffix>
+                <button (click)="fileInput.click()" mat-icon-button aria-label="Seleccionar archivo">
+                    <mat-icon>attach_file</mat-icon>
+                </button>
+                </div>
+                <input
+                #fileInput
+                type="file"
+                hidden
+                (change)="onFileChange($event)"
+                />
+                <input
+                matInput
+                [ngModel]="selectedFile?.name || ''"
+                placeholder="archivo seleccionado ✔️"
+                readonly
+                />
+            </mat-form-field> -->
+            
         
     
         <button *ngIf="form.valid" mat-raised-button color="primary" type="submit" [disabled]="form.invalid">

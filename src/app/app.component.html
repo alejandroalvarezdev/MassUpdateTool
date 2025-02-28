@@ -1,5 +1,18 @@
-
-
-<!-- <app-custom-update></app-custom-update> -->
-<app-single-update></app-single-update>
-<router-outlet></router-outlet>
+    <mat-toolbar class="custom-toolbar">
+        <!-- Botón de menú -->
+        <button mat-icon-button class="custom-icon-round" aria-label="Menú">
+        <mat-icon class="custom-icon">menu</mat-icon>
+        </button>
+    
+        <!-- Título de la aplicación -->
+        <span>Custom Zoho CRM Modifier</span>
+    
+        <!-- Espaciador para empujar los elementos a la derecha -->
+        <span class="toolbar-spacer"></span>
+    
+    </mat-toolbar>
+    
+    <!-- Contenido de la aplicación -->
+    <app-single-update></app-single-update>
+    <router-outlet></router-outlet>
+    

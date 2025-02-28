@@ -3,14 +3,14 @@ import { Estimaciones } from '../models/estimaciones.model';
 import { EstimacionesAPI } from '../models/estimaciones-api.model';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class EstimacionesMaperService {
 
-  constructor() {
+    constructor() {
     }
     mapearEstimacion(objeto: any): EstimacionesAPI {
-      const objetoMapeado: EstimacionesAPI = {
+        const objetoMapeado: EstimacionesAPI = {
         OwnerID: "",
         ContractID: "",
         ContractNumber: "",

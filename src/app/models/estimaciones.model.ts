@@ -5,7 +5,7 @@ export interface Estimaciones {
         "ContractNumber": string;                         // Línea única (Único)
         "AdminFee": number;                               // Moneda
         "Cargo financiero": number;                       // Moneda
-        "CDPs Autorizados": string[];                     // Lista de selección (String)
+        "CDPs Autorizados": string;                     // Lista de selección (String)
         "Certificado de Vida Closing Cost": number;       // Moneda
         "Certificado de Vida en Sobreprecio": number;      // Moneda
         "Closing Cost Pagado": number;                     // Moneda

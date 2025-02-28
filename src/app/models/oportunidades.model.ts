@@ -1,2 +1,51 @@
 export interface Oportunidades {
+
+        ContractID: string;
+        BalanceCDP: number;
+        BalancePickUp: number;
+        Calificaciones: string;
+        CATAnual: number;
+        CoPropietario: string;
+        contract_bridge_id: string;
+        ContratosAnterioresAjuste: string;
+        Club: string;
+        CreditosTotales: number;
+        CrossReference: string;
+        CuotaAnualUSD: number;
+        EnganchePactado: number;
+        Equity: number;
+        EsUnClubDeSemanas: boolean;
+        EstadoCivil: string;
+        Etiqueta: string;
+        Fase: string;
+        FechaDeCierre: Date;
+        FechaDePrimeraMensualidad: Date;
+        FechaDeVenta: Date;
+        FechaPrimerUso: Date;
+        FechaUltimoPago: Date;
+        FinanzasAceptada: boolean;
+        FuenteDeCampana: string;
+        FuenteDeProspecto: string;
+        Hook: string;
+        Importe: number;
+        IngresosMensuales: number;
+        MembresiaDelClub: string;
+        Moneda: string;
+        MorosidadARUSD: number;
+        MorosidadDownPayment: number;
+        MorosidadFoliosUSD: number;
+        MorosidadMorgage: number;
+        MotivoDeLaPerdida: string;
+        NombreDeContacto: string;
+        NombreDeOportunidad: string;
+        NotaDeCancelacion: string;
+        OportunidadUpgraded: boolean;
+        PremPromisedID: string;
+        Probabilidad: number;
+        Sala: string;
+        SaleType: string;
+        TasaDeCambio: number;
+        Tipo: string;
+        ContractID2: string;
+
 }
