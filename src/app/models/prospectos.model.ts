@@ -1,5 +1,5 @@
     export interface Prospectos {
-        "4 Digitos": string;
+    "4 Digitos": string;
     "Apellido Materno": string;
     "Apellido Paterno": string;
     Apellidos: string;

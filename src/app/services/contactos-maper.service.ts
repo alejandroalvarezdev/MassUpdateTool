@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ContactosApi } from '../models/contactos-api.model';
+import { Contactos } from '../models/contactos.model';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,7 @@ import { ContactosApi } from '../models/contactos-api.model';
 export class ContactosMaperService {
 
   constructor() { }
-  mapearContactos(objeto:any): ContactosApi {
+  mapearContactos(objeto:Contactos): ContactosApi {
     const objetoMapeado = {
         OwnerID: '',                                // Línea única
         ContractID: '',                             // Línea única
@@ -81,7 +82,7 @@ export class ContactosMaperService {
 
 
     // Iteramos sobre las claves del objeto original y asignamos valores al objeto mapeado
-        function mapearContactosApiAContactos(objeto: any): any {
+        function mapearContactosApiAContactos(objeto: Contactos): any {
             let objetoMapeado: any = {};
         
             for (let clave in objeto) {
@@ -191,8 +192,7 @@ export class ContactosMaperService {
                 case "Nacionalidad":
                 objetoMapeado["Pa_s_de_Nacimiento"] = objeto[clave];
                 break;
-                default:
-                objetoMapeado[clave] = objeto[clave];
+            
             }
             }
         

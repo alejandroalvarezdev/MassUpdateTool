@@ -9,7 +9,7 @@ export class EstimacionesMaperService {
 
     constructor() {
     }
-    mapearEstimacion(objeto: any): EstimacionesAPI {
+    mapearEstimacion(objeto: Estimaciones): EstimacionesAPI {
         const objetoMapeado: EstimacionesAPI = {
         OwnerID: "",
         ContractID: "",
@@ -54,7 +54,7 @@ export class EstimacionesMaperService {
         last_idp_date: new Date(),
         flyback_surcharge: 0,
         donation: 0,
-        sala_name: "",
+        sala_name: 0,
         amount_to_financed: 0,
         monthly_payment_amount: 0,
         flyback: 0,
@@ -84,7 +84,7 @@ export class EstimacionesMaperService {
         Currency: "",
         No_Serie_Tablet: "",
         deal: "",
-        authorized_idps: 0,
+        authorized_idps: "",
         minimum_sale_price: 0,
         tablet_price: 0,
         sale_price: 0,
@@ -93,7 +93,6 @@ export class EstimacionesMaperService {
         rentsure: "",
         Exchange_Rate: 0,
         alternativeExchangeRate: "",
-        previousExchangeRate: 0,
         adjustment_type: "",
         type_of_sale: "",
         membership_type: "",
@@ -109,11 +108,11 @@ export class EstimacionesMaperService {
         date_eleventh_payment_cdp: new Date,
         date_twelveth_payment_cdp: new Date,
         Tasa_de_Cambio_Alterna: 0
-      };
-      
-  
+        };
+    
+
       // Iterar sobre las claves del objeto original
-      for (let clave in objeto) {
+        for (let clave in objeto) {
         switch (clave) {
             case 'OwnerID':
                 objetoMapeado['OwnerID'] = objeto[clave];
@@ -181,7 +180,7 @@ export class EstimacionesMaperService {
             case 'Fecha de primera Mensualidad':
                 objetoMapeado['date_first_financing'] = objeto[clave];
                 break;
-            case 'Fecha Primer Uso':
+            case 'Fecha del Primer Uso':
                 objetoMapeado['Fecha_del_Primer_Uso'] = objeto[clave];
                 break;
             case 'Fecha Expiración':
@@ -223,22 +222,22 @@ export class EstimacionesMaperService {
             case 'Fecha Decimo Segundo Pago':
                 objetoMapeado['date_second_payment_idp'] = objeto[clave];
                 break;
-            case 'Fecha Primer Pickup':
+            case 'Fecha Primer Pago Pickup':
                 objetoMapeado['date_first_payment_idp'] = objeto[clave];
                 break;
-            case 'Fecha Segundo Pickup':
+            case 'Fecha Segundo Pago Pickup':
                 objetoMapeado['date_second_payment_idp'] = objeto[clave];
                 break;
-            case 'Fecha Tercer Pickup':
+            case 'Fecha Tercer Pago Pickup':
                 objetoMapeado['date_third_payment_idp'] = objeto[clave];
                 break;
-            case 'Fecha Cuarto Pickup':
+            case 'Fecha Cuarto Pago Pickup':
                 objetoMapeado['date_fourth_payment_idp'] = objeto[clave];
                 break;
-            case 'Fecha Quinto Pickup':
+            case 'Fecha Quinto Pago Pickup':
                 objetoMapeado['date_fifth_payment_idp'] = objeto[clave];
                 break;
-            case 'Fecha Sexto Pickup':
+            case 'Fecha Sexto Pago Pickup':
                 objetoMapeado['date_sixth_payment_idp'] = objeto[clave];
                 break;
             case 'Flyback en Sobreprecio':
@@ -260,12 +259,12 @@ export class EstimacionesMaperService {
                 objetoMapeado['flyback'] = objeto[clave];
                 break;
             // Continúa agregando el resto de las propiedades necesarias en el mismo patrón
-          
+            
         }
     }
 
-  
+    
     const objetoFinal: EstimacionesAPI = objetoMapeado as EstimacionesAPI;
     return objetoFinal;
-  }
+    }
 }

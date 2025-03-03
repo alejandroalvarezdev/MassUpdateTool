@@ -46,5 +46,5 @@ export interface OportunidadesApi {
         Exchange_Rate?: number;                      // Decimal
         Type?: string;                               // Lista de selección
         ContractID?: string;                         // Línea única
-      
+
 }
