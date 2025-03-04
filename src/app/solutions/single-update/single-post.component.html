@@ -1,0 +1,58 @@
+
+<mat-slide-toggle [(ngModel)]="isChecked">Send manager</mat-slide-toggle>
+
+<div class="container">
+    <h2>Cargar Archivo CSV</h2>
+    <input type="file" (change)="onFileChange($event)" accept=".csv" />
+</div>
+
+<div class="form-container">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="fill">
+            <mat-label>ApiName</mat-label>
+            <input matInput formControlName="name" placeholder="ej.Leads" />
+            <mat-error *ngIf="form.get('name')?.hasError('required')">El ApiName es obligatorio</mat-error>
+        </mat-form-field>
+
+            <!-- <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Subir archivo</mat-label>
+                <div matSuffix>
+                <button (click)="fileInput.click()" mat-icon-button aria-label="Seleccionar archivo">
+                    <mat-icon>attach_file</mat-icon>
+                </button>
+                </div>
+                <input
+                #fileInput
+                type="file"
+                hidden
+                (change)="onFileChange($event)"
+                />
+                <input
+                matInput
+                [ngModel]="selectedFile?.name || ''"
+                placeholder="archivo seleccionado ✔️"
+                readonly
+                />
+            </mat-form-field> -->
+            
+        
+    
+        <button *ngIf="form.valid" mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+            ¡Let's Update Data! 🚀
+        </button>
+        <button *ngIf="form.invalid" mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+            ¿Que módulo quieres actualizar? 🤔
+        </button>
+    </form>
+</div>
+
+<div class="encode">
+    
+    <p>Encoded with squids:{{this.encodesquids}}</p>
+</div>
+
+<div class="datamodel" *ngIf="csvRecords.length > 0">
+    <pre>data:[ 
+{{  csvRecords[1] | json }}
+        ]</pre>
+</div>

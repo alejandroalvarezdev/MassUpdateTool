@@ -1,0 +1,209 @@
+import { Injectable } from '@angular/core';
+import { OportunidadesApi } from '../models/oportunidades-api.model';
+import { Oportunidades } from '../models/oportunidades.model';
+// import { ObjConId } from '../../models/obj-con-id.model';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class OportunidadesMaperService {
+
+  constructor() { }
+  
+  mapearOportunidad(objeto: Oportunidades): OportunidadesApi {
+
+    const objetoMapeado: OportunidadesApi = {
+      
+        Balance_CDP: "0.00",                        // Moneda
+        Balance_Pick_Up: "0.00",                    // Moneda
+        Calificaciones: "Bajo",                      // Lista de selección
+        CAT_Anual: "0",                             // Porcentaje
+        // Co_Propietario: { id: ""},       // Buscar (Objeto con id y nombre)
+        contract_bridge_id: "",                     // Línea única (Único)
+        // previous_contracts: { id: ""},                     // Búsqueda de selección múltiple
+        club: "",                                   // Línea única
+        Cr_ditos_Totales: 0,                      // Número
+        Cross_Reference: "Ninguno",                 // Lista de selección
+        Cuota_Anual_USD: "0.00",                    // Decimal
+        
+        Equity: "0.00",                             // Moneda
+        Es_un_club_de_Semanas: false,               // Booleano
+        Estado_Civil: "Soltero",                    // Lista de selección
+        Tag: "",                                    // Línea única
+        Stage: "Iniciado",                          // Lista de selección
+        Closing_Date: "2025-01-01",                  // Fecha
+        Fecha_de_Primer_Pago: "2025-01-01",          // Fecha
+        Sale_Date: "2025-01-01",                     // Fecha
+        Fecha_Primer_Uso: "2025-01-01",              // Fecha
+        Fecha_Ultimo_Pago: "2025-01-01",             // Fecha
+        // Finanzas_Aceptada: { id: ""},   // Buscar
+        // Campaign_Source: { id: ""},     // Buscar
+        Lead_Source: "Campaña Online",              // Lista de selección
+        Hook: false,                                // Booleano
+        Amount: "0.00",                             // Moneda
+        Ingresos_Mensuales: "5000",                 // Lista de selección
+        membership_type: "Básico",                  // Línea única
+        Currency: "USD",                            // Lista de selección
+        Morosidad_AR_USD: "0.00",                   // Decimal
+        Morosidad_Down_Payment: "0.00",             // Moneda
+        Morosidad_Folios_USD: "0.00",               // Decimal
+        Morosidad_Morgage: "0.00",                  // Moneda
+        Reason_For_Loss__s: "Ninguno",              // Lista de selección
+        // Contact_Name: { id: ""},       // Buscar
+        // Deal_Name: { id: ""},                              // Línea única
+        Nota_de_Cancelacion: "",                    // Multilínea (pequeño)
+        // Oportunidad_upgraded:{ id: ""}, // Buscar
+        Probability: "0",                           // Número
+        // Sala: { id: ""},              // Buscar
+        Sale_type: "Venta Directa",                 // Línea única
+        Exchange_Rate: "1.00",                      // Decimal
+        Type: "Nuevo",                              // Lista de selección
+        ContractID: "",  
+  };
+  
+  for (let clave in objeto) {
+    switch (clave) {
+      
+      case "Balance CDP":
+        objetoMapeado["Balance_CDP"] = objeto[clave];
+        break;
+      case "Balance Pick Up":
+        objetoMapeado["Balance_Pick_Up"] = objeto[clave];
+        break;
+      case "Calificaciones":
+        objetoMapeado["Calificaciones"] = objeto[clave];
+        break;
+      case "CAT Anual":
+        objetoMapeado["CAT_Anual"] = objeto[clave];
+        break;
+      case "Co-Propietario":
+        // objetoMapeado["Co_Propietario"] = objeto[clave];
+        break;
+      case "contract_bridge_id":
+        objetoMapeado["contract_bridge_id"] = objeto[clave];
+        break;
+      case "Contratos Anteriores (Ajuste)":
+        // objetoMapeado["previous_contracts"] = objeto[clave];
+        break;
+      case "Club":
+        objetoMapeado["club"] = objeto[clave];
+        break;
+      case "Créditos Totales":
+        objetoMapeado["Cr_ditos_Totales"] = objeto[clave] !== undefined ? parseFloat(objeto[clave] as string) : 0;
+        break;
+      case "Cross Reference":
+        objetoMapeado["Cross_Reference"] = objeto[clave];
+        break;
+      case "Cuota Anual (USD)":
+        objetoMapeado["Cuota_Anual_USD"] = objeto[clave];
+        break;
+      case "Equity":
+        objetoMapeado["Equity"] = objeto[clave];
+        break;
+      case "Es un club de Semanas?":
+        objetoMapeado["Es_un_club_de_Semanas"] = objeto[clave];
+        break;
+      case "Estado Civil":
+        objetoMapeado["Estado_Civil"] = objeto[clave];
+        break;
+      case "Etiqueta":
+        objetoMapeado["Tag"] = objeto[clave];
+        break;
+      case "Fase":
+        objetoMapeado["Stage"] = objeto[clave];
+        break;
+      case "Fecha de cierre":
+        objetoMapeado["Closing_Date"] = objeto[clave];
+        break;
+      case "Fecha de primera Mensualidad":
+        objetoMapeado["Fecha_de_Primer_Pago"] = objeto[clave];
+        break;
+      case "Fecha de Venta":
+        objetoMapeado["Sale_Date"] = objeto[clave];
+        break;
+      case "Fecha Primer Uso":
+        objetoMapeado["Fecha_Primer_Uso"] = objeto[clave];
+        break;
+      case "Fecha Ultimo Pago":
+        objetoMapeado["Fecha_Ultimo_Pago"] = objeto[clave];
+        break;
+      case "Finanzas Aceptada":
+        // objetoMapeado["Finanzas_Aceptada"] = objeto[clave];
+        break;
+      case "Fuente de Campaña":
+        // objetoMapeado["Campaign_Source"] = objeto[clave];
+        break;
+      case "Fuente de Prospecto":
+        objetoMapeado["Lead_Source"] = objeto[clave];
+        break;
+      case "Hook":
+        objetoMapeado["Hook"] = objeto[clave];
+        break;
+      case "Importe":
+        objetoMapeado["Amount"] = objeto[clave];
+        break;
+      case "Ingresos Mensuales":
+        objetoMapeado["Ingresos_Mensuales"] = objeto[clave];
+        break;
+      case "Membresía del Club":
+        objetoMapeado["membership_type"] = objeto[clave];
+        break;
+      case "Moneda":
+        objetoMapeado["Currency"] = objeto[clave];
+        break;
+      case "Morosidad AR (USD)":
+        objetoMapeado["Morosidad_AR_USD"] = objeto[clave];
+        break;
+      case "Morosidad Down Payment":
+        objetoMapeado["Morosidad_Down_Payment"] = objeto[clave];
+        break;
+      case "Morosidad Folios (USD)":
+        objetoMapeado["Morosidad_Folios_USD"] = objeto[clave];
+        break;
+      case "Morosidad Morgage":
+        objetoMapeado["Morosidad_Morgage"] = objeto[clave];
+        break;
+      case "Motivo de la pérdida":
+        objetoMapeado["Reason_For_Loss__s"] = objeto[clave];
+        break;
+      case "Nombre de Contacto":
+        // objetoMapeado["Contact_Name"] = objeto[clave];
+        break;
+      case "Nombre de Oportunidad":
+        objetoMapeado["Deal_Name"] = objeto[clave];
+        break;
+      case "Nota de Cancelacion":
+        objetoMapeado["Nota_de_Cancelacion"] = objeto[clave];
+        break;
+      case "Oportunidad upgraded":
+        // objetoMapeado["Oportunidad_upgraded"] = objeto[clave];
+        break;
+      case "Probabilidad (%)":
+        objetoMapeado["Probability"] = objeto[clave];
+        break;
+      case "Sala":
+        // objetoMapeado["Sala"] = objeto[clave];
+        break;
+      case "Sale_type":
+        objetoMapeado["Sale_type"] = objeto[clave];
+        break;
+      case "Tasa de cambio":
+        objetoMapeado["Exchange_Rate"] = objeto[clave];
+        break;
+      case "Tipo":
+        objetoMapeado["Type"] = objeto[clave];
+        break;
+      case "ContractID2":
+        objetoMapeado["ContractID"] = objeto[clave];
+        break;
+      default:
+        // Para campos que no tienen un caso definido, se pueden agregar aquí si es necesario
+        break;
+    }
+  }
+  
+  const objetoFinal: OportunidadesApi = objetoMapeado as OportunidadesApi;
+  return objetoFinal;
+}
+}

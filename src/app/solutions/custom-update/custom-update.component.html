@@ -1,0 +1,49 @@
+<h1>Custom Update Script</h1>
+
+<!-- <div class="container">
+    <button (click)="sendDataToAPI()">¡Let's Update Data! 🚀</button>
+</div> -->
+<div class="container">
+    <h2>Cargar Archivo CSV</h2>
+    <input type="file" (change)="onFileChange($event)" accept=".csv" />
+
+    <!-- Formulario -->
+    <div *ngIf="segmentedRecords.length > 0" class="form-container">
+        <h3>API Name to update</h3>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <mat-form-field appearance="fill">
+                <mat-label>ApiName</mat-label>
+                <input matInput formControlName="name" placeholder="ej.Leads" />
+                <mat-error *ngIf="form.get('name')?.hasError('required')">El ApiName es obligatorio</mat-error>
+            </mat-form-field>
+            
+        
+            <button *ngIf="form.valid" mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+                ¡Let's Update Data! 🚀
+            </button>
+            <button *ngIf="form.invalid" mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+                ¿Que módulo quieres actualizar? 🤔
+            </button>
+        </form>
+
+    </div>
+        
+    <div *ngIf="segmentedRecords.length > 0">
+        <h2>Data model</h2>
+        
+        <div class="datamodel" *ngIf="datamodel.length > 0">
+            <pre>data:[ 
+{{  datamodel[0] | json }}
+                ]</pre>
+        </div>
+
+    </div>
+    <!-- <div *ngIf="csvRecords.length > 0">
+        <h3>Data to Upload</h3>|
+        <pre>{{ csvRecords | json }}</pre>
+    </div> -->
+</div>
+    
+<pre>{{ customResponse | json }}</pre>
+

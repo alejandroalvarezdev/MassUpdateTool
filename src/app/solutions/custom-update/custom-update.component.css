@@ -1,0 +1,65 @@
+    .container {
+        text-align: center;
+        margin-top: 50px;
+    }
+    
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    
+    button:hover {
+        background-color: #0056b3;
+    }
+    pre{
+        /* display: flex;
+        justify-content: center; */
+        padding-left: 15rem;
+    }
+    
+    /* Form */
+    .form-container {
+        max-width: 400px; /* Limita el ancho del formulario */
+        margin: 50px auto; /* Centra el formulario horizontalmente y agrega margen superior */
+        padding: 20px; /* Espaciado interno */
+        background-color: #040404; /* Fondo blanco */
+        border: 1px solid #ddd; /* Borde sutil */
+        border-radius: 8px; /* Bordes redondeados */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra sutil para profundidad */
+        display: flex;
+        flex-direction: column;
+        gap: 15px; /* Espacio entre los elementos del formulario */
+        }
+        
+        .form-container mat-form-field {
+            width: 100%; /* Asegura que los campos de entrada ocupen todo el ancho */
+        }
+        
+        .form-container button {
+            width: 100%; /* El botón ocupará todo el ancho */
+            padding: 10px; /* Espaciado dentro del botón */
+            font-size: 16px; /* Tamaño de fuente */
+            border-radius: 4px; /* Bordes redondeados */
+        }
+        
+        .form-container .mat-form-field {
+            margin-bottom: 20px; /* Espaciado inferior entre los campos */
+        }
+        
+        .mat-form-field label {
+            font-weight: bold; /* Hace que las etiquetas sean más prominentes */
+        }
+        
+        mat-error {
+            color: red; /* Color rojo para los mensajes de error */
+            font-size: 12px; /* Tamaño pequeño para los mensajes de error */
+        }
+        .datamodel{
+            font-size: 2em;
+        }
+        
