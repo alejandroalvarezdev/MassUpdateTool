@@ -16,10 +16,11 @@ import Papa from 'papaparse';
 import { concatMap, from } from 'rxjs';
 //SQID
 import Sqids from 'sqids';
+// Mapper services  
 import { EstimacionesMaperService } from '../../services/estimaciones-maper.service';
 import { OportunidadesMaperService } from '../../services/oportunidades-maper.service';
+// Mapper models 
 import { Oportunidades } from '../../models/oportunidades.model';
-import { ObjConId } from '../../models/obj-con-id.model';
 import { OportunidadesApi } from '../../models/oportunidades-api.model';
 import { ContactosApi } from '../../models/contactos-api.model';
 import { EstimacionesAPI } from '../../models/estimaciones-api.model';
@@ -49,6 +50,9 @@ export class SinglePostComponent implements OnInit {
   // Global 
   csvRecords: any[] = [];  // Aquí almacenaremos los registros leídos
   form: FormGroup;
+  segmentedRecords: any[][] = []; // Array para almacenar los bloques de 100
+  datamodel:any;
+
   //File Controller 
   selectedFile: File | null = null;
   //toggle button
@@ -93,6 +97,16 @@ export class SinglePostComponent implements OnInit {
       });
     }
   }
+  segmentData(): void {
+    this.segmentedRecords = []; // Reiniciar antes de segmentar
+
+    for (let i = 0; i < this.csvRecords.length; i += 100) {
+      this.segmentedRecords.push(this.csvRecords.slice(i, i + 100));
+    }
+
+    console.log('Registros segmentados:', this.segmentedRecords);
+    this.datamodel = this.segmentedRecords.pop();
+  }
   onSubmit(){
     if (this.form.valid) {
       console.log('Form Submitted!', this.form.value);
@@ -133,9 +147,11 @@ export class SinglePostComponent implements OnInit {
               objetoOrdenado[clave] = valor;
           });
           objetoOrdenado["duplicate_check_fields"] = ["Deal_Name"];
+          objetoOrdenado["trigger"] = [];  // Esto desactiva los triggers
+
           result = objetoOrdenado; // Aquí se asigna el objeto ordenado a result
     break;
-        break;
+        
       case 'Estimaciones':
         // Lógica para cuando objType es "Estimaciones"
         console.log('Procesando Estimaciones:', obj);
@@ -179,18 +195,11 @@ export class SinglePostComponent implements OnInit {
             return acc;
           }, {});
         
-        const payload = { "data":[transformedObj] };
-        
-        
-        // const mergedObj = Object.assign({}, record, this.segmentRelationShips(record) );
-
-        // console.log(`Registro ${index + 1} enviado con éxito`);
-        // console.log(`Data ${payload}`);
-        
-        
-        // console.log("Merged payload" , mergedObj)
+        // Object to send 
+        const payload = { "data":[this.map2ApiObject(transformedObj,this.form.value.name)] };
 
         if (this.isChecked == true) {
+        
           this.consume.upsertRecord(this.form.value.name, payload).subscribe(
             (response) => {
               console.log(`Registro ${index + 1} enviado con éxito`, response);
@@ -198,14 +207,12 @@ export class SinglePostComponent implements OnInit {
             },
             (error) => {
               console.error(`Error al enviar el registro ${index + 1}`, error);
-              console.error(`Failed payload ${JSON.stringify(payload)}`);
+              console.error(`Failed payload  ${JSON.stringify(payload)}`);
               resolve(false);
             }
           );
-        }else{
-          console.log("Original",payload);
-          console.log("Mapped Object","Transformed Object",transformedObj); 
-          
+        }
+        if(this.isChecked == false){
           // Mapeador 
           console.warn(this.map2ApiObject(transformedObj,this.form.value.name))
           

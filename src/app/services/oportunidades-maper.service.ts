@@ -12,59 +12,23 @@ export class OportunidadesMaperService {
   constructor() { }
   
   mapearOportunidad(objeto: Oportunidades): OportunidadesApi {
-
+    
     const objetoMapeado: OportunidadesApi = {
-      
-        Balance_CDP: "0.00",                        // Moneda
-        Balance_Pick_Up: "0.00",                    // Moneda
-        Calificaciones: "Bajo",                      // Lista de selección
-        CAT_Anual: "0",                             // Porcentaje
-        // Co_Propietario: { id: ""},       // Buscar (Objeto con id y nombre)
-        contract_bridge_id: "",                     // Línea única (Único)
-        // previous_contracts: { id: ""},                     // Búsqueda de selección múltiple
-        club: "",                                   // Línea única
-        Cr_ditos_Totales: 0,                      // Número
-        Cross_Reference: "Ninguno",                 // Lista de selección
-        Cuota_Anual_USD: "0.00",                    // Decimal
-        
-        Equity: "0.00",                             // Moneda
-        Es_un_club_de_Semanas: false,               // Booleano
-        Estado_Civil: "Soltero",                    // Lista de selección
-        Tag: "",                                    // Línea única
+
         Stage: "Iniciado",                          // Lista de selección
         Closing_Date: "2025-01-01",                  // Fecha
-        Fecha_de_Primer_Pago: "2025-01-01",          // Fecha
-        Sale_Date: "2025-01-01",                     // Fecha
-        Fecha_Primer_Uso: "2025-01-01",              // Fecha
-        Fecha_Ultimo_Pago: "2025-01-01",             // Fecha
-        // Finanzas_Aceptada: { id: ""},   // Buscar
-        // Campaign_Source: { id: ""},     // Buscar
-        Lead_Source: "Campaña Online",              // Lista de selección
-        Hook: false,                                // Booleano
-        Amount: "0.00",                             // Moneda
-        Ingresos_Mensuales: "5000",                 // Lista de selección
-        membership_type: "Básico",                  // Línea única
-        Currency: "USD",                            // Lista de selección
-        Morosidad_AR_USD: "0.00",                   // Decimal
-        Morosidad_Down_Payment: "0.00",             // Moneda
-        Morosidad_Folios_USD: "0.00",               // Decimal
-        Morosidad_Morgage: "0.00",                  // Moneda
-        Reason_For_Loss__s: "Ninguno",              // Lista de selección
-        // Contact_Name: { id: ""},       // Buscar
-        // Deal_Name: { id: ""},                              // Línea única
-        Nota_de_Cancelacion: "",                    // Multilínea (pequeño)
-        // Oportunidad_upgraded:{ id: ""}, // Buscar
-        Probability: "0",                           // Número
-        // Sala: { id: ""},              // Buscar
-        Sale_type: "Venta Directa",                 // Línea única
-        Exchange_Rate: "1.00",                      // Decimal
-        Type: "Nuevo",                              // Lista de selección
-        ContractID: "",  
   };
   
   for (let clave in objeto) {
+    
+    if (objeto.hasOwnProperty(clave)) {
+      // Verificamos si el valor es válido
+      const valor = objeto[clave as keyof Oportunidades];
+      if (valor === undefined || valor === null || valor === '' || (typeof valor === 'number' && valor === 0)) {
+        continue; // No mapeamos la propiedad si es vacía o 0
+      }
     switch (clave) {
-      
+    
       case "Balance CDP":
         objetoMapeado["Balance_CDP"] = objeto[clave];
         break;
@@ -201,7 +165,7 @@ export class OportunidadesMaperService {
         // Para campos que no tienen un caso definido, se pueden agregar aquí si es necesario
         break;
     }
-  }
+  }}
   
   const objetoFinal: OportunidadesApi = objetoMapeado as OportunidadesApi;
   return objetoFinal;
