@@ -92,6 +92,7 @@ export class SinglePostComponent implements OnInit {
         complete: (result) => {
           console.log('CSV Result:', result);
           this.csvRecords = result.data;  // Guardamos los registros en el array
+          this.segmentData();
         },
         header: true,  // Si la primera fila contiene los encabezados
       });
