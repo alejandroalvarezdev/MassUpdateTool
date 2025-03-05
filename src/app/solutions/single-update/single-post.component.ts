@@ -92,6 +92,7 @@ export class SinglePostComponent implements OnInit {
         complete: (result) => {
           console.log('CSV Result:', result);
           this.csvRecords = result.data;  // Guardamos los registros en el array
+          this.segmentData();
         },
         header: true,  // Si la primera fila contiene los encabezados
       });
@@ -117,7 +118,7 @@ export class SinglePostComponent implements OnInit {
     }
   }
   sendDataToAPI(): void {
-    from(this.csvRecords) // Emitir cada registro individualmente
+    from(this.segmentedRecords) // Emitir cada registro individualmente
       .pipe(
         concatMap((record, index) => this.launchData(record, index)) // Procesa cada registro en orden
       )
@@ -136,7 +137,7 @@ export class SinglePostComponent implements OnInit {
         // el Objeto lo declaramos como de tipo Oportunidades
         const objetoOportunidades = obj as unknown as Oportunidades;
         let objetoMapeado = this.oportunidadesMap.mapearOportunidad(objetoOportunidades);
-        console.log(objetoMapeado);
+        // console.log(objetoMapeado);
           let propiedadesOrdenadas = Object.entries(objetoMapeado).sort((a, b) => {
             if (a[0] === 'Deal_Name') return -1; // Mueve 'nombre' al principio
             return 0; // Mantén el orden de las demás propiedades
@@ -174,32 +175,43 @@ export class SinglePostComponent implements OnInit {
       // Simulación de consumo de API
       setTimeout(() => {
         
-
-              
-        const transformedObj = Object.entries(record)
-          .reduce<Record<string, { id: string } | string | boolean>>((acc, [key, value]) => {
-            if (typeof value === 'string') {
-              if (key.startsWith('Obj')) {
-                const newKey = key.replace(/^Obj/, ''); // Elimina "Obj" solo si está al inicio
-                acc[newKey] = { id: value }; // Transforma a { id: valor }
+        let payload: any = {};  // Cambiar a un objeto, no un arreglo
+        let segmentedRecords: Array<any> = record; 
+        let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
+  
+        segmentedRecords.forEach(r => {
+          // Transformación del objeto
+          const transformedObj = Object.entries(r)
+            .reduce<Record<string, { id: string } | string | boolean>>((acc, [key, value]) => {
+              if (typeof value === 'string') {
+                if (key.startsWith('Obj')) {
+                  const newKey = key.replace(/^Obj/, ''); // Elimina "Obj" solo si está al inicio
+                  acc[newKey] = { id: value }; // Transforma a { id: valor }
+                }
+                else if (value.toLowerCase() === 'true') {
+                  acc[key] = true;
+                } else if (value.toLowerCase() === 'false') {
+                  acc[key] = false;
+                }
+                else {
+                  acc[key] = value; // Mantiene las claves sin "Obj" tal como están
+                }
               }
-              else if (value.toLowerCase() === 'true') {
-                acc[key] = true;
-              } else if (value.toLowerCase() === 'false') {
-                acc[key] = false;
-              }
-              else {
-                acc[key] = value; // Mantiene las claves sin "Obj" tal como están
-              }
-            }
-            return acc;
-          }, {});
-        
-        // Object to send 
-        const payload = { "data":[this.map2ApiObject(transformedObj,this.form.value.name)] };
-
+              return acc;
+            }, {});
+  
+          // Mapeamos el objeto transformado
+          const mappedObject = this.map2ApiObject(transformedObj, this.form.value.name);
+          
+          // Agregamos el objeto mapeado al arreglo `dataArray`
+          dataArray.push(mappedObject);
+        });
+  
+        // Asignamos directamente la propiedad "data" a payload sin corchetes extra
+        payload.data = dataArray;
+  
+        // Si `this.isChecked` es true, enviamos el registro a la API
         if (this.isChecked == true) {
-        
           this.consume.upsertRecord(this.form.value.name, payload).subscribe(
             (response) => {
               console.log(`Registro ${index + 1} enviado con éxito`, response);
@@ -212,18 +224,19 @@ export class SinglePostComponent implements OnInit {
             }
           );
         }
-        if(this.isChecked == false){
-          // Mapeador 
-          console.warn(this.map2ApiObject(transformedObj,this.form.value.name))
-          
-        } 
-        
-        resolve(true);
+  
+        // Si `this.isChecked` es false, solo mostramos el payload en consola
+        if (this.isChecked == false) {
+          console.warn("Payload", payload);
+        }
+  
+        resolve(true); // Resolvemos la promesa
+  
       }, 500); // Simula una espera de 500ms por cada envío
   
-    
     });
   }
+  
   
   
 
