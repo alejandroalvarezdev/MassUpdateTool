@@ -154,12 +154,19 @@ export class SinglePostComponent implements OnInit {
         break;
 
         case 'Contacts':
+          console.log(this.esModoUpsert);
+          
           let objetoMepeadoCon: ContactosApi;
           const objetoContactos = obj as unknown as Contactos;
         
           if (this.esModoUpsert === 'zohoidModification') {
             // En el caso de zohoidModification, la lógica se realiza de forma asincrónica
-            this.contactosMap.zohoIDsUpdateContacts(objetoContactos);
+            this.contactosMap.zohoIDsUpdateContacts(objetoContactos).then((resultado) => {
+              console.log(JSON.stringify(resultado));  // 'Operación exitosa'
+            })
+            .catch((error) => {
+              console.error(error);  // 'Hubo un error' si algo sale mal
+            });
         
           } else { // En el caso de 'Upsert'
             // Si no es 'zohoidModification', simplemente mapeamos el objeto

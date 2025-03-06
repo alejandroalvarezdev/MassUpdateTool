@@ -3,15 +3,17 @@ import { ContactosApi } from '../models/contactos-api.model';
 import { Contactos } from '../models/contactos.model';
 import { EstimacionesAPI } from '../models/estimaciones-api.model';
 import { ConsumeService } from './consume.service';
-import { Observable } from 'rxjs';
+import { Observable,of,catchError } from 'rxjs';
+import { response } from 'express';
 
 
 @Injectable({
     providedIn: 'root'
 })
 export class ContactosMaperService {
-
+    
     constructor(private consume:ConsumeService) { }
+    
     mapearContactos(objeto:Contactos): ContactosApi {
         const objetoMapeado:ContactosApi = {
         "owner_bridge_id": "",
@@ -149,12 +151,10 @@ export class ContactosMaperService {
     //     return objetoFinal;
     }
 
-    zohoIDsUpdateContacts(objeto: any) {
+    zohoIDsUpdateContacts(objeto: any):Promise<ContactosApi> {
+        return new Promise((resolve, reject) => {
         // Creamos el objeto mapeado vacío
-        const objetoMapeado: any = {};
-    
-        // Array para almacenar las observables de las peticiones API
-        const apiObservables: Observable<any>[] = [];
+        const objetoMapeado: ContactosApi = {};
     
         // Iteramos sobre las propiedades de "objeto"
         for (let clave in objeto) {
@@ -168,14 +168,45 @@ export class ContactosMaperService {
             let module = '';
     
             switch (clave) {
-              case "Campaña Principal":
+                case "Campaña Principal":
+                //Parameters
                 module = 'Campaigns';
                 criteriaBase = `(CampaignID_tsw:equals:${valor})`;
                 
+                //fetch campaign zoho id
+                let zohoid = '';
+                this.consume.fetchData(criteriaBase, module).pipe(
+                    catchError((error) => {
+          // Aquí puedes acceder a la URL y la respuesta del error.
+            console.error('Error en la petición:', error);
+            if (error?.url) {
+                console.error('URL de la petición fallida:', error.url);  // La URL de la petición que falló
+            }
+            if (error?.response) {
+                console.error('Respuesta de error:', error.response);  // La respuesta del error, si está disponible
+            }
+            
+            // Si ocurre un error, devolvemos un Observable vacío o algún valor por defecto
+            return of(null);  // Puedes devolver lo que desees, en este caso `null` como valor de recuperación
+            })
+        ).subscribe(
+            (response: any) => {
+            if (response && response) {
+                const zohoid = response;
+                console.log('ID obtenido:', zohoid.data[0].id);
+                
+                // Aquí mapeamos el objeto como se esperaba
                 objetoMapeado["Campa_a_Principal"] = objeto[clave];
-
-                objetoMapeado["Campa_a_Principal"] = valor;
-                break;
+                objetoMapeado["Campa_a_Principal"] = { "id":  zohoid.data[0].id };
+                              // Se puede seguir el flujo de ejecución normal después de procesar la respuesta
+                console.log('Objeto mapeado:', objetoMapeado);
+            } else {
+                console.error('Respuesta no válida o ID no encontrado');
+                console.error(response);
+            }
+            }
+        );
+        break;
     
             case "Coowner":
                 // Si no se necesita hacer una llamada API, simplemente asignamos el valor
@@ -186,8 +217,9 @@ export class ContactosMaperService {
             }
             }
         }
+        resolve(objetoMapeado);
+        });
     
-    }
-
+    };
 }
 
