@@ -1,100 +1,39 @@
 import { Injectable } from '@angular/core';
 import { ContactosApi } from '../models/contactos-api.model';
 import { Contactos } from '../models/contactos.model';
+import { EstimacionesAPI } from '../models/estimaciones-api.model';
+import { ConsumeService } from './consume.service';
+import { Observable } from 'rxjs';
+
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class ContactosMaperService {
 
-  constructor() { }
-  mapearContactos(objeto:Contactos): ContactosApi {
-    const objetoMapeado = {
-        OwnerID: '',                                // Línea única
-        ContractID: '',                             // Línea única
-        ContractNumber: '',                         // Línea única
-        admin_fee: 0,                               // Moneda
-        financial_charges: 0,                       // Moneda
-      
-        Digitos: null,                              // Número
-        Last_Name: '',                              // Línea única
-        Calle_de_Facturacion: '',                   // Línea única
-        Calle_para_Correspondencia: '',             // Línea única
-        Campa_a_Principal: '',                      // Buscar
-        Centro_de_Servicio: '',                     // Lista de selección
-        Ciudad_de_Facturacion: '',                  // Línea única
-        Mailing_City: '',                           // Línea única
-        PostalCode: '',                             // Línea única
-        Mailing_Zip: '',                            // Línea única
-        Colonia: '',                                // Línea única
-        Colonia_de_Facturacion: '',                 // Línea única
-        CoOwner: '',                                // Buscar
-        coprospect_bridge_id: '',                   // Línea única
-        Email: '',                                  // Correo electrónico (Único)
-        Secondary_Email: '',                        // Correo electrónico
-        Mailing_Street: '',                         // Línea única
-        Empresa_donde_Labora: '',                   // Línea única
-        Estado_Civil: '',                           // Lista de selección
-        Estado_de_Facturacion: '',                  // Línea única
-        Mailing_State: '',                          // Línea única
-        Folio: '',                                  // Línea única
-        Forma_de_Pago: '',                          // Lista de selección
-        Lead_Source: '',                            // Lista de selección
-        Importe_Cobrado: 0,                         // Moneda
-        Ingresos_Mensuales: '',                     // Lista de selección
-        Lenguaje_de_Contacto: '',                   // Lista de selección
-        Lenguaje_de_Marketing: '',                  // Lista de selección
-        Lenguaje_Secundario: [],                    // Selección múltiple
-        Currency: '',                               // Lista de selección
-        Mobile: '',                                 // Teléfono
-        Municipio: '',                              // Línea única
-        Municipio_de_Facturacion: '',               // Línea única
-        Pa_s_de_Nacimiento: '',                     // Lista de selección
-        No_Exterior_de_Facturaci_n: '',             // Línea única
-        No_Interior_de_Facturacion: '',             // Línea única
-        First_Name: '',                             // Línea única
-        Numero_Autorizaci_n: '',                    // Línea única
-        Numero_de_Noches: 0,                        // Número
-        Numero_de_Prospecto: 0,                     // Número
-        Numero_Exterior: '',                        // Línea única
-        Numero_Interior: '',                        // Línea única
-        Numero_de_prospecto_netcenter: 0,           // Número
-        Numero_de_Socio: '',                        // Línea única
-        owner_bridge_id: '',                        // Línea única
-        Pais_de_Facturacion: '',                    // Lista de selección
-        Mailing_Country: '',                        // Línea única
-        prospect_bridge_id: '',                     // Línea única
-        Residencia_Fiscal: '',                      // Lista de selección
-        Regimen_Fiscal: '',                         // Lista de selección
-        RFC: '',                                    // Línea única
-        Salutation: '',                             // Lista de selección
-        Sexo: '',                                   // Lista de selección
-        Exchange_Rate: 0,                           // Decimal
-        Phone: '',                                  // Teléfono
-        Home_Phone: '',                             // Teléfono
-        Terminal: '',                               // Lista de selección
-        Tipo_de_Contacto: '',                       // Lista de selección
-        Title: '',                                  // Línea única
-        Uso_de_CFDI: '',                            // Lista de selección
-        Vigencia: 0,                                // Número
-        CoOwnprosID: ''                             // Línea única
+    constructor(private consume:ConsumeService) { }
+    mapearContactos(objeto:Contactos): ContactosApi {
+        const objetoMapeado:ContactosApi = {
+        "owner_bridge_id": "",
+        "Last_Name":"."
+    
     };
-
-
     // Iteramos sobre las claves del objeto original y asignamos valores al objeto mapeado
-        function mapearContactosApiAContactos(objeto: Contactos): any {
-            let objetoMapeado: any = {};
+
         
-            for (let clave in objeto) {
+        for (let clave in objeto) {
+            if (objeto.hasOwnProperty(clave)) {
+                // Verificamos si el valor es válido
+                const valor = objeto[clave as keyof Contactos];
+                if (valor === undefined || valor === null || valor === "" || (typeof valor === 'number' && valor === 0)) {
+                    continue; // No mapeamos la propiedad si es vacía o 0
+                    }
             switch (clave) {
                 case "4 Digitos":
                 objetoMapeado["Digitos"] = objeto[clave];
                 break;
-                case "Apellido Paterno":
-                objetoMapeado["Last_Name"] = objeto[clave];
-                break;
                 case "Apellidos":
-                objetoMapeado["Apellidos"] = objeto[clave];
+                objetoMapeado["Last_Name"] = objeto[clave];
                 break;
                 case "Calle de Facturacion":
                 objetoMapeado["Calle_de_Facturacion"] = objeto[clave];
@@ -102,9 +41,9 @@ export class ContactosMaperService {
                 case "Calle para Correspondencia":
                 objetoMapeado["Calle_para_Correspondencia"] = objeto[clave];
                 break;
-                case "Campaña Principal":
-                objetoMapeado["Campa_a_Principal"] = objeto[clave];
-                break;
+                // case "Campaña Principal":
+                // objetoMapeado["Campa_a_Principal"] = objeto[clave];
+                // break;
                 case "Centro de Servicio":
                 objetoMapeado["Centro_de_Servicio"] = objeto[clave];
                 break;
@@ -126,9 +65,9 @@ export class ContactosMaperService {
                 case "Colonia de Facturación":
                 objetoMapeado["Colonia_de_Facturacion"] = objeto[clave];
                 break;
-                case "Coowner":
-                objetoMapeado["CoOwner"] = objeto[clave];
-                break;
+                // case "Coowner":
+                // objetoMapeado["CoOwner"] = objeto[clave];
+                // break;
                 case "coprospect_bridge_id":
                 objetoMapeado["coprospect_bridge_id"] = objeto[clave];
                 break;
@@ -174,9 +113,15 @@ export class ContactosMaperService {
                 case "Lenguaje de Marketing":
                 objetoMapeado["Lenguaje_de_Marketing"] = objeto[clave];
                 break;
-                case "Lenguaje Secundario":
-                objetoMapeado["Lenguaje_Secundario"] = objeto[clave];
-                break;
+                case "Lenguaje Secundario":            // Suponiendo que el valor de Lenguaje_Secundario es una cadena separada por comas
+                if (typeof valor === 'string') {
+                objetoMapeado["Lenguaje_Secundario"] = [valor.trim()]; // Convertir a arreglo
+                } else if (Array.isArray(valor)) {
+                    objetoMapeado["Lenguaje_Secundario"] = valor; // Si ya es un arreglo, no hacemos nada
+                } else {
+                    objetoMapeado["Lenguaje_Secundario"] = []; // Si no es cadena ni arreglo, asignamos un arreglo vacío
+                }
+            break;  
                 case "Moneda":
                 objetoMapeado["Currency"] = objeto[clave];
                 break;
@@ -195,13 +140,54 @@ export class ContactosMaperService {
             
             }
             }
-        
+            }
             return objetoMapeado;
-        }
+        
         
 
-    const objetoFinal: ContactosApi = objetoMapeado as unknown as ContactosApi;
-        return objetoFinal;
+    // const objetoFinal: ContactosApi = objetoMapeado as unknown as ContactosApi;
+    //     return objetoFinal;
     }
+
+    zohoIDsUpdateContacts(objeto: any) {
+        // Creamos el objeto mapeado vacío
+        const objetoMapeado: any = {};
+    
+        // Array para almacenar las observables de las peticiones API
+        const apiObservables: Observable<any>[] = [];
+    
+        // Iteramos sobre las propiedades de "objeto"
+        for (let clave in objeto) {
+            if (objeto.hasOwnProperty(clave)) {
+            const valor = objeto[clave];
+            if (valor === undefined || valor === null) {
+              continue; // No mapeamos la propiedad si no tiene valor
+            }
+    
+            let criteriaBase = '';
+            let module = '';
+    
+            switch (clave) {
+              case "Campaña Principal":
+                module = 'Campaigns';
+                criteriaBase = `(CampaignID_tsw:equals:${valor})`;
+                
+                objetoMapeado["Campa_a_Principal"] = objeto[clave];
+
+                objetoMapeado["Campa_a_Principal"] = valor;
+                break;
+    
+            case "Coowner":
+                // Si no se necesita hacer una llamada API, simplemente asignamos el valor
+                objetoMapeado["CoOwner"] = valor;
+                break;
+    
+              // Otros casos pueden ser agregados aquí
+            }
+            }
+        }
+    
+    }
+
 }
 

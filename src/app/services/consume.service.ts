@@ -9,12 +9,11 @@ export class ConsumeService {
 
   constructor(private http: HttpClient) { }
 
-  fetchData(id:any): Observable<any> {
-    console.log(id); 
-    let url= 'http://localhost:3000/api/zoho/leads/'+id ;
-    return this.http.get(url); // replace with your API endpoint
-    
-  };
+  fetchData(criteria: any, module: any): Observable<any> {
+    const url = `http://localhost:3000/api/zoho/${criteria}/${module}`; // Corrección en la interpolación de la URL
+    return this.http.get(url); // Realiza la solicitud GET a la API
+}
+
 
   massiveUpdate(module:any,data: any): Observable<any> {
     let url = 'http://localhost:3000/api/zoho/MassiveUpdate/'+module;
