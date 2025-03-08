@@ -143,7 +143,43 @@ export class SinglePostComponent implements OnInit {
       )
       .subscribe(); // Primero, la suscripción principal
   }
-  
+  async map2ApiObjectZohoIDs(obj:any,objType:string){
+    let result:OportunidadesApi|EstimacionesAPI|ContactosApi|ProspectosApi|undefined; 
+
+    switch (objType) {
+      case 'Leads':
+        // Lógica para cuando objType es "Leads"
+        break;
+    
+      case 'Contacts':
+        let objetoMepeadoCon: ContactosApi;
+        const objetoContactos = obj as unknown as Contactos;
+    
+        this.contactosMap.zohoIDsUpdateContacts(objetoContactos).then((resultado) => {
+          console.log(JSON.stringify(resultado));  // 'Operación exitosa'
+        })
+        .catch((error) => {
+          console.error(error);  // 'Hubo un error' si algo sale mal
+        });
+        // Lógica para cuando objType es "Contacts"
+        break;
+    
+      case 'Deals':
+        // Lógica para cuando objType es "Deals"
+        break;
+    
+      case 'Estimaciones':
+        // Lógica para cuando objType es "Estimaciones"
+        break;
+    
+      default:
+        // Lógica para cuando objType no coincide con ninguno de los casos anteriores
+        break;
+    }
+    return result
+    
+
+  }
   map2ApiObject(obj: any, objType: string) {
     let result:OportunidadesApi|EstimacionesAPI|ContactosApi|ProspectosApi|undefined; 
 
@@ -161,12 +197,12 @@ export class SinglePostComponent implements OnInit {
         
           if (this.esModoUpsert === 'zohoidModification') {
             // En el caso de zohoidModification, la lógica se realiza de forma asincrónica
-            this.contactosMap.zohoIDsUpdateContacts(objetoContactos).then((resultado) => {
-              console.log(JSON.stringify(resultado));  // 'Operación exitosa'
-            })
-            .catch((error) => {
-              console.error(error);  // 'Hubo un error' si algo sale mal
-            });
+            // this.contactosMap.zohoIDsUpdateContacts(objetoContactos).then((resultado) => {
+            //   console.log(JSON.stringify(resultado));  // 'Operación exitosa'
+            // })
+            // .catch((error) => {
+            //   console.error(error);  // 'Hubo un error' si algo sale mal
+            // });
         
           } else { // En el caso de 'Upsert'
             // Si no es 'zohoidModification', simplemente mapeamos el objeto
@@ -225,55 +261,56 @@ export class SinglePostComponent implements OnInit {
     }
     return result;
   }
-  uploadZohoIDs(record:any,index:number){
-    return new Promise(resolve => {
-      console.log(`Zoho Api Update...`); // Mostrar cada registro en consola
+  async uploadZohoIDs(record: any, index: number) {
+    console.log(`Zoho Api Update...`); // Mostrar cada registro en consola
+  
+    let payload: any = {};  // Cambiar a un objeto, no un arreglo
+    let segmentedRecords: Array<any> = record;
+    let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
+
+    
+    // Usamos for...of para manejar correctamente await
+    for (const r of segmentedRecords) {
       
-      setTimeout(() => {
-        
-        let payload: any = {};  // Cambiar a un objeto, no un arreglo
-        let segmentedRecords: Array<any> = record; 
-        let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
+      try {
+        // Mapeamos el objeto transformado y esperamos que la promesa se resuelva
+        const mappedObject = await this.map2ApiObjectZohoIDs(r, this.form.value.name);
   
-        segmentedRecords.forEach(r => {
-          // Transformación del objeto
-          
+        // Agregamos el objeto mapeado al arreglo `dataArray` después de que se haya resuelto la promesa
+        dataArray.push(mappedObject);
+      } catch (error) {
+        console.error('Error en la transformación del objeto', error);
+        // Aquí podrías agregar un `continue` para seguir con el siguiente objeto si ocurre un error
+        continue;
+      }
+    }
   
-          // Mapeamos el objeto transformado
-          const mappedObject = this.map2ApiObject(r, this.form.value.name);
-          
-          // Agregamos el objeto mapeado al arreglo `dataArray`
-          dataArray.push(mappedObject);
-        });
+    // Una vez que el ciclo termine, asignamos directamente la propiedad "data" a payload
+    payload.data = dataArray;
+    console.warn(dataArray);
+    
+    // Si `this.isChecked` es true, enviamos el registro a la API
+    if (this.isChecked) {
+      try {
+        const response = await this.consume.upsertRecord(this.form.value.name, payload).toPromise();
+        console.log(`Registro ${index + 1} enviado con éxito`, response);
+        return true;
+      } catch (error) {
+        console.error(`Error al enviar el registro ${index + 1}`, error);
+        console.error(`Failed payload  ${JSON.stringify(payload)}`);
+        return false;
+      }
+    }
   
-        // Asignamos directamente la propiedad "data" a payload sin corchetes extra
-        payload.data = dataArray;
+    // Si `this.isChecked` es false, solo mostramos el payload en consola
+    if (!this.isChecked) {
+      // console.warn("Payload Zoho Udpade", payload);
+    }
   
-        // Si `this.isChecked` es true, enviamos el registro a la API
-        if (this.isChecked == true) {
-          this.consume.upsertRecord(this.form.value.name, payload).subscribe(
-            (response) => {
-              console.log(`Registro ${index + 1} enviado con éxito`, response);
-              resolve(true);
-            },
-            (error) => {
-              console.error(`Error al enviar el registro ${index + 1}`, error);
-              console.error(`Failed payload  ${JSON.stringify(payload)}`);
-              resolve(false);
-            }
-          );
-        }
-        // Si `this.isChecked` es false, solo mostramos el payload en consola
-        if (this.isChecked == false) {
-          console.warn("Payload", payload);
-        }
-  
-        resolve(true); // Resolvemos la promesa
-  
-      }, 500); //  espera de 500ms por cada envío
-      resolve(true)
-    });
+    return true; // Al final resolvemos la promesa
   }
+  
+  
   
   launchData(record: any, index: number) {
     return new Promise(resolve => {
@@ -287,28 +324,8 @@ export class SinglePostComponent implements OnInit {
         let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
   
         segmentedRecords.forEach(r => {
-          // Transformación del objeto
-          const transformedObj = Object.entries(r)
-            .reduce<Record<string, { id: string } | string | boolean>>((acc, [key, value]) => {
-              if (typeof value === 'string') {
-                if (key.startsWith('Obj')) {
-                  const newKey = key.replace(/^Obj/, ''); // Elimina "Obj" solo si está al inicio
-                  acc[newKey] = { id: value }; // Transforma a { id: valor }
-                }
-                else if (value.toLowerCase() === 'true') {
-                  acc[key] = true;
-                } else if (value.toLowerCase() === 'false') {
-                  acc[key] = false;
-                }
-                else {
-                  acc[key] = value; // Mantiene las claves sin "Obj" tal como están
-                }
-              }
-              return acc;
-            }, {});
-  
-          // Mapeamos el objeto transformado
-          const mappedObject = this.map2ApiObject(transformedObj, this.form.value.name);
+          // Mapeamos el objeto 
+          const mappedObject = this.map2ApiObject(r, this.form.value.name);
           
           // Agregamos el objeto mapeado al arreglo `dataArray`
           dataArray.push(mappedObject);
