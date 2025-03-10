@@ -156,7 +156,7 @@ export class SinglePostComponent implements OnInit {
 
             result = await this.contactosMap.zohoIDsUpdateContacts(objetoContactos)
                 .then((resultado) => {
-                    console.log(JSON.stringify(resultado)); // 'Operación exitosa'
+                    // console.log(JSON.stringify(resultado)); // 'Operación exitosa'
                     return resultado; // 👈 Retornamos el resultado correcto
                 })
                 .catch((error) => {
@@ -273,7 +273,7 @@ export class SinglePostComponent implements OnInit {
         
         // Agregamos el objeto mapeado al arreglo `dataArray`
         dataArray.push(mappedObject);
-        console.log('Objeto mapeado:', mappedObject);
+        // console.log('Objeto mapeado:', mappedObject);
       } catch (error) {
         console.error('Error en la transformación del objeto', error);
       }
@@ -282,7 +282,7 @@ export class SinglePostComponent implements OnInit {
     // Esperamos que todas las promesas se resuelvan antes de mostrar dataArray
     try {
       await Promise.all(promises);
-      console.log('dataArray lleno:', dataArray);
+      console.table('Objeto dataArray lleno:', dataArray);
       return dataArray;
     } catch (error) {
       console.error('Hubo un error al procesar los registros', error);
