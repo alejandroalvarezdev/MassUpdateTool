@@ -155,13 +155,12 @@ export class SinglePostComponent implements OnInit {
         let objetoMepeadoCon: ContactosApi;
         const objetoContactos = obj as unknown as Contactos;
     
-        this.contactosMap.zohoIDsUpdateContacts(objetoContactos).then((resultado) => {
+        await this.contactosMap.zohoIDsUpdateContacts(objetoContactos).then((resultado) => {
           console.log(JSON.stringify(resultado));  // 'Operación exitosa'
         })
         .catch((error) => {
           console.error(error);  // 'Hubo un error' si algo sale mal
         });
-        // Lógica para cuando objType es "Contacts"
         break;
     
       case 'Deals':
@@ -261,6 +260,34 @@ export class SinglePostComponent implements OnInit {
     }
     return result;
   }
+  
+  async  processRecords(segmentedRecords:any) {
+    let dataArray:Array<any> =[]; 
+    // Creamos un array de promesas que se resolverán cuando cada operación asíncrona termine
+    let promises = segmentedRecords.map(async (r:any) => {
+      try {
+        // Llamamos a la función `map2ApiObjectZohoIDs` y esperamos que se resuelva la promesa
+        const mappedObject = await this.map2ApiObjectZohoIDs(r, this.form.value.name);
+        
+        // Agregamos el objeto mapeado al arreglo `dataArray`
+        dataArray.push(mappedObject);
+        console.log('Objeto mapeado:', mappedObject);
+      } catch (error) {
+        console.error('Error en la transformación del objeto', error);
+      }
+    });
+  
+    // Esperamos que todas las promesas se resuelvan antes de mostrar dataArray
+    try {
+      await Promise.all(promises);
+      console.log('dataArray lleno:', dataArray);
+      return dataArray;
+    } catch (error) {
+      console.error('Hubo un error al procesar los registros', error);
+      return[]; 
+    }
+  }
+
   async uploadZohoIDs(record: any, index: number) {
     console.log(`Zoho Api Update...`); // Mostrar cada registro en consola
   
@@ -268,22 +295,26 @@ export class SinglePostComponent implements OnInit {
     let segmentedRecords: Array<any> = record;
     let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
 
-    
+    this.processRecords(segmentedRecords);
     // Usamos for...of para manejar correctamente await
-    for (const r of segmentedRecords) {
+    // for (const r of segmentedRecords) {
       
-      try {
-        // Mapeamos el objeto transformado y esperamos que la promesa se resuelva
-        const mappedObject = await this.map2ApiObjectZohoIDs(r, this.form.value.name);
+    //   try {
+    //     // Mapeamos el objeto transformado y esperamos que la promesa se resuelva
+    //     const mappedObject = await this.map2ApiObjectZohoIDs(r, this.form.value.name);
   
-        // Agregamos el objeto mapeado al arreglo `dataArray` después de que se haya resuelto la promesa
-        dataArray.push(mappedObject);
-      } catch (error) {
-        console.error('Error en la transformación del objeto', error);
-        // Aquí podrías agregar un `continue` para seguir con el siguiente objeto si ocurre un error
-        continue;
-      }
-    }
+    //     // Agregamos el objeto mapeado al arreglo `dataArray` después de que se haya resuelto la promesa
+    //     dataArray.push(mappedObject);
+    //   } catch (error) {
+    //     console.error('Error en la transformación del objeto', error);
+    //     // Aquí podrías agregar un `continue` para seguir con el siguiente objeto si ocurre un error
+    //     continue;
+    //   }
+    // }
+
+    ////---------------
+
+    ////--------------
   
     // Una vez que el ciclo termine, asignamos directamente la propiedad "data" a payload
     payload.data = dataArray;
