@@ -143,42 +143,44 @@ export class SinglePostComponent implements OnInit {
       )
       .subscribe(); // Primero, la suscripción principal
   }
-  async map2ApiObjectZohoIDs(obj:any,objType:string){
-    let result:OportunidadesApi|EstimacionesAPI|ContactosApi|ProspectosApi|undefined; 
+  async map2ApiObjectZohoIDs(obj: any, objType: string) {
+    let result: OportunidadesApi | EstimacionesAPI | ContactosApi | ProspectosApi | undefined;
 
     switch (objType) {
-      case 'Leads':
-        // Lógica para cuando objType es "Leads"
-        break;
-    
-      case 'Contacts':
-        let objetoMepeadoCon: ContactosApi;
-        const objetoContactos = obj as unknown as Contactos;
-    
-        await this.contactosMap.zohoIDsUpdateContacts(objetoContactos).then((resultado) => {
-          console.log(JSON.stringify(resultado));  // 'Operación exitosa'
-        })
-        .catch((error) => {
-          console.error(error);  // 'Hubo un error' si algo sale mal
-        });
-        break;
-    
-      case 'Deals':
-        // Lógica para cuando objType es "Deals"
-        break;
-    
-      case 'Estimaciones':
-        // Lógica para cuando objType es "Estimaciones"
-        break;
-    
-      default:
-        // Lógica para cuando objType no coincide con ninguno de los casos anteriores
-        break;
-    }
-    return result
-    
+        case 'Leads':
+            // Lógica para cuando objType es "Leads"
+            break;
 
-  }
+        case 'Contacts':
+            const objetoContactos = obj as unknown as Contactos;
+
+            result = await this.contactosMap.zohoIDsUpdateContacts(objetoContactos)
+                .then((resultado) => {
+                    console.log(JSON.stringify(resultado)); // 'Operación exitosa'
+                    return resultado; // 👈 Retornamos el resultado correcto
+                })
+                .catch((error) => {
+                    console.error(error);
+                    return {} as ContactosApi; // 👈 Retornamos un objeto vacío en caso de error
+                });
+            break;
+
+        case 'Deals':
+            // Lógica para cuando objType es "Deals"
+            break;
+
+        case 'Estimaciones':
+            // Lógica para cuando objType es "Estimaciones"
+            break;
+
+        default:
+            console.warn('Tipo de objeto no reconocido:', objType);
+            break;
+    }
+
+    return result; // ✅ Devolvemos el resultado correcto según el tipo de objeto
+}
+
   map2ApiObject(obj: any, objType: string) {
     let result:OportunidadesApi|EstimacionesAPI|ContactosApi|ProspectosApi|undefined; 
 

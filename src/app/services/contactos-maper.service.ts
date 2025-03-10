@@ -151,77 +151,6 @@ export class ContactosMaperService {
     //     return objetoFinal;
     }
 
-//     async zohoIDsUpdateContacts(objeto: any):Promise<ContactosApi> {
-//         return new Promise((resolve, reject) => {
-//         // Creamos el objeto mapeado vacío
-//         const objetoMapeado: ContactosApi = {};
-    
-//         // Iteramos sobre las propiedades de "objeto"
-//         for (let clave in objeto) {
-//             if (objeto.hasOwnProperty(clave)) {
-//             const valor = objeto[clave];
-//             if (valor === undefined || valor === null) {
-//               continue; // No mapeamos la propiedad si no tiene valor
-//             }
-    
-//             let criteriaBase = '';
-//             let module = '';
-    
-//             switch (clave) {
-//                 case "Campaña Principal":
-//                 //Parameters
-//                 module = 'Campaigns';
-//                 criteriaBase = `(CampaignID_tsw:equals:${valor})`;
-                
-//                 //fetch campaign zoho id
-//                 let zohoid = '';
-//                 this.consume.fetchData(criteriaBase, module).pipe(
-//                     catchError((error) => {
-//           // Aquí puedes acceder a la URL y la respuesta del error.
-//             console.error('Error en la petición:', error);
-//             if (error?.url) {
-//                 console.error('URL de la petición fallida:', error.url);  // La URL de la petición que falló
-//             }
-//             if (error?.response) {
-//                 console.error('Respuesta de error:', error.response);  // La respuesta del error, si está disponible
-//             }
-            
-//             // Si ocurre un error, devolvemos un Observable vacío o algún valor por defecto
-//             return of(null);  // Puedes devolver lo que desees, en este caso `null` como valor de recuperación
-//             })
-//         ).subscribe(
-//             (response: any) => {
-//             if (response && response) {
-//                 const zohoid = response;
-//                 console.log('ID obtenido:', zohoid.data[0].id);
-                
-//                 // Aquí mapeamos el objeto como se esperaba
-//                 objetoMapeado["Campa_a_Principal"] = objeto[clave];
-//                 objetoMapeado["Campa_a_Principal"] = { "id":  zohoid.data[0].id };
-//                               // Se puede seguir el flujo de ejecución normal después de procesar la respuesta
-//                 console.log('Objeto mapeado:', objetoMapeado);
-//             } else {
-//                 console.error('Respuesta no válida o ID no encontrado');
-//                 console.error(response);
-//             }
-//             }
-//         );
-//         break;
-    
-//             case "Coowner":
-//                 // Si no se necesita hacer una llamada API, simplemente asignamos el valor
-//                 objetoMapeado["CoOwner"] = valor;
-//                 break;
-    
-//               // Otros casos pueden ser agregados aquí
-//             }
-//             }
-//         }
-//         resolve(objetoMapeado);
-//         });
-    
-//     };
-// }
 
 async zohoIDsUpdateContacts(objeto: any): Promise<ContactosApi> {
     const objetoMapeado: ContactosApi = {}; // Objeto donde mapeamos los valores
@@ -233,7 +162,7 @@ async zohoIDsUpdateContacts(objeto: any): Promise<ContactosApi> {
     for (let clave in objeto) {
         if (objeto.hasOwnProperty(clave)) {
             const valor = objeto[clave];
-            console.warn(valor)
+        
             if (valor === undefined || valor === null) {
                 continue; // No mapeamos la propiedad si no tiene valor
             }
@@ -245,7 +174,7 @@ async zohoIDsUpdateContacts(objeto: any): Promise<ContactosApi> {
                 case "Campaña Principal":
                     module = 'Campaigns';
                     criteriaBase = `(CampaignID_tsw:equals:${valor})`;
-
+                    console.warn(criteriaBase);
                     // Creamos la promesa de la petición
                     const peticion = this.consume.fetchData(criteriaBase, module).pipe(
                         catchError((error) => {
@@ -254,18 +183,22 @@ async zohoIDsUpdateContacts(objeto: any): Promise<ContactosApi> {
                             console.error(criteriaBase);
                             return of(null); // Si hay un error, devolvemos null
                         })
-                    ).toPromise(); // Convertimos el observable a promesa
-
-                    peticiones.push(peticion.then((response: any) => {
-                        if (response && response.data && response.data.length > 0) {
-                            const zohoid = response.data[0].id;
-                            objetoMapeado["Campa_a_Principal"] = objeto[clave];
-                            objetoMapeado["Campa_a_Principal"] = { "id":  zohoid.data[0].id };
-                            console.log('ID obtenido:', zohoid);
-                        } else {
-                            console.error('Respuesta no válida o ID no encontrado', response);
-                        }
-                    }));
+                    ).toPromise();
+                    peticiones.push(
+                        peticion.then((response: any) => {
+                            if (response && response.data && response.data.length > 0) {
+                                const zohoid = response.data[0].id;
+                                
+                                objetoMapeado["Campa_a_Principal"] = { "id": zohoid };
+                    
+                                console.log('ID obtenido:', zohoid);
+                            } else {
+                                console.error('Respuesta no válida o ID no encontrado', response);
+                            }
+                        }).catch((error) => {
+                            console.error('Error procesando la petición:', error);
+                        })
+                    );
 
                     break;
 
