@@ -153,13 +153,33 @@ export class SinglePostComponent implements OnInit {
 
         case 'Contacts':
             const objetoContactos = obj as unknown as Contactos;
+            let objetoMapeadoCon: any;
 
-            result = await this.contactosMap.zohoIDsUpdateContacts(objetoContactos)
-                .then((resultado) => {
-                    // console.log(JSON.stringify(resultado)); // 'Operación exitosa'
-                    return resultado; // 👈 Retornamos el resultado correcto
-                })
-                .catch((error) => {
+            objetoMapeadoCon = await this.contactosMap.zohoIDsUpdateContacts(objetoContactos)
+              .then((resultado: any) => {
+                // console.warn(resultado);
+            
+                // Ordenamos las propiedades, colocando 'owner_bridge_id' al principio
+                let propiedadesOrdenadasCon = Object.entries(resultado).sort((a, b) => {
+                  if (a[0] === 'owner_bridge_id') return -1; // Mueve 'owner_bridge_id' al principio
+                  return 0; // Mantén el orden de las demás propiedades
+                });
+            
+                // Creamos el objeto ordenado
+                let objetoOrdenadoCon: any = {};
+                propiedadesOrdenadasCon.forEach(([clave, valor]) => {
+                  objetoOrdenadoCon[clave] = valor;
+                });
+            
+                // Agregamos las propiedades adicionales
+                objetoOrdenadoCon["duplicate_check_fields"] = ["owner_bridge_id"];
+                objetoOrdenadoCon["trigger"] = [];
+            
+                // console.log("Objeto ordenado con campos adicionales:", objetoOrdenadoCon);
+            
+                // Retornar el objeto ordenado
+                return objetoOrdenadoCon;
+              }).catch((error) => {
                     console.error(error);
                     return {} as ContactosApi; // 👈 Retornamos un objeto vacío en caso de error
                 });
@@ -295,7 +315,6 @@ export class SinglePostComponent implements OnInit {
   
     let payload: any = {};  // Cambiar a un objeto, no un arreglo
     let segmentedRecords: Array<any> = record;
-    let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
 
     console.log("DataArray final",await this.processRecords(segmentedRecords));
     payload.data = await this.processRecords(segmentedRecords);

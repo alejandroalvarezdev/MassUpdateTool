@@ -153,7 +153,9 @@ export class ContactosMaperService {
 
 
 async zohoIDsUpdateContacts(objeto: any): Promise<ContactosApi> {
-    const objetoMapeado: ContactosApi = {}; // Objeto donde mapeamos los valores
+    const objetoMapeado:ContactosApi = {
+        "owner_bridge_id": "",    
+    }; // Objeto donde mapeamos los valores
 
     // Creamos un array de promesas para esperar a todas las respuestas de las peticiones
     const peticiones: Promise<void>[] = [];
@@ -171,6 +173,9 @@ async zohoIDsUpdateContacts(objeto: any): Promise<ContactosApi> {
             let module = '';
 
             switch (clave) {
+                case "coprospect_bridge_id":
+                objetoMapeado["coprospect_bridge_id"] = objeto[clave];
+                break;
                 case "Campaña Principal":
                     module = 'Campaigns';
                     criteriaBase = `(CampaignID_tsw:equals:${valor})`;
@@ -189,7 +194,7 @@ async zohoIDsUpdateContacts(objeto: any): Promise<ContactosApi> {
                             objetoMapeado["Campa_a_Principal"] = { "id": zohoid };
                             // console.log('ID obtenido de Campaigns:', zohoid);
                         } else {
-                            console.error('No se encontró campaña con el ID proporcionado', response);
+                            // console.error('No se encontró campaña con el ID proporcionado', response);
                         }
                     } catch (error) {
                         console.error('Error procesando la petición de Campaigns:', error);
@@ -214,7 +219,7 @@ async zohoIDsUpdateContacts(objeto: any): Promise<ContactosApi> {
                             objetoMapeado["CoOwner"] = { "id": zohoid };
                             console.log('ID obtenido de Coowner:', zohoid);
                         } else {
-                            console.error('No se encontró un Coowner con el ID proporcionado', response);
+                            // console.error('No se encontró un Coowner con el ID proporcionado', response);
                         }
                     } catch (error) {
                         console.error('Error procesando la petición de Coowner:', error);
