@@ -174,40 +174,55 @@ async zohoIDsUpdateContacts(objeto: any): Promise<ContactosApi> {
                 case "Campaña Principal":
                     module = 'Campaigns';
                     criteriaBase = `(CampaignID_tsw:equals:${valor})`;
-                    // console.warn(criteriaBase);
-                    // Creamos la promesa de la petición
-                    const peticion = this.consume.fetchData(criteriaBase, module).pipe(
-                        catchError((error) => {
-                            // Manejamos el error de la petición
-                            console.error('Error en la petición:', error);
-                            console.error(criteriaBase);
-                            return of(null); // Si hay un error, devolvemos null
-                        })
-                    ).toPromise();
-                    peticiones.push(
-                        peticion.then((response: any) => {
-                            if (response && response.data && response.data.length > 0) {
-                                const zohoid = response.data[0].id;
-                                
-                                objetoMapeado["Campa_a_Principal"] = { "id": zohoid };
                     
-                                // console.log('ID obtenido:', zohoid);
-                            } else {
-                                console.error('Respuesta no válida o ID no encontrado', response);
-                            }
-                        }).catch((error) => {
-                            console.error('Error procesando la petición:', error);
-                        })
-                    );
-
+                    try {
+                        const response: any = await this.consume.fetchData(criteriaBase, module)
+                            .pipe(
+                                catchError((error) => {
+                                    console.error('Error en la petición de Campaigns:', error);
+                                    return of(null);
+                                })
+                            ).toPromise();
+        
+                        if (response?.data?.length > 0) {
+                            const zohoid = response.data[0].id;
+                            objetoMapeado["Campa_a_Principal"] = { "id": zohoid };
+                            // console.log('ID obtenido de Campaigns:', zohoid);
+                        } else {
+                            console.error('No se encontró campaña con el ID proporcionado', response);
+                        }
+                    } catch (error) {
+                        console.error('Error procesando la petición de Campaigns:', error);
+                    }
                     break;
-
+        
                 case "Coowner":
-                    // Si no se necesita hacer una llamada API, simplemente asignamos el valor
-                    objetoMapeado["CoOwner"] = valor;
+                    module = 'Contacts';
+                    criteriaBase = `(CoOwnprosID:equals:${valor})`;
+        
+                    try {
+                        const response: any = await this.consume.fetchData(criteriaBase, module)
+                            .pipe(
+                                catchError((error) => {
+                                    console.error('Error en la petición de Coowner:', error);
+                                    return of(null);
+                                })
+                            ).toPromise();
+        
+                        if (response?.data?.length > 0) {
+                            const zohoid = response.data[0].id;
+                            objetoMapeado["CoOwner"] = { "id": zohoid };
+                            console.log('ID obtenido de Coowner:', zohoid);
+                        } else {
+                            console.error('No se encontró un Coowner con el ID proporcionado', response);
+                        }
+                    } catch (error) {
+                        console.error('Error procesando la petición de Coowner:', error);
+                    }
                     break;
+        
+                // Otros casos pueden ser agregados aquí según sea necesario
 
-                // Otros casos pueden ser agregados aquí
             }
         }
     }

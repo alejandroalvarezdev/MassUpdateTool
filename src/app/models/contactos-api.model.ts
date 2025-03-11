@@ -14,7 +14,7 @@ export interface ContactosApi {
 "Mailing_Zip"?: string;                         // Línea única
 "Colonia"?: string;                             // Línea única
 "Colonia_de_Facturacion"?: string;              // Línea única
-"CoOwner"?: string;                             // Buscar
+"CoOwner"?: ObjConId;                             // Buscar
 "coprospect_bridge_id"?: string;                // Línea única
 "Email"?: string;                               // Correo electrónico (Único)
 "Secondary_Email"?: string;                     // Correo electrónico

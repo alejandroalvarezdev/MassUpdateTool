@@ -297,30 +297,9 @@ export class SinglePostComponent implements OnInit {
     let segmentedRecords: Array<any> = record;
     let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
 
-    this.processRecords(segmentedRecords);
-    // Usamos for...of para manejar correctamente await
-    // for (const r of segmentedRecords) {
-      
-    //   try {
-    //     // Mapeamos el objeto transformado y esperamos que la promesa se resuelva
-    //     const mappedObject = await this.map2ApiObjectZohoIDs(r, this.form.value.name);
-  
-    //     // Agregamos el objeto mapeado al arreglo `dataArray` después de que se haya resuelto la promesa
-    //     dataArray.push(mappedObject);
-    //   } catch (error) {
-    //     console.error('Error en la transformación del objeto', error);
-    //     // Aquí podrías agregar un `continue` para seguir con el siguiente objeto si ocurre un error
-    //     continue;
-    //   }
-    // }
-
-    ////---------------
-
-    ////--------------
-  
-    // Una vez que el ciclo termine, asignamos directamente la propiedad "data" a payload
-    payload.data = dataArray;
-    console.warn(dataArray);
+    console.log("DataArray final",await this.processRecords(segmentedRecords));
+    payload.data = await this.processRecords(segmentedRecords);
+    console.warn(await payload);
     
     // Si `this.isChecked` es true, enviamos el registro a la API
     if (this.isChecked) {
