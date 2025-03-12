@@ -153,11 +153,27 @@ export class SinglePostComponent implements OnInit {
 
         case 'Contacts':
             const objetoContactos = obj as unknown as Contactos;
+          let objetoMapeadoCon:any;
 
-            result = await this.contactosMap.zohoIDsUpdateContacts(objetoContactos)
-                .then((resultado) => {
-                    // console.log(JSON.stringify(resultado)); // 'Operación exitosa'
-                    return resultado; // 👈 Retornamos el resultado correcto
+            objetoMapeadoCon   = await this.contactosMap.zohoIDsUpdateContacts(objetoContactos)
+                .then((resultado:any) => {
+                  let propiedadesOrdenadasCon = Object.entries(resultado).sort((a, b) => {
+                    if (a[0] === 'owner_bridge_id') return -1; // Mueve 'owner_bridge_id' al principio
+                    return 0; // Mantén el orden de las demás propiedades
+                  });
+                  
+                  // Creamos un nuevo objeto con las propiedades ordenadas
+                  let objetoOrdenadoCon: any = {};
+                  propiedadesOrdenadasCon.forEach(([clave, valor]) => {
+                    objetoOrdenadoCon[clave] = valor; // Asignamos cada propiedad al nuevo objeto
+                  });
+                  
+                  // Agregamos campos adicionales al objeto
+                  objetoOrdenadoCon["duplicate_check_fields"] = ["owner_bridge_id"]; // Campo adicional
+                  objetoOrdenadoCon["trigger"] = []; // Otro campo adicional
+                  
+                  // Asignamos el objeto final ordenado a 'result'
+                  result = objetoOrdenadoCon;
                 })
                 .catch((error) => {
                     console.error(error);
@@ -351,6 +367,7 @@ export class SinglePostComponent implements OnInit {
           this.consume.upsertRecord(this.form.value.name, payload).subscribe(
             (response) => {
               console.log(`Registro ${index + 1} enviado con éxito`, response);
+              console.warn(payload)
               resolve(true);
             },
             (error) => {
