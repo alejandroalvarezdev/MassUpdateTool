@@ -24,11 +24,11 @@ export interface Contactos {
 "Estado Civil"?: string;                         // Lista de selección
 "Estado de Facturacion"?: string;                // Línea única
 "Estado para correspondencia"?: string;          // Línea única
-"Fecha de nacimiento"?: Date;                    // Fecha
+"Fecha de nacimiento"?: string;                    // Fecha
 "Folio"?: string;                                // Línea única
 "Forma de Pago"?: string;                        // Lista de selección
 "Fuente de Prospecto"?: string;                  // Lista de selección
-"Hora de creación"?: Date;                       // Fecha
+"Hora de creación"?: string;                       // Fecha
 "ID"?: string;                                   // Línea única
 "Importe Cobrado"?: number;                      // Moneda
 "Ingresos Mensuales"?: string;                   // Lista de selección

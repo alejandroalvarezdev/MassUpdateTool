@@ -63,6 +63,8 @@ export interface ContactosApi {
 "Title"?: string;                               // Línea única
 "Uso_de_CFDI"?: string;                         // Lista de selección
 "Vigencia"?: number;                            // Número
-"CoOwnprosID"?: string;                         // Línea única
+"CoOwnprosID"?: string; 
+"Calificacion"?:string; 
+"Date_of_Birth"?:string                        // Línea única
 
 }

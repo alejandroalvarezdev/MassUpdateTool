@@ -313,7 +313,6 @@ export class SinglePostComponent implements OnInit {
     let segmentedRecords: Array<any> = record;
     let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
 
-    console.log("DataArray final",await this.processRecords(segmentedRecords));
     payload.data = await this.processRecords(segmentedRecords);
     console.warn(await payload);
     
@@ -380,7 +379,7 @@ export class SinglePostComponent implements OnInit {
   
         // Si `this.isChecked` es false, solo mostramos el payload en consola
         if (this.isChecked == false) {
-          console.warn("Payload", payload);
+          console.warn("Payload Upsert", payload);
         }
         
         
