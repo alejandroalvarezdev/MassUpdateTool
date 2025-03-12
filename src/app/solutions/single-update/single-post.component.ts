@@ -13,7 +13,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
 //CSV Parser
 import Papa from 'papaparse';
-import { concatMap, from } from 'rxjs';
+import { concatMap,finalize, from } from 'rxjs';
 //SQID
 import Sqids from 'sqids';
 // Mapper services  
@@ -25,11 +25,15 @@ import { OportunidadesApi } from '../../models/oportunidades-api.model';
 import { ContactosApi } from '../../models/contactos-api.model';
 import { EstimacionesAPI } from '../../models/estimaciones-api.model';
 import { ProspectosApi } from '../../models/prospectos-api.model';
+import { Contactos } from '../../models/contactos.model';
+import { ContactosMaperService } from '../../services/contactos-maper.service';
+type TipoOperacion = 'upsert' | 'zohoidModification';
 
 
 @Component({
   selector: 'app-single-update',
-  imports: [SolutionsModule,
+  imports: [
+    SolutionsModule,
     CommonModule,
       MatButtonModule,
       MatInputModule,
@@ -52,6 +56,9 @@ export class SinglePostComponent implements OnInit {
   form: FormGroup;
   segmentedRecords: any[][] = []; // Array para almacenar los bloques de 100
   datamodel:any;
+  // Esta variable define que flujo se correrá si el Upsert o la actualización de ZohoID's
+  esModoUpsert : TipoOperacion = 'upsert'; 
+
 
   //File Controller 
   selectedFile: File | null = null;
@@ -66,7 +73,9 @@ export class SinglePostComponent implements OnInit {
     private consume:ConsumeService,
     private fb: FormBuilder,
     private estimacionesMap:EstimacionesMaperService,
-    private oportunidadesMap:OportunidadesMaperService){
+    private oportunidadesMap:OportunidadesMaperService,
+    private contactosMap:ContactosMaperService
+  ){
       this.form = this.fb.group({
         name: ['', Validators.required],
         // updateType:['',Validators.required]
@@ -118,13 +127,76 @@ export class SinglePostComponent implements OnInit {
     }
   }
   sendDataToAPI(): void {
-    from(this.csvRecords) // Emitir cada registro individualmente
+    from(this.segmentedRecords) // Emitir cada registro individualmente
       .pipe(
-        concatMap((record, index) => this.launchData(record, index)) // Procesa cada registro en orden
+        concatMap((record, index) => this.launchData(record, index)), // Procesa cada registro en orden
+        finalize(() => {
+          this.esModoUpsert = 'zohoidModification'; 
+          console.log('Todos los registros han sido procesados por Upsert');
+          // Después de que todos los registros han sido procesados, ejecutamos la segunda función
+          from(this.segmentedRecords) // Emitir cada registro nuevamente
+            .pipe(
+              concatMap((record, index) => this.uploadZohoIDs(record, index)) // Ejecutar otra función
+            )
+            .subscribe(); // No olvides suscribirte a este segundo observable
+        })
       )
-      .subscribe();
+      .subscribe(); // Primero, la suscripción principal
   }
-  
+  async map2ApiObjectZohoIDs(obj: any, objType: string) {
+    let result: OportunidadesApi | EstimacionesAPI | ContactosApi | ProspectosApi | undefined;
+
+    switch (objType) {
+        case 'Leads':
+            // Lógica para cuando objType es "Leads"
+            break;
+
+        case 'Contacts':
+            const objetoContactos = obj as unknown as Contactos;
+          let objetoMapeadoCon:any;
+
+            objetoMapeadoCon   = await this.contactosMap.zohoIDsUpdateContacts(objetoContactos)
+                .then((resultado:any) => {
+                  let propiedadesOrdenadasCon = Object.entries(resultado).sort((a, b) => {
+                    if (a[0] === 'owner_bridge_id') return -1; // Mueve 'owner_bridge_id' al principio
+                    return 0; // Mantén el orden de las demás propiedades
+                  });
+                  
+                  // Creamos un nuevo objeto con las propiedades ordenadas
+                  let objetoOrdenadoCon: any = {};
+                  propiedadesOrdenadasCon.forEach(([clave, valor]) => {
+                    objetoOrdenadoCon[clave] = valor; // Asignamos cada propiedad al nuevo objeto
+                  });
+                  
+                  // Agregamos campos adicionales al objeto
+                  objetoOrdenadoCon["duplicate_check_fields"] = ["owner_bridge_id"]; // Campo adicional
+                  objetoOrdenadoCon["trigger"] = []; // Otro campo adicional
+                  
+                  // Asignamos el objeto final ordenado a 'result'
+                  result = objetoOrdenadoCon;
+                })
+                .catch((error) => {
+                    console.error(error);
+                    return {} as ContactosApi; // 👈 Retornamos un objeto vacío en caso de error
+                });
+            break;
+
+        case 'Deals':
+            // Lógica para cuando objType es "Deals"
+            break;
+
+        case 'Estimaciones':
+            // Lógica para cuando objType es "Estimaciones"
+            break;
+
+        default:
+            console.warn('Tipo de objeto no reconocido:', objType);
+            break;
+    }
+
+    return result; // ✅ Devolvemos el resultado correcto según el tipo de objeto
+}
+
   map2ApiObject(obj: any, objType: string) {
     let result:OportunidadesApi|EstimacionesAPI|ContactosApi|ProspectosApi|undefined; 
 
@@ -133,40 +205,140 @@ export class SinglePostComponent implements OnInit {
         // Lógica para cuando objType es "Leads"
         console.log('Procesando Leads:', obj);
         break;
+
+        case 'Contacts':
+          console.log(this.esModoUpsert);
+          
+          let objetoMepeadoCon: ContactosApi;
+          const objetoContactos = obj as unknown as Contactos;
+        
+          if (this.esModoUpsert === 'zohoidModification') {
+            // En el caso de zohoidModification, la lógica se realiza de forma asincrónica
+            // this.contactosMap.zohoIDsUpdateContacts(objetoContactos).then((resultado) => {
+            //   console.log(JSON.stringify(resultado));  // 'Operación exitosa'
+            // })
+            // .catch((error) => {
+            //   console.error(error);  // 'Hubo un error' si algo sale mal
+            // });
+        
+          } else { // En el caso de 'Upsert'
+            // Si no es 'zohoidModification', simplemente mapeamos el objeto
+            objetoMepeadoCon = this.contactosMap.mapearContactos(objetoContactos);
+        
+            // Ordenamos las propiedades de la misma manera
+            let propiedadesOrdenadasCon = Object.entries(objetoMepeadoCon).sort((a, b) => {
+              if (a[0] === 'owner_bridge_id') return -1; // Mueve 'owner_bridge_id' al principio
+              return 0; // Mantén el orden de las demás propiedades
+            });
+        
+            // Creamos el objeto ordenado
+            let objetoOrdenadoCon: any = {};
+            propiedadesOrdenadasCon.forEach(([clave, valor]) => {
+              objetoOrdenadoCon[clave] = valor;
+            });
+        
+            // Agregamos campos adicionales
+            objetoOrdenadoCon["duplicate_check_fields"] = ["owner_bridge_id"];
+            objetoOrdenadoCon["trigger"] = [];
+        
+            result = objetoOrdenadoCon;  // Asignamos el objeto final a `result`
+          }
+          break;
+        
       case 'Deals':
         // el Objeto lo declaramos como de tipo Oportunidades
         const objetoOportunidades = obj as unknown as Oportunidades;
-        let objetoMapeado = this.oportunidadesMap.mapearOportunidad(objetoOportunidades);
-        console.log(objetoMapeado);
-          let propiedadesOrdenadas = Object.entries(objetoMapeado).sort((a, b) => {
+        let objetoMapeadoOp = this.oportunidadesMap.mapearOportunidad(objetoOportunidades);
+        // console.log(objetoMapeado);
+          let propiedadesOrdenadasOp = Object.entries(objetoMapeadoOp).sort((a, b) => {
             if (a[0] === 'Deal_Name') return -1; // Mueve 'nombre' al principio
             return 0; // Mantén el orden de las demás propiedades
           });
              // Reconstruir el objeto a partir de las propiedades ordenadas
-          let objetoOrdenado: any = {};
-          propiedadesOrdenadas.forEach(([clave, valor]) => {
-              objetoOrdenado[clave] = valor;
+          let objetoOrdenadoOp: any = {};
+          propiedadesOrdenadasOp.forEach(([clave, valor]) => {
+              objetoOrdenadoOp[clave] = valor;
           });
-          objetoOrdenado["duplicate_check_fields"] = ["Deal_Name"];
-          objetoOrdenado["trigger"] = [];  // Esto desactiva los triggers
+          objetoOrdenadoOp["duplicate_check_fields"] = ["Deal_Name"];
+          objetoOrdenadoOp["trigger"] = [];  // Esto desactiva los triggers
 
-          result = objetoOrdenado; // Aquí se asigna el objeto ordenado a result
+          result = objetoOrdenadoOp; // Aquí se asigna el objeto ordenado a result
     break;
         
       case 'Estimaciones':
         // Lógica para cuando objType es "Estimaciones"
         console.log('Procesando Estimaciones:', obj);
         break;
-      case 'Oportunidades':
-        // Lógica para cuando objType es "Oportunidades"
-        console.log('Procesando Oportunidades:', obj);
-        break;
+
+        
+
       default:
         console.log('Tipo no reconocido:', objType);
         break;
     }
     return result;
   }
+  
+  async  processRecords(segmentedRecords:any) {
+    let dataArray:Array<any> =[]; 
+    // Creamos un array de promesas que se resolverán cuando cada operación asíncrona termine
+    let promises = segmentedRecords.map(async (r:any) => {
+      try {
+        // Llamamos a la función `map2ApiObjectZohoIDs` y esperamos que se resuelva la promesa
+        const mappedObject = await this.map2ApiObjectZohoIDs(r, this.form.value.name);
+        
+        // Agregamos el objeto mapeado al arreglo `dataArray`
+        dataArray.push(mappedObject);
+        // console.log('Objeto mapeado:', mappedObject);
+      } catch (error) {
+        console.error('Error en la transformación del objeto', error);
+      }
+    });
+  
+    // Esperamos que todas las promesas se resuelvan antes de mostrar dataArray
+    try {
+      await Promise.all(promises);
+      console.table('Objeto dataArray lleno:', dataArray);
+      return dataArray;
+    } catch (error) {
+      console.error('Hubo un error al procesar los registros', error);
+      return[]; 
+    }
+  }
+
+  async uploadZohoIDs(record: any, index: number) {
+    console.log(`Zoho Api Update...`); // Mostrar cada registro en consola
+  
+    let payload: any = {};  // Cambiar a un objeto, no un arreglo
+    let segmentedRecords: Array<any> = record;
+    let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
+
+    console.log("DataArray final",await this.processRecords(segmentedRecords));
+    payload.data = await this.processRecords(segmentedRecords);
+    console.warn(await payload);
+    
+    // Si `this.isChecked` es true, enviamos el registro a la API
+    if (this.isChecked) {
+      try {
+        const response = await this.consume.upsertRecord(this.form.value.name, payload).toPromise();
+        console.log(`Registro ${index + 1} enviado con éxito`, response);
+        return true;
+      } catch (error) {
+        console.error(`Error al enviar el registro ${index + 1}`, error);
+        console.error(`Failed payload  ${JSON.stringify(payload)}`);
+        return false;
+      }
+    }
+  
+    // Si `this.isChecked` es false, solo mostramos el payload en consola
+    if (!this.isChecked) {
+      // console.warn("Payload Zoho Udpade", payload);
+    }
+  
+    return true; // Al final resolvemos la promesa
+  }
+  
+  
   
   launchData(record: any, index: number) {
     return new Promise(resolve => {
@@ -175,35 +347,27 @@ export class SinglePostComponent implements OnInit {
       // Simulación de consumo de API
       setTimeout(() => {
         
-
-              
-        const transformedObj = Object.entries(record)
-          .reduce<Record<string, { id: string } | string | boolean>>((acc, [key, value]) => {
-            if (typeof value === 'string') {
-              if (key.startsWith('Obj')) {
-                const newKey = key.replace(/^Obj/, ''); // Elimina "Obj" solo si está al inicio
-                acc[newKey] = { id: value }; // Transforma a { id: valor }
-              }
-              else if (value.toLowerCase() === 'true') {
-                acc[key] = true;
-              } else if (value.toLowerCase() === 'false') {
-                acc[key] = false;
-              }
-              else {
-                acc[key] = value; // Mantiene las claves sin "Obj" tal como están
-              }
-            }
-            return acc;
-          }, {});
-        
-        // Object to send 
-        const payload = { "data":[this.map2ApiObject(transformedObj,this.form.value.name)] };
-
+        let payload: any = {};  // Cambiar a un objeto, no un arreglo
+        let segmentedRecords: Array<any> = record; 
+        let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
+  
+        segmentedRecords.forEach(r => {
+          // Mapeamos el objeto 
+          const mappedObject = this.map2ApiObject(r, this.form.value.name);
+          
+          // Agregamos el objeto mapeado al arreglo `dataArray`
+          dataArray.push(mappedObject);
+        });
+  
+        // Asignamos directamente la propiedad "data" a payload sin corchetes extra
+        payload.data = dataArray;
+  
+        // Si `this.isChecked` es true, enviamos el registro a la API
         if (this.isChecked == true) {
-        
           this.consume.upsertRecord(this.form.value.name, payload).subscribe(
             (response) => {
               console.log(`Registro ${index + 1} enviado con éxito`, response);
+              console.warn(payload)
               resolve(true);
             },
             (error) => {
@@ -213,18 +377,21 @@ export class SinglePostComponent implements OnInit {
             }
           );
         }
-        if(this.isChecked == false){
-          // Mapeador 
-          console.warn(this.map2ApiObject(transformedObj,this.form.value.name))
-          
-        } 
-        
-        resolve(true);
-      }, 500); // Simula una espera de 500ms por cada envío
   
-    
+        // Si `this.isChecked` es false, solo mostramos el payload en consola
+        if (this.isChecked == false) {
+          console.warn("Payload", payload);
+        }
+        
+        
+        resolve(true); // Resolvemos la promesa
+  
+      }, 500); // Simula una espera de 500ms por cada envío
+      
     });
+    
   }
+  
   
   
 
