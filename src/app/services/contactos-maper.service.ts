@@ -169,9 +169,9 @@ mapearContactos(objeto:Contactos): ContactosApi {
                 case "Calle para Correspondencia":
                     objetoMapeado["Calle_para_Correspondencia"] = objeto[clave];
                     break;
-                case "Campaña Principal":
-                    objetoMapeado["Campa_a_Principal"] = objeto[clave];
-                    break;
+                // case "Campaña Principal":
+                //     objetoMapeado["Campa_a_Principal"] = objeto[clave];
+                //     break;
                 case "Centro de Servicio":
                     objetoMapeado["Centro_de_Servicio"] = objeto[clave];
                     break;
@@ -440,7 +440,7 @@ async zohoIDsUpdateContacts(objeto: any): Promise<ContactosApi> {
                             ).toPromise();
         
                         if (response?.data?.length > 0) {
-                            const zohoid = response.data[0].id;
+                            let zohoid = response.data[0].id;
                             objetoMapeado["CoOwner"] = { "id": zohoid };
                             console.log('ID obtenido de Coowner:', zohoid);
                         } else {

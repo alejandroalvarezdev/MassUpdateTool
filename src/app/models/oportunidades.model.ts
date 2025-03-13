@@ -38,7 +38,7 @@ export interface Oportunidades {
   "Morosidad Morgage"?: string;  // Cambio a string ya que está vacío (opcional)
   "Motivo de la pérdida"?: string;  // Asumido como texto (string) (opcional)
   "Nombre de Contacto"?: ObjConId;  // Línea única (opcional)
-  "Nombre de Oportunidad"?: ObjConId;  // Línea única
+  "Nombre de Oportunidad"?: string;  // Línea única
   "Nota de Cancelacion"?: string;  // Asumido como texto (string) (opcional)
   "Oportunidad upgraded"?: ObjConId;  // Reemplazamos con ObjConId (opcional)
   "PremPromisedID"?: string;  // Línea única (opcional)

@@ -126,6 +126,7 @@ export class SinglePostComponent implements OnInit {
       console.log('Form is invalid');
     }
   }
+  //Orquestador
   sendDataToAPI(): void {
     from(this.segmentedRecords) // Emitir cada registro individualmente
       .pipe(
@@ -143,9 +144,83 @@ export class SinglePostComponent implements OnInit {
       )
       .subscribe(); // Primero, la suscripción principal
   }
+
+  // Map & Parse Objects
+  map2ApiObject(obj: any, objType: string) {
+    let result:OportunidadesApi|EstimacionesAPI|ContactosApi|ProspectosApi|undefined; 
+
+    switch (objType) {
+      case 'Leads':
+        // Lógica para cuando objType es "Leads"
+        console.log('Procesando Leads:', obj);
+        break;
+
+        case 'Contacts':
+          console.log(this.esModoUpsert);
+          
+          let objetoMepeadoCon: ContactosApi;
+          const objetoContactos = obj as unknown as Contactos;
+        
+
+            // Si no es 'zohoidModification', simplemente mapeamos el objeto
+            objetoMepeadoCon = this.contactosMap.mapearContactos(objetoContactos);
+        
+            // Ordenamos las propiedades de la misma manera
+            let propiedadesOrdenadasCon = Object.entries(objetoMepeadoCon).sort((a, b) => {
+              if (a[0] === 'owner_bridge_id') return -1; // Mueve 'owner_bridge_id' al principio
+              return 0; // Mantén el orden de las demás propiedades
+            });
+        
+            // Creamos el objeto ordenado
+            let objetoOrdenadoCon: any = {};
+            propiedadesOrdenadasCon.forEach(([clave, valor]) => {
+              objetoOrdenadoCon[clave] = valor;
+            });
+        
+            // Agregamos campos adicionales
+            objetoOrdenadoCon["duplicate_check_fields"] = ["owner_bridge_id"];
+            // objetoOrdenadoCon["trigger"] = [];
+        
+            result = objetoOrdenadoCon;  // Asignamos el objeto final a `result`
+          
+          break;
+        
+      case 'Deals':
+        // el Objeto lo declaramos como de tipo Oportunidades
+        const objetoOportunidades = obj as unknown as Oportunidades;
+        let objetoMapeadoOp = this.oportunidadesMap.mapearOportunidad(objetoOportunidades);
+        // console.log(objetoMapeado);
+          let propiedadesOrdenadasOp = Object.entries(objetoMapeadoOp).sort((a, b) => {
+            if (a[0] === 'Deal_Name') return -1; // Mueve 'nombre' al principio
+            return 0; // Mantén el orden de las demás propiedades
+          });
+             // Reconstruir el objeto a partir de las propiedades ordenadas
+          let objetoOrdenadoOp: any = {};
+          propiedadesOrdenadasOp.forEach(([clave, valor]) => {
+              objetoOrdenadoOp[clave] = valor;
+          });
+          objetoOrdenadoOp["duplicate_check_fields"] = ["Deal_Name"];
+          // objetoOrdenadoOp["trigger"] = [];  // Esto desactiva los triggers
+
+          result = objetoOrdenadoOp; // Aquí se asigna el objeto ordenado a result
+    break;
+        
+      case 'Estimaciones':
+        // Lógica para cuando objType es "Estimaciones"
+        console.log('Procesando Estimaciones:', obj);
+        break;
+
+        
+
+      default:
+        console.log('Tipo no reconocido:', objType);
+        break;
+    }
+    return result;
+  }
   async map2ApiObjectZohoIDs(obj: any, objType: string) {
     let result: OportunidadesApi | EstimacionesAPI | ContactosApi | ProspectosApi | undefined;
-
+    console.warn(objType)
     switch (objType) {
         case 'Leads':
             // Lógica para cuando objType es "Leads"
@@ -170,7 +245,7 @@ export class SinglePostComponent implements OnInit {
                   
                   // Agregamos campos adicionales al objeto
                   objetoOrdenadoCon["duplicate_check_fields"] = ["owner_bridge_id"]; // Campo adicional
-                  objetoOrdenadoCon["trigger"] = []; // Otro campo adicional
+                  // objetoOrdenadoCon["trigger"] = []; // Otro campo adicional
                   
                   // Asignamos el objeto final ordenado a 'result'
                   result = objetoOrdenadoCon;
@@ -182,7 +257,34 @@ export class SinglePostComponent implements OnInit {
             break;
 
         case 'Deals':
-            // Lógica para cuando objType es "Deals"
+          const objetoOportunidades = obj as unknown as Oportunidades;
+          let objetoMapeadoOp: any;
+          
+          objetoMapeadoOp = await this.oportunidadesMap.zohoIDsUpdateDeal(objetoOportunidades)
+            .then((resultado: any) => {
+              let propiedadesOrdenadasOp = Object.entries(resultado).sort((a, b) => {
+                if (a[0] === 'owner_bridge_id') return -1; // Mueve 'owner_bridge_id' al principio
+                return 0; // Mantén el orden de las demás propiedades
+              });
+          
+              // Creamos un nuevo objeto con las propiedades ordenadas
+              let objetoOrdenadoOp: any = {};
+              propiedadesOrdenadasOp.forEach(([clave, valor]) => {
+                objetoOrdenadoOp[clave] = valor; // Asignamos cada propiedad al nuevo objeto
+              });
+          
+              // Agregamos campos adicionales al objeto
+              objetoOrdenadoOp["duplicate_check_fields"] = ["Deal_Name"]; // Campo adicional
+              // objetoOrdenadoOp["trigger"] = []; // Otro campo adicional
+          
+              // Asignamos el objeto final ordenado a 'result'
+              result = objetoOrdenadoOp;
+            })
+            .catch((error) => {
+              console.error(error);
+              return {} as OportunidadesApi; // 👈 Retornamos un objeto vacío en caso de error
+            });
+          
             break;
 
         case 'Estimaciones':
@@ -196,88 +298,6 @@ export class SinglePostComponent implements OnInit {
 
     return result; // ✅ Devolvemos el resultado correcto según el tipo de objeto
 }
-
-  map2ApiObject(obj: any, objType: string) {
-    let result:OportunidadesApi|EstimacionesAPI|ContactosApi|ProspectosApi|undefined; 
-
-    switch (objType) {
-      case 'Leads':
-        // Lógica para cuando objType es "Leads"
-        console.log('Procesando Leads:', obj);
-        break;
-
-        case 'Contacts':
-          console.log(this.esModoUpsert);
-          
-          let objetoMepeadoCon: ContactosApi;
-          const objetoContactos = obj as unknown as Contactos;
-        
-          if (this.esModoUpsert === 'zohoidModification') {
-            // En el caso de zohoidModification, la lógica se realiza de forma asincrónica
-            // this.contactosMap.zohoIDsUpdateContacts(objetoContactos).then((resultado) => {
-            //   console.log(JSON.stringify(resultado));  // 'Operación exitosa'
-            // })
-            // .catch((error) => {
-            //   console.error(error);  // 'Hubo un error' si algo sale mal
-            // });
-        
-          } else { // En el caso de 'Upsert'
-            // Si no es 'zohoidModification', simplemente mapeamos el objeto
-            objetoMepeadoCon = this.contactosMap.mapearContactos(objetoContactos);
-        
-            // Ordenamos las propiedades de la misma manera
-            let propiedadesOrdenadasCon = Object.entries(objetoMepeadoCon).sort((a, b) => {
-              if (a[0] === 'owner_bridge_id') return -1; // Mueve 'owner_bridge_id' al principio
-              return 0; // Mantén el orden de las demás propiedades
-            });
-        
-            // Creamos el objeto ordenado
-            let objetoOrdenadoCon: any = {};
-            propiedadesOrdenadasCon.forEach(([clave, valor]) => {
-              objetoOrdenadoCon[clave] = valor;
-            });
-        
-            // Agregamos campos adicionales
-            objetoOrdenadoCon["duplicate_check_fields"] = ["owner_bridge_id"];
-            objetoOrdenadoCon["trigger"] = [];
-        
-            result = objetoOrdenadoCon;  // Asignamos el objeto final a `result`
-          }
-          break;
-        
-      case 'Deals':
-        // el Objeto lo declaramos como de tipo Oportunidades
-        const objetoOportunidades = obj as unknown as Oportunidades;
-        let objetoMapeadoOp = this.oportunidadesMap.mapearOportunidad(objetoOportunidades);
-        // console.log(objetoMapeado);
-          let propiedadesOrdenadasOp = Object.entries(objetoMapeadoOp).sort((a, b) => {
-            if (a[0] === 'Deal_Name') return -1; // Mueve 'nombre' al principio
-            return 0; // Mantén el orden de las demás propiedades
-          });
-             // Reconstruir el objeto a partir de las propiedades ordenadas
-          let objetoOrdenadoOp: any = {};
-          propiedadesOrdenadasOp.forEach(([clave, valor]) => {
-              objetoOrdenadoOp[clave] = valor;
-          });
-          objetoOrdenadoOp["duplicate_check_fields"] = ["Deal_Name"];
-          objetoOrdenadoOp["trigger"] = [];  // Esto desactiva los triggers
-
-          result = objetoOrdenadoOp; // Aquí se asigna el objeto ordenado a result
-    break;
-        
-      case 'Estimaciones':
-        // Lógica para cuando objType es "Estimaciones"
-        console.log('Procesando Estimaciones:', obj);
-        break;
-
-        
-
-      default:
-        console.log('Tipo no reconocido:', objType);
-        break;
-    }
-    return result;
-  }
   
   async  processRecords(segmentedRecords:any) {
     let dataArray:Array<any> =[]; 
@@ -306,39 +326,7 @@ export class SinglePostComponent implements OnInit {
     }
   }
 
-  async uploadZohoIDs(record: any, index: number) {
-    console.log(`Zoho Api Update...`); // Mostrar cada registro en consola
-  
-    let payload: any = {};  // Cambiar a un objeto, no un arreglo
-    let segmentedRecords: Array<any> = record;
-    let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
-
-    payload.data = await this.processRecords(segmentedRecords);
-    console.warn(await payload);
-    
-    // Si `this.isChecked` es true, enviamos el registro a la API
-    if (this.isChecked) {
-      try {
-        const response = await this.consume.upsertRecord(this.form.value.name, payload).toPromise();
-        console.log(`Registro ${index + 1} enviado con éxito`, response);
-        return true;
-      } catch (error) {
-        console.error(`Error al enviar el registro ${index + 1}`, error);
-        console.error(`Failed payload  ${JSON.stringify(payload)}`);
-        return false;
-      }
-    }
-  
-    // Si `this.isChecked` es false, solo mostramos el payload en consola
-    if (!this.isChecked) {
-      // console.warn("Payload Zoho Udpade", payload);
-    }
-  
-    return true; // Al final resolvemos la promesa
-  }
-  
-  
-  
+  // Launch Data
   launchData(record: any, index: number) {
     return new Promise(resolve => {
       console.log(`Enviando...`); // Mostrar cada registro en consola
@@ -360,6 +348,7 @@ export class SinglePostComponent implements OnInit {
   
         // Asignamos directamente la propiedad "data" a payload sin corchetes extra
         payload.data = dataArray;
+        payload.trigger = [];
   
         // Si `this.isChecked` es true, enviamos el registro a la API
         if (this.isChecked == true) {
@@ -390,7 +379,37 @@ export class SinglePostComponent implements OnInit {
     });
     
   }
+  async uploadZohoIDs(record: any, index: number) {
+    console.log(`Zoho Api Update...`); // Mostrar cada registro en consola
   
+    let payload: any = {};  // Cambiar a un objeto, no un arreglo
+    let segmentedRecords: Array<any> = record;
+    let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
+
+    payload.data = await this.processRecords(segmentedRecords);
+    payload.trigger = [];
+    console.warn(await payload);
+    
+    // Si `this.isChecked` es true, enviamos el registro a la API
+    if (this.isChecked) {
+      try {
+        const response = await this.consume.upsertRecord(this.form.value.name, payload).toPromise();
+        console.log(`Registro ${index + 1} enviado con éxito`, response);
+        return true;
+      } catch (error) {
+        console.error(`Error al enviar el registro ${index + 1}`, error);
+        console.error(`Failed payload  ${JSON.stringify(payload)}`);
+        return false;
+      }
+    }
+  
+    // Si `this.isChecked` es false, solo mostramos el payload en consola
+    if (!this.isChecked) {
+      // console.warn("Payload Zoho Udpade", payload);
+    }
+  
+    return true; // Al final resolvemos la promesa
+  }
   
   
 
