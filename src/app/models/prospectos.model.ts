@@ -1,3 +1,5 @@
+import { ObjConId } from "./obj-con-id.model";
+
     export interface Prospectos {
     "4 Digitos": string;
     "Apellido Materno": string;
@@ -5,7 +7,7 @@
     Apellidos: string;
     "Calificación": string;
     Calle: string;
-    "Campaña Principal": string;
+    "Campaña Principal": ObjConId;
     "Caza Ofertas": string;
     Ciudad: string;
     "Ciudad Locación": string;

@@ -30,6 +30,7 @@ import { ContactosMaperService } from '../../services/contactos-maper.service';
 import { Estimaciones } from '../../models/estimaciones.model';
 import { Prospectos } from '../../models/prospectos.model';
 import { ProspectosMaperService } from '../../services/prospectos-maper.service';
+import { LoaderComponent } from "../../addOn/loader/loader.component";
 type TipoOperacion = 'upsert' | 'zohoidModification';
 
 
@@ -38,14 +39,16 @@ type TipoOperacion = 'upsert' | 'zohoidModification';
   imports: [
     SolutionsModule,
     CommonModule,
-      MatButtonModule,
-      MatInputModule,
-      FormsModule,
-      ReactiveFormsModule,
-      MatFormFieldModule,
-      MatSlideToggleModule,
-      MatCardModule,
-      MatIconModule],
+    MatButtonModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSlideToggleModule,
+    MatCardModule,
+    MatIconModule,
+    LoaderComponent
+],
   templateUrl: './single-post.component.html',
   styleUrl: './single-post.component.css'
 })
@@ -67,6 +70,9 @@ export class SinglePostComponent implements OnInit {
   selectedFile: File | null = null;
   //toggle button
   isChecked = false;
+  //loader manager
+    loading: boolean = false; // Por defecto, el loader se muestra
+
 
 //Squids
   encodesquids:any;
@@ -152,7 +158,6 @@ export class SinglePostComponent implements OnInit {
   // Map & Parse Objects
   map2ApiObject(obj: any, objType: string) {
     let result:OportunidadesApi|EstimacionesAPI|ContactosApi|ProspectosApi|undefined; 
-
     switch (objType) {
       case 'Leads':
         console.log(this.esModoUpsert);
@@ -419,7 +424,7 @@ export class SinglePostComponent implements OnInit {
         let payload: any = {};  // Cambiar a un objeto, no un arreglo
         let segmentedRecords: Array<any> = record; 
         let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
-  
+        
         segmentedRecords.forEach(r => {
           // Mapeamos el objeto 
           const mappedObject = this.map2ApiObject(r, this.form.value.name);
@@ -463,14 +468,16 @@ export class SinglePostComponent implements OnInit {
   }
   async uploadZohoIDs(record: any, index: number) {
     console.log(`Zoho Api Update...`); // Mostrar cada registro en consola
-  
+    this.loading = true; 
     let payload: any = {};  // Cambiar a un objeto, no un arreglo
     let segmentedRecords: Array<any> = record;
     let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
-
+    
     payload.data = await this.processRecords(segmentedRecords);
     payload.trigger = [];
     console.warn(await payload);
+    this.loading = false; 
+
     
     // Si `this.isChecked` es true, enviamos el registro a la API
     if (this.isChecked) {

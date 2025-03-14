@@ -1,3 +1,5 @@
+import { ObjConId } from "./obj-con-id.model";
+
 export interface ProspectosApi {
         API_Name?: string;
         Digitos?: string;
@@ -58,4 +60,5 @@ export interface ProspectosApi {
         Terminal?: string;
         Vigencia?: string;
         Zip_Code?:string
+        Campa_a_Principal?:ObjConId
 }
