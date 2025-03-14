@@ -1,3 +1,5 @@
+import { ObjConId } from "./obj-con-id.model";
+
 export interface Estimaciones {
 
         "OwnerID": string
@@ -12,7 +14,7 @@ export interface Estimaciones {
         "Club": string;  // Lista de selecció
         "Club Semanal": string;  // Lista de selecció
         "contract_bridge_id": string;  // Línea únic
-        "Contrato Anterior": string;  // Buscar (asumido como string
+        "Contrato Anterior": ObjConId;  // Buscar (asumido como string
         "Costo de venta del contrato previo": number;  // Decima
         "Créditos Vacacionales": number;  // Númer
         "Cuota Anual USD": number;  // Decima
@@ -76,7 +78,7 @@ export interface Estimaciones {
         "Moneda": string;  // Lista de selecció
         "No. Serie Tablet": string;  // Línea únic
         "Nombre de la Sala": string;  // Lista de selecció
-        "Oportunidad": string;  // Buscar (asumido como string
+        "Oportunidad": ObjConId;  // Buscar (asumido como string
         "Pickup Autorizados": string;  // Lista de selecció
         "Precio Mínimo de venta": number;  // Moned
         "Precio Tablet": number;  // Moned
@@ -91,7 +93,7 @@ export interface Estimaciones {
         "Tipo de Contrato": string;  // Lista de selecció
         "Tipo de membresía": string;  // Lista de selecció
         "Tipo de Venta": string;  // Lista de selecció
-        "Tipo Tablet": string;  // Buscar (asumido como string
+        "Tipo Tablet": ObjConId;  // Buscar (asumido como string
         "Total CDP": number;  // Moned
         "Total Closing Cost": number;  // Moned
         "Total Pickup": number;  // Moned
@@ -99,6 +101,7 @@ export interface Estimaciones {
         "Transfer Fee": number;  // Moned
         "Última Fecha de CDP": Date;  // Fech
         "MortgageID": string;  // Línea únic
+        
         
 
 }

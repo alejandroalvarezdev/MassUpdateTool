@@ -19,7 +19,7 @@
     "CP Correo Electronico": string;
     "CP Edad": number;
     "CP Empresa donde labora": string;
-    "CP Fecha de Nacimiento": Date;
+    "CP Fecha de Nacimiento": string;
     "CP Movil": string;
     "CP Nombre": string;
     "CP Ocupación": string;
@@ -29,7 +29,7 @@
     "Estado civil": string;
     "Estado de Prospecto": string;
     "Estado/Provincia": string;
-    "Fecha de Nacimiento": Date;
+    "Fecha de Nacimiento": string;
     Folio: string;
     "Forma de Pago": string;
     "Fuente de Prospecto": string;
@@ -59,5 +59,5 @@
     "Teléfono": string;
     Terminal: string;
     "Título": string;
-    "Vigencia (Meses)": number;
+    "Vigencia (Meses)": string;
 }

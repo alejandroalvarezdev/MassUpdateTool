@@ -27,6 +27,9 @@ import { EstimacionesAPI } from '../../models/estimaciones-api.model';
 import { ProspectosApi } from '../../models/prospectos-api.model';
 import { Contactos } from '../../models/contactos.model';
 import { ContactosMaperService } from '../../services/contactos-maper.service';
+import { Estimaciones } from '../../models/estimaciones.model';
+import { Prospectos } from '../../models/prospectos.model';
+import { ProspectosMaperService } from '../../services/prospectos-maper.service';
 type TipoOperacion = 'upsert' | 'zohoidModification';
 
 
@@ -74,7 +77,8 @@ export class SinglePostComponent implements OnInit {
     private fb: FormBuilder,
     private estimacionesMap:EstimacionesMaperService,
     private oportunidadesMap:OportunidadesMaperService,
-    private contactosMap:ContactosMaperService
+    private contactosMap:ContactosMaperService,
+    private prospectosMap:ProspectosMaperService
   ){
       this.form = this.fb.group({
         name: ['', Validators.required],
@@ -151,11 +155,36 @@ export class SinglePostComponent implements OnInit {
 
     switch (objType) {
       case 'Leads':
-        // Lógica para cuando objType es "Leads"
-        console.log('Procesando Leads:', obj);
-        break;
+        console.log(this.esModoUpsert);
+          
+          let objetoMepeadoLds: ProspectosApi;
+          const objetoProspectos = obj as unknown as Prospectos;
 
-        case 'Contacts':
+          // Si no es 'zohoidModification', simplemente mapeamos el objeto
+          objetoMepeadoLds = this.prospectosMap.mapearProspectos(objetoProspectos);
+                  
+          // Ordenamos las propiedades de la misma manera
+          let propiedadesOrdenadasLds = Object.entries(objetoMepeadoLds).sort((a, b) => {
+            if (a[0] === 'owner_bridge_id') return -1; // Mueve 'owner_bridge_id' al principio
+            return 0; // Mantén el orden de las demás propiedades
+          });
+                  
+          // Creamos el objeto ordenado
+          let objetoOrdenadoPor: any = {};
+          propiedadesOrdenadasLds.forEach(([clave, valor]) => {
+            objetoOrdenadoPor[clave] = valor;
+          });
+                  
+          // Agregamos campos adicionales
+          objetoOrdenadoPor["duplicate_check_fields"] = ["owner_bridge_id"];
+          // objetoOrdenadoPor["trigger"] = [];
+
+          result = objetoOrdenadoPor;  // Asignamos el objeto final a `result`
+
+          break;
+
+
+      case 'Contacts':
           console.log(this.esModoUpsert);
           
           let objetoMepeadoCon: ContactosApi;
@@ -206,9 +235,34 @@ export class SinglePostComponent implements OnInit {
     break;
         
       case 'Estimaciones':
-        // Lógica para cuando objType es "Estimaciones"
-        console.log('Procesando Estimaciones:', obj);
-        break;
+        console.log(this.esModoUpsert);
+
+        let objetoMepeadoEst: EstimacionesAPI;
+        const objetoEstimaciones = obj as unknown as Estimaciones;
+
+        // Si no es 'zohoidModification', simplemente mapeamos el objeto
+        objetoMepeadoEst = this.estimacionesMap.mapearEstimacion(objetoEstimaciones);
+
+        // Ordenamos las propiedades de la misma manera
+              let propiedadesOrdenadasEst = Object.entries(objetoMepeadoEst).sort((a, b) => {
+                if (a[0] === 'MortgageID') return -1; // Mueve 'owner_bridge_id' al principio
+                return 0; // Mantén el orden de las demás propiedades
+              });
+
+              // Creamos el objeto ordenado
+              let objetoOrdenadoEst: any = {};
+              propiedadesOrdenadasEst.forEach(([clave, valor]) => {
+                objetoOrdenadoEst[clave] = valor;
+              });
+
+              // Agregamos campos adicionales
+              objetoOrdenadoEst["duplicate_check_fields"] = ["MortgageID"];
+        // objetoOrdenadoEst["trigger"] = [];
+
+        result = objetoOrdenadoEst;  // Asignamos el objeto final a `result`
+
+  break;
+
 
         
 
@@ -263,7 +317,7 @@ export class SinglePostComponent implements OnInit {
           objetoMapeadoOp = await this.oportunidadesMap.zohoIDsUpdateDeal(objetoOportunidades)
             .then((resultado: any) => {
               let propiedadesOrdenadasOp = Object.entries(resultado).sort((a, b) => {
-                if (a[0] === 'owner_bridge_id') return -1; // Mueve 'owner_bridge_id' al principio
+                if (a[0] === 'contract_bridge_id') return -1; // Mueve 'owner_bridge_id' al principio
                 return 0; // Mantén el orden de las demás propiedades
               });
           
@@ -274,7 +328,7 @@ export class SinglePostComponent implements OnInit {
               });
           
               // Agregamos campos adicionales al objeto
-              objetoOrdenadoOp["duplicate_check_fields"] = ["Deal_Name"]; // Campo adicional
+              objetoOrdenadoOp["duplicate_check_fields"] = ["contract_bridge_id"]; // Campo adicional
               // objetoOrdenadoOp["trigger"] = []; // Otro campo adicional
           
               // Asignamos el objeto final ordenado a 'result'
@@ -288,8 +342,36 @@ export class SinglePostComponent implements OnInit {
             break;
 
         case 'Estimaciones':
-            // Lógica para cuando objType es "Estimaciones"
-            break;
+          const objetoEstimaciones = obj as unknown as Estimaciones;
+          let objetoMapeadoEst: any;
+          
+          objetoMapeadoEst = await this.estimacionesMap.zohoIDsUpdateEstimaciones(objetoEstimaciones)
+            .then((resultado: any) => {
+              let propiedadesOrdenadasEst = Object.entries(resultado).sort((a, b) => {
+                if (a[0] === 'MortgageID') return -1; // Mueve 'owner_bridge_id' al principio
+                return 0; // Mantén el orden de las demás propiedades
+              });
+          
+              // Creamos un nuevo objeto con las propiedades ordenadas
+              let objetoOrdenadoEst: any = {};
+              propiedadesOrdenadasEst.forEach(([clave, valor]) => {
+                objetoOrdenadoEst[clave] = valor; // Asignamos cada propiedad al nuevo objeto
+              });
+          
+              // Agregamos campos adicionales al objeto
+              objetoOrdenadoEst["duplicate_check_fields"] = ["MortgageID"]; // Campo adicional
+              // objetoOrdenadoEst["trigger"] = []; // Otro campo adicional
+          
+              // Asignamos el objeto final ordenado a 'result'
+              result = objetoOrdenadoEst;
+            })
+            .catch((error) => {
+              console.error(error);
+              return {} as EstimacionesAPI; // 👈 Retornamos un objeto vacío en caso de error
+            });
+          
+          break;
+          
 
         default:
             console.warn('Tipo de objeto no reconocido:', objType);

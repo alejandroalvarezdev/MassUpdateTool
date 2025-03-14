@@ -181,7 +181,7 @@ export class OportunidadesMaperService {
 async zohoIDsUpdateDeal(objeto: any): Promise<OportunidadesApi> {
     const objetoMapeado:OportunidadesApi = {
           "Stage":"Nuevo",
-          "Closing_Date":"01-01-2000",
+          "Closing_Date":"2000-01-01",
           "Deal_Name": "1-xxx"
           
                 }; // Objeto donde mapeamos los valores obligatorios
@@ -231,7 +231,11 @@ async zohoIDsUpdateDeal(objeto: any): Promise<OportunidadesApi> {
                     // console.error('Error procesando la petición de Coowner:', error);
                 }
                 break;
-        
+              
+              
+              case "contract_bridge_id":
+                  objetoMapeado["contract_bridge_id"] = objeto[clave];
+                  break;
                 
         
                 // Otros casos pueden ser agregados aquí según sea necesario
