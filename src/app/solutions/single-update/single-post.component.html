@@ -1,5 +1,8 @@
 
 <mat-slide-toggle [(ngModel)]="isChecked">Send manager</mat-slide-toggle>
+<app-loader *ngIf="loading"></app-loader> <!-- Mostrar el loader -->
+<!-- <app-counter [activateCounter]="activateCounter"></app-counter> -->
+
 
 <div class="container">
     <h2>Cargar Archivo CSV</h2>
@@ -14,28 +17,7 @@
             <mat-error *ngIf="form.get('name')?.hasError('required')">El ApiName es obligatorio</mat-error>
         </mat-form-field>
 
-            <!-- <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Subir archivo</mat-label>
-                <div matSuffix>
-                <button (click)="fileInput.click()" mat-icon-button aria-label="Seleccionar archivo">
-                    <mat-icon>attach_file</mat-icon>
-                </button>
-                </div>
-                <input
-                #fileInput
-                type="file"
-                hidden
-                (change)="onFileChange($event)"
-                />
-                <input
-                matInput
-                [ngModel]="selectedFile?.name || ''"
-                placeholder="archivo seleccionado ✔️"
-                readonly
-                />
-            </mat-form-field> -->
-            
-        
+
     
         <button *ngIf="form.valid" mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
             ¡Let's Update Data! 🚀
@@ -45,6 +27,23 @@
         </button>
     </form>
 </div>
+<div class="process">
+    <h3 *ngIf="loading">Procesando</h3>
+</div>
+<!-- Barra de progreso -->
+
+<!-- Barra de progreso para launchData -->
+<div class="progress-container">
+    <div class="progress-bar" [ngStyle]="{ 'width': progressLaunch + '%' }"></div>
+    </div>
+    <p>Progreso de enviar datos: {{ progressLaunch | number: '1.0-0' }}%</p>
+    
+    <!-- Barra de progreso para uploadZohoIDs -->
+    <div class="progress-container">
+        <div class="progress-bar" [ngStyle]="{ 'width': progressUpload + '%' }"></div>
+    </div>
+    <p>Progreso de relacionar módulo: {{ progressUpload | number: '1.0-0' }}%</p>
+    
 
 <div class="encode">
     

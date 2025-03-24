@@ -1,18 +1,31 @@
-    <mat-toolbar class="custom-toolbar">
-        <!-- Botón de menú -->
-        <button mat-icon-button class="custom-icon-round" aria-label="Menú">
-        <mat-icon class="custom-icon">menu</mat-icon>
-        </button>
+    <mat-sidenav-container class="sidenav-container">
+        <!-- Sidenav (Menú Lateral) -->
+        <mat-sidenav #sidenav mode="side" opened>
+        <mat-nav-list>
+            <a mat-list-item routerLink="home">Home</a>
+            <a mat-list-item routerLink="/MassUpdate">MassUpdate</a>
+            <a mat-list-item routerLink="/SingleUpdate">SingleUpdate</a>
+        </mat-nav-list>
+        </mat-sidenav>
     
-        <!-- Título de la aplicación -->
-        <span>Custom Zoho CRM Modifier</span>
+        <!-- Contenido principal de la aplicación -->
+        <mat-sidenav-content>
+        <!-- Barra de herramientas -->
+        <mat-toolbar class="custom-toolbar">
+            <!-- Botón de menú -->
+            <button mat-icon-button class="custom-icon-round" aria-label="Menú" (click)="sidenav.toggle()">
+            <mat-icon class="custom-icon">menu</mat-icon>
+            </button>
     
-        <!-- Espaciador para empujar los elementos a la derecha -->
-        <span class="toolbar-spacer"></span>
+            <!-- Título de la aplicación -->
+            <span>Custom Zoho CRM Modifier</span>
     
-    </mat-toolbar>
+            <!-- Espaciador para empujar los elementos a la derecha -->
+            <span class="toolbar-spacer"></span>
+        </mat-toolbar>
     
-    <!-- Contenido de la aplicación -->
-    <app-single-update></app-single-update>
-    <router-outlet></router-outlet>
+        <!-- Aquí se cargan las páginas mediante el router-outlet -->
+        <router-outlet></router-outlet>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
     

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OportunidadesApi } from '../models/oportunidades-api.model';
 import { Oportunidades } from '../models/oportunidades.model';
+import { ConsumeService } from './consume.service';
 // import { ObjConId } from '../../models/obj-con-id.model';
 
 
@@ -9,14 +10,14 @@ import { Oportunidades } from '../models/oportunidades.model';
 })
 export class OportunidadesMaperService {
 
-  constructor() { }
+  constructor(private consume:ConsumeService) { }
   
   mapearOportunidad(objeto: Oportunidades): OportunidadesApi {
     
     const objetoMapeado: OportunidadesApi = {
 
         Stage: "Iniciado",                          // Lista de selección
-        Closing_Date: "2025-01-01",                  // Fecha
+        Closing_Date: "2025-01-01"                 // Fecha
   };
   
   for (let clave in objeto) {
@@ -26,6 +27,13 @@ export class OportunidadesMaperService {
       const valor = objeto[clave as keyof Oportunidades];
       if (valor === undefined || valor === null || valor === '' || (typeof valor === 'number' && valor === 0)) {
         continue; // No mapeamos la propiedad si es vacía o 0
+      }
+      if (typeof valor === 'string') {
+        if (valor.toLowerCase() === 'true') {
+          objeto[clave as keyof Oportunidades] = true as any;  // Forzamos la conversión a booleano
+        } else if (valor.toLowerCase() === 'false') {
+          objeto[clave as keyof Oportunidades] = false as any; // Forzamos la conversión a booleano
+        }
       }
     switch (clave) {
     
@@ -170,4 +178,77 @@ export class OportunidadesMaperService {
   const objetoFinal: OportunidadesApi = objetoMapeado as OportunidadesApi;
   return objetoFinal;
 }
+async zohoIDsUpdateDeal(objeto: any): Promise<OportunidadesApi> {
+    const objetoMapeado:OportunidadesApi = {
+          "Stage":"Nuevo",
+          "Closing_Date":"2000-01-01",
+          "Deal_Name": "1-xxx"
+          
+                }; // Objeto donde mapeamos los valores obligatorios
+
+    // Creamos un array de promesas para esperar a todas las respuestas de las peticiones
+    const peticiones: Promise<void>[] = [];
+
+    // Iteramos sobre las propiedades de "objeto"
+    for (let clave in objeto) {
+        if (objeto.hasOwnProperty(clave)) {
+            const valor = objeto[clave];
+        
+            if (valor === undefined || valor === null) {
+                continue; // No mapeamos la propiedad si no tiene valor
+            }
+
+            let criteriaBase = '';
+            let module = '';
+
+            switch (clave) {
+              
+              // Nombre de Contacto / Co-Propietario / Fuente de Campaña / Sala / Finanza Aceptada / Oportunidad Upgraded / Simulador Upgraded
+              case "ObjNombre de Contacto":
+                module = 'Contacts';
+                let trimmedText: string = valor;  // Suponiendo que "valor" tiene el texto original
+                trimmedText = trimmedText.substring(2);  // Asignamos el resultado de substring(2) 
+                
+                criteriaBase = `(CoOwnprosID:equals:${trimmedText})`;
+    
+                try {
+                    const response: any = await this.consume.fetchData(criteriaBase, module)
+                        .pipe(
+                            // catchError((error) => {
+                            //     console.error('Error en la petición de Coowner:', error);
+                            //     return of(null);
+                            // })
+                        ).toPromise();
+    
+                    if (response?.data?.length > 0) {
+                        let zohoid = response.data[0].id;
+                        objetoMapeado["Contact_Name"] = { "id": zohoid };
+                        console.log('ID obtenido de Coowner:', zohoid);
+                    } else {
+                        console.error('No se encontró un Coowner con el ID proporcionado', response);
+                    }
+                } catch (error) {
+                    // console.error('Error procesando la petición de Coowner:', error);
+                }
+                break;
+              
+              
+              case "contract_bridge_id":
+                  objetoMapeado["contract_bridge_id"] = objeto[clave];
+                  break;
+                
+        
+                // Otros casos pueden ser agregados aquí según sea necesario
+
+            }
+        }
+    }
+
+    // Esperamos que todas las peticiones asíncronas se completen
+    await Promise.all(peticiones);
+
+    // Devolvemos el objeto mapeado
+    return objetoMapeado;
+}
+
 }

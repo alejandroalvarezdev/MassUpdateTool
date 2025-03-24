@@ -1,128 +1,39 @@
 import { Injectable } from '@angular/core';
 import { Estimaciones } from '../models/estimaciones.model';
 import { EstimacionesAPI } from '../models/estimaciones-api.model';
+import { ConsumeService } from './consume.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class EstimacionesMaperService {
 
-    constructor() {
+    constructor(private consume:ConsumeService) {
     }
     mapearEstimacion(objeto: Estimaciones): EstimacionesAPI {
+        // Campos obligatorios
         const objetoMapeado: EstimacionesAPI = {
-        OwnerID: "",
-        ContractID: "",
-        ContractNumber: "",
-        admin_fee: 0,
-        financial_charges: 0,
-        number_authorized_cdp: "",
-        life_insurance_amount: 0,
-        life_insurance_surcharge: 0,
-        closing_cost_payment: 0,
-        club: "",
-        Club_Semanal: "",
-        contract_bridge_id: "",
-        previous_contracts: "",
-        previous_sale_price: 0,
-        vacation_credits: 0,
-        annual_fee: 0,
-        idp_percentage: 0,
-        minimum_down_payment_amount: 0,
-        total_down_payment_amount: 0,
-        equity_amount: 0,
-        Tag: "",
-        date_first_financing: new Date(),
-        Fecha_del_Primer_Uso: new Date(),
-        membership_expiration_date: new Date(),
-        date_first_payment_cdp: new Date(),
-        date_second_payment_cdp: new Date(),
-        date_third_payment_cdp: new Date(),
-        date_fourth_payment_cdp: new Date(),
-        date_fifth_payment_cdp: new Date(),
-        date_sixth_payment_cdp: new Date(),
-        date_seventh_payment_cdp: new Date(),
-        date_eighth_payment_cdp: new Date(),
-        date_ninth_payment_cdp: new Date(),
-        date_tenth_payment_cdp: new Date(),
-        date_first_payment_idp: new Date(),
-        date_second_payment_idp: new Date(),
-        date_third_payment_idp: new Date(),
-        date_fourth_payment_idp: new Date(),
-        date_fifth_payment_idp: new Date(),
-        date_sixth_payment_idp: new Date(),
-        last_idp_date: new Date(),
-        flyback_surcharge: 0,
-        donation: 0,
-        sala_name: 0,
-        amount_to_financed: 0,
-        monthly_payment_amount: 0,
-        flyback: 0,
-        first_payment_cdp: 0,
-        second_payment_cdp: 0,
-        third_payment_cdp: 0,
-        fourth_payment_cdp: 0,
-        fifth_payment_cdp: 0,
-        sixth_payment_cdp: 0,
-        seventh_payment_cdp: 0,
-        eighth_payment_cdp: 0,
-        ninth_payment_cdp: 0,
-        tenth_payment_cdp: 0,
-        eleventh_payment_cdp: 0,
-        twelveth_payment_cdp: 0,
-        first_payment_idp: 0,
-        second_payment_idp: 0,
-        third_payment_idp: 0,
-        fourth_payment_idp: 0,
-        fifth_payment_idp: 0,
-        sixth_payment_idp: 0,
-        rentsure_amount: 0,
-        dp_payment_instrument: "",
-        financing_interest_rate: 0,
-        Membresia_club_semanal: "",
-        financing_months: 0,
-        Currency: "",
-        No_Serie_Tablet: "",
-        deal: "",
-        authorized_idps: "",
-        minimum_sale_price: 0,
-        tablet_price: 0,
-        sale_price: 0,
-        previous_points: 0,
-        accumulated_points: 0,
-        rentsure: "",
-        Exchange_Rate: 0,
-        alternativeExchangeRate: "",
-        adjustment_type: "",
-        type_of_sale: "",
-        membership_type: "",
-        payment_method: "",
-        tablet_type: "",
-        total_cdp: 0,
-        total_closing_cost: 0,
-        total_pickup: 0,
-        trade_in_amount: 0,
-        transfer_fee: 0,
-        last_cdp_date: new Date(),
-        MortgageID: "",
-        date_eleventh_payment_cdp: new Date,
-        date_twelveth_payment_cdp: new Date,
-        Tasa_de_Cambio_Alterna: 0
         };
     
 
       // Iterar sobre las claves del objeto original
         for (let clave in objeto) {
+            if (objeto.hasOwnProperty(clave)) {
+                            // Verificamos si el valor es válido
+                            const valor = objeto[clave as keyof Estimaciones];
+                            if (valor === undefined || valor === null || valor === "" || (typeof valor === 'number' && valor === 0)) {
+                                continue; // No mapeamos la propiedad si es vacía o 0
+                                }
         switch (clave) {
-            case 'OwnerID':
-                objetoMapeado['OwnerID'] = objeto[clave];
-                break;
-            case 'ContractID':
-                objetoMapeado['ContractID'] = objeto[clave];
-                break;
-            case 'ContractNumber':
-                objetoMapeado['ContractNumber'] = objeto[clave];
-                break;
+            // case 'OwnerID':
+            //     objetoMapeado['OwnerID'] = objeto[clave];
+            //     break;
+            // case 'ContractID':
+            //     objetoMapeado['ContractID'] = objeto[clave];
+            //     break;
+            // case 'ContractNumber':
+            //     objetoMapeado['ContractNumber'] = objeto[clave];
+            //     break;
             case 'Admin Fee':
                 objetoMapeado['admin_fee'] = objeto[clave];
                 break;
@@ -258,13 +169,145 @@ export class EstimacionesMaperService {
             case 'Importe FlyBack en CC':
                 objetoMapeado['flyback'] = objeto[clave];
                 break;
+            case'MortgageID':
+                    objetoMapeado['MortgageID'] = objeto[clave]
+                break;
             // Continúa agregando el resto de las propiedades necesarias en el mismo patrón
             
+        }
         }
     }
 
     
     const objetoFinal: EstimacionesAPI = objetoMapeado as EstimacionesAPI;
     return objetoFinal;
+    }
+    async zohoIDsUpdateEstimaciones(objeto: any): Promise<EstimacionesAPI> {
+        const objetoMapeado:EstimacionesAPI = {
+
+            }; // Objeto donde mapeamos los valores obligatorios
+    
+        // Creamos un array de promesas para esperar a todas las respuestas de las peticiones
+        const peticiones: Promise<void>[] = [];
+    
+        // Iteramos sobre las propiedades de "objeto"
+        for (let clave in objeto) {
+            if (objeto.hasOwnProperty(clave)) {
+                const valor = objeto[clave];
+            
+                if (valor === undefined || valor === null) {
+                    continue; // No mapeamos la propiedad si no tiene valor
+                }
+    
+                let criteriaBase = '';
+                let module = '';
+                let trimmedText: string;  // Declaramos la variable fuera del switch
+
+                switch (clave) {
+                    
+                    case 'Oportunidad':
+                        module = 'Deals';
+                        trimmedText = valor.substring(2);  // Modificamos el valor para este caso
+                        criteriaBase = `(ContractID:equals:${valor})`;
+                        
+                        try {
+                            const response: any = await this.consume.fetchData(criteriaBase, module)
+                                .pipe(
+                                    
+                                ).toPromise();
+            
+                            if (response?.data?.length > 0) {
+                                const zohoid = response.data[0].id;
+                                objetoMapeado["deal"] = { "id": zohoid };
+                                // console.log('ID obtenido de Campaigns:', zohoid);
+                            } else {
+                                // console.error('No se encontró campaña con el ID proporcionado', response);
+                            }
+                        } catch (error) {
+                            console.error('Error procesando la petición de Oportunidad:', error);
+                        }
+                        break;
+                        // Pendiente a definir
+                    case 'Nombre de la Sala Pendiente a definir':
+                        trimmedText = valor.substring(1);  // Modificamos el valor para este caso
+                        module = 'Salas';
+                        criteriaBase = `(ContractID:equals:${valor})`;
+                        // t_site donde siteid >= 1000 => clientCustom.dbo.cat_office_tsw 
+                        try {
+                            const response: any = await this.consume.fetchData(criteriaBase, module)
+                                .pipe(
+                                    
+                                ).toPromise();
+            
+                            if (response?.data?.length > 0) {
+                                const zohoid = response.data[0].id;
+                                objetoMapeado["deal"] = { "id": zohoid };
+                                // console.log('ID obtenido de Campaigns:', zohoid);
+                            } else {
+                                // console.error('No se encontró campaña con el ID proporcionado', response);
+                            }
+                        } catch (error) {
+                            console.error('Error procesando la petición de Campaigns:', error);
+                        }
+                        break;
+                    case 'Tipo Tablet':
+                        module = 'Products';
+                        trimmedText = valor;  // Suponiendo que "valor" tiene el texto original
+                        trimmedText = trimmedText.substring(1);  // Asignamos el resultado de substring(2) 
+                        criteriaBase = `(prem_inv_id:equals:${valor})`;
+                        // t_site donde siteid >= 1000 => clientCustom.dbo.cat_office_tsw 
+                        try {
+                            const response: any = await this.consume.fetchData(criteriaBase, module)
+                                .pipe(
+                                    
+                                ).toPromise();
+            
+                            if (response?.data?.length > 0) {
+                                const zohoid = response.data[0].id;
+                                objetoMapeado["tablet_type"] = { "id": zohoid };
+                                // console.log('ID obtenido de Campaigns:', zohoid);
+                            } else {
+                                // console.error('No se encontró campaña con el ID proporcionado', response);
+                            }
+                        } catch (error) {
+                            console.error('Error procesando la petición de Tipo Tablet:', error);
+                        }
+                        break;
+                    case 'Contrato Anterior':
+                        module = 'Deals';
+                        trimmedText = valor;  // Suponiendo que "valor" tiene el texto original
+                        trimmedText = trimmedText.substring(1);  // Asignamos el resultado de substring(2) 
+                        criteriaBase = `(ContractID:equals:${valor})`;
+                        // t_site donde siteid >= 1000 => clientCustom.dbo.cat_office_tsw 
+                        try {
+                            const response: any = await this.consume.fetchData(criteriaBase, module)
+                                .pipe(
+                                    
+                                ).toPromise();
+            
+                            if (response?.data?.length > 0) {
+                                const zohoid = response.data[0].id;
+                                objetoMapeado["previous_contracts"] = { "id": zohoid };
+                                // console.log('ID obtenido de Campaigns:', zohoid);
+                            } else {
+                                // console.error('No se encontró campaña con el ID proporcionado', response);
+                            }
+                        } catch (error) {
+                            console.error('Error procesando la petición de Contrato Anterior:', error);
+                        }
+                        break;
+                    default:
+                        // Acción por defecto si no se encuentra ninguna coincidencia
+                        break;
+                }
+                
+            }
+        }
+    
+        // Esperamos que todas las peticiones asíncronas se completen
+        await Promise.all(peticiones);
+    
+        // Devolvemos el objeto mapeado
+        return objetoMapeado;
     }
 }

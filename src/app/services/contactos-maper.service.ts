@@ -30,335 +30,338 @@ mapearContactos(objeto:Contactos): ContactosApi {
                 if (valor === undefined || valor === null || valor === "" || (typeof valor === 'number' && valor === 0)) {
                     continue; // No mapeamos la propiedad si es vacía o 0
                     }
-            switch (clave) {
-                case "owner_bridge_id":
-                objetoMapeado["owner_bridge_id"] = objeto[clave];
-                break;
-                case "4 Digitos":
-                objetoMapeado["Digitos"] = objeto[clave];
-                break;
-                case "Apellidos":
-                objetoMapeado["Last_Name"] = objeto[clave];
-                break;
-                case "Calle de Facturacion":
-                objetoMapeado["Calle_de_Facturacion"] = objeto[clave];
-                break;
-                case "Calle para Correspondencia":
-                objetoMapeado["Calle_para_Correspondencia"] = objeto[clave];
-                break;
-                // case "Campaña Principal":
-                // objetoMapeado["Campa_a_Principal"] = objeto[clave];
-                // break;
-                case "Centro de Servicio":
-                objetoMapeado["Centro_de_Servicio"] = objeto[clave];
-                break;
-                case "Ciudad de Facturación":
-                objetoMapeado["Ciudad_de_Facturacion"] = objeto[clave];
-                break;
-                case "Ciudad para correspondencia":
-                objetoMapeado["Mailing_City"] = objeto[clave];
-                break;
-                case "Código Postal de Facturación":
-                objetoMapeado["PostalCode"] = objeto[clave];
-                break;
-                case "Código postal para correspondencia":
-                objetoMapeado["Mailing_Zip"] = objeto[clave];
-                break;
-                case "Colonia":
-                objetoMapeado["Colonia"] = objeto[clave];
-                break;
-                case "Colonia de Facturación":
-                objetoMapeado["Colonia_de_Facturacion"] = objeto[clave];
-                break;
-                // case "Coowner":
-                // objetoMapeado["CoOwner"] = objeto[clave];
-                // break;
-                case "coprospect_bridge_id":
-                objetoMapeado["coprospect_bridge_id"] = objeto[clave];
-                break;
-                case "Correo electrónico":
-                objetoMapeado["Email"] = objeto[clave];
-                break;
-                case "Correo electrónico secundario":
-                objetoMapeado["Secondary_Email"] = objeto[clave];
-                break;
-                case "Domicilio para correspondencia":
-                objetoMapeado["Mailing_Street"] = objeto[clave];
-                break;
-                case "Empresa donde labora":
-                objetoMapeado["Empresa_donde_Labora"] = objeto[clave];
-                break;
-                case "Estado Civil":
-                objetoMapeado["Estado_Civil"] = objeto[clave];
-                break;
-                case "Estado de Facturacion":
-                objetoMapeado["Estado_de_Facturacion"] = objeto[clave];
-                break;
-                case "Estado para correspondencia":
-                objetoMapeado["Mailing_State"] = objeto[clave];
-                break;
-                case "Folio":
-                objetoMapeado["Folio"] = objeto[clave];
-                break;
-                case "Forma de Pago":
-                objetoMapeado["Forma_de_Pago"] = objeto[clave];
-                break;
-                case "Fuente de Prospecto":
-                objetoMapeado["Lead_Source"] = objeto[clave];
-                break;
-                case "Importe Cobrado":
-                objetoMapeado["Importe_Cobrado"] = objeto[clave];
-                break;
-                case "Ingresos Mensuales":
-                objetoMapeado["Ingresos_Mensuales"] = objeto[clave];
-                break;
-                case "Lenguaje de contacto":
-                objetoMapeado["Lenguaje_de_Contacto"] = objeto[clave];
-                break;
-                case "Lenguaje de Marketing":
-                objetoMapeado["Lenguaje_de_Marketing"] = objeto[clave];
-                break;
-                case "Lenguaje Secundario":            // Suponiendo que el valor de Lenguaje_Secundario es una cadena separada por comas
-                if (typeof valor === 'string') {
-                objetoMapeado["Lenguaje_Secundario"] = [valor.trim()]; // Convertir a arreglo
-                } else if (Array.isArray(valor)) {
-                    objetoMapeado["Lenguaje_Secundario"] = valor; // Si ya es un arreglo, no hacemos nada
-                } else {
-                    objetoMapeado["Lenguaje_Secundario"] = []; // Si no es cadena ni arreglo, asignamos un arreglo vacío
-                }
-            break;  
-                case "Moneda":
-                objetoMapeado["Currency"] = objeto[clave];
-                break;
-                case "Móvil":
-                objetoMapeado["Mobile"] = objeto[clave];
-                break;
-                case "Municipio":
-                objetoMapeado["Municipio"] = objeto[clave];
-                break;
-                case "Municipio de Facturacion":
-                objetoMapeado["Municipio_de_Facturacion"] = objeto[clave];
-                break;
-                case "Nacionalidad":
-                objetoMapeado["Pa_s_de_Nacimiento"] = objeto[clave];
-                break;
-                case "CoOwnProsID":
-                objetoMapeado["CoOwnprosID"] = objeto[clave]
-                break;
-            
-            }
-
-            // Objetos completos # Acompletar 
             // switch (clave) {
-            //     case "4 Digitos":
-            //         objetoMapeado["Digitos"] = objeto[clave];
-            //         break;
-            //     case "Apellido Paterno":
-            //         objetoMapeado["X"] = objeto[clave]; // Este no estaba en la lista inicial, asignar correctamente
-            //         break;
-            //     case "Apellidos":
-            //         objetoMapeado["Last_Name"] = objeto[clave];
-            //         break;
-            //     case "Calificacion":
-            //         objetoMapeado["X"] = objeto[clave]; // Este no estaba en la lista inicial, asignar correctamente
-            //         break;
-            //     case "Calle de Facturacion":
-            //         objetoMapeado["Calle_de_Facturacion"] = objeto[clave];
-            //         break;
-            //     case "Calle para Correspondencia":
-            //         objetoMapeado["Calle_para_Correspondencia"] = objeto[clave];
-            //         break;
-            //     case "Campaña Principal":
-            //         objetoMapeado["Campa_a_Principal"] = objeto[clave]; // Este estaba comentado en tu lista inicial, lo dejamos aquí
-            //         break;
-            //     case "Centro de Servicio":
-            //         objetoMapeado["Centro_de_Servicio"] = objeto[clave];
-            //         break;
-            //     case "Ciudad de Facturación":
-            //         objetoMapeado["Ciudad_de_Facturacion"] = objeto[clave];
-            //         break;
-            //     case "Ciudad para correspondencia":
-            //         objetoMapeado["Mailing_City"] = objeto[clave];
-            //         break;
-            //     case "Código Postal de Facturación":
-            //         objetoMapeado["PostalCode"] = objeto[clave];
-            //         break;
-            //     case "Código postal para correspondencia":
-            //         objetoMapeado["Mailing_Zip"] = objeto[clave];
-            //         break;
-            //     case "Colonia":
-            //         objetoMapeado["Colonia"] = objeto[clave];
-            //         break;
-            //     case "Colonia de Facturación":
-            //         objetoMapeado["Colonia_de_Facturacion"] = objeto[clave];
-            //         break;
-            //     case "Coowner":
-            //         objetoMapeado["CoOwner"] = objeto[clave]; // Este estaba comentado en tu lista inicial
-            //         break;
-            //     case "coprospect_bridge_id":
-            //         objetoMapeado["coprospect_bridge_id"] = objeto[clave];
-            //         break;
-            //     case "Correo electrónico":
-            //         objetoMapeado["Email"] = objeto[clave];
-            //         break;
-            //     case "Correo electrónico secundario":
-            //         objetoMapeado["Secondary_Email"] = objeto[clave];
-            //         break;
-            //     case "Domicilio para correspondencia":
-            //         objetoMapeado["Mailing_Street"] = objeto[clave];
-            //         break;
-            //     case "Empresa donde labora":
-            //         objetoMapeado["Empresa_donde_Labora"] = objeto[clave];
-            //         break;
-            //     case "Estado Civil":
-            //         objetoMapeado["Estado_Civil"] = objeto[clave];
-            //         break;
-            //     case "Estado de Facturacion":
-            //         objetoMapeado["Estado_de_Facturacion"] = objeto[clave];
-            //         break;
-            //     case "Estado para correspondencia":
-            //         objetoMapeado["Mailing_State"] = objeto[clave];
-            //         break;
-            //     case "Fecha de nacimiento":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Folio":
-            //         objetoMapeado["Folio"] = objeto[clave];
-            //         break;
-            //     case "Forma de Pago":
-            //         objetoMapeado["Forma_de_Pago"] = objeto[clave];
-            //         break;
-            //     case "Fuente de Prospecto":
-            //         objetoMapeado["Lead_Source"] = objeto[clave];
-            //         break;
-            //     case "Hora de creación":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "ID":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Importe Cobrado":
-            //         objetoMapeado["Importe_Cobrado"] = objeto[clave];
-            //         break;
-            //     case "Ingresos Mensuales":
-            //         objetoMapeado["Ingresos_Mensuales"] = objeto[clave]; // Este ya estaba en la lista inicial, no es necesario usar "X"
-            //         break;
-            //     case "Lenguaje de contacto":
-            //         objetoMapeado["Lenguaje_de_Contacto"] = objeto[clave];
-            //         break;
-            //     case "Lenguaje de Marketing":
-            //         objetoMapeado["Lenguaje_de_Marketing"] = objeto[clave];
-            //         break;
-            //     case "Lenguaje Secundario":
-            //         if (typeof valor === 'string') {
-            //             objetoMapeado["Lenguaje_Secundario"] = [valor.trim()]; // Convertir a arreglo
-            //         } else if (Array.isArray(valor)) {
-            //             objetoMapeado["Lenguaje_Secundario"] = valor; // Si ya es un arreglo, no hacemos nada
-            //         } else {
-            //             objetoMapeado["Lenguaje_Secundario"] = []; // Si no es cadena ni arreglo, asignamos un arreglo vacío
-            //         }
-            //         break;
-            //     case "Moneda":
-            //         objetoMapeado["Currency"] = objeto[clave];
-            //         break;
-            //     case "Móvil":
-            //         objetoMapeado["Mobile"] = objeto[clave];
-            //         break;
-            //     case "Municipio":
-            //         objetoMapeado["Municipio"] = objeto[clave];
-            //         break;
-            //     case "Municipio de Facturacion":
-            //         objetoMapeado["Municipio_de_Facturacion"] = objeto[clave];
-            //         break;
-            //     case "Nacionalidad":
-            //         objetoMapeado["Pa_s_de_Nacimiento"] = objeto[clave]; // Ya estaba en la lista inicial
-            //         break;
-            //     case "No. Exterior de Facturación":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "No. Interior de Facturacion":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Nombre":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Numero Autorización":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Numero de Noches":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Número de prospecto":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Numero Exterior":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Numero Interior":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Numero_de_prospecto_netcenter":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Owner ID":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
             //     case "owner_bridge_id":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "País de Facturación":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "País para correspondencia":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "prospect_bridge_id":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Régimen Fiscal":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Residencia Fiscal":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "RFC":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Saludo":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Sexo":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Tasa de cambio":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Teléfono":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Telefono particular":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Terminal":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Tipo de Contacto":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Título":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Uso de CFDI":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
-            //     case "Vigencia":
-            //         objetoMapeado["X"] = objeto[clave]; // No estaba en la lista inicial
-            //         break;
+            //     objetoMapeado["owner_bridge_id"] = objeto[clave];
+            //     break;
+            //     case "4 Digitos":
+            //     objetoMapeado["Digitos"] = objeto[clave];
+            //     break;
+            //     case "Apellidos":
+            //     objetoMapeado["Last_Name"] = objeto[clave];
+            //     break;
+            //     case "Calle de Facturacion":
+            //     objetoMapeado["Calle_de_Facturacion"] = objeto[clave];
+            //     break;
+            //     case "Calle para Correspondencia":
+            //     objetoMapeado["Calle_para_Correspondencia"] = objeto[clave];
+            //     break;
+            //     // case "Campaña Principal":
+            //     // objetoMapeado["Campa_a_Principal"] = objeto[clave];
+            //     // break;
+            //     case "Centro de Servicio":
+            //     objetoMapeado["Centro_de_Servicio"] = objeto[clave];
+            //     break;
+            //     case "Ciudad de Facturación":
+            //     objetoMapeado["Ciudad_de_Facturacion"] = objeto[clave];
+            //     break;
+            //     case "Ciudad para correspondencia":
+            //     objetoMapeado["Mailing_City"] = objeto[clave];
+            //     break;
+            //     case "Código Postal de Facturación":
+            //     objetoMapeado["PostalCode"] = objeto[clave];
+            //     break;
+            //     case "Código postal para correspondencia":
+            //     objetoMapeado["Mailing_Zip"] = objeto[clave];
+            //     break;
+            //     case "Colonia":
+            //     objetoMapeado["Colonia"] = objeto[clave];
+            //     break;
+            //     case "Colonia de Facturación":
+            //     objetoMapeado["Colonia_de_Facturacion"] = objeto[clave];
+            //     break;
+            //     // case "Coowner":
+            //     // objetoMapeado["CoOwner"] = objeto[clave];
+            //     // break;
+            //     case "coprospect_bridge_id":
+            //     objetoMapeado["coprospect_bridge_id"] = objeto[clave];
+            //     break;
+            //     case "Correo electrónico":
+            //     objetoMapeado["Email"] = objeto[clave];
+            //     break;
+            //     case "Correo electrónico secundario":
+            //     objetoMapeado["Secondary_Email"] = objeto[clave];
+            //     break;
+            //     case "Domicilio para correspondencia":
+            //     objetoMapeado["Mailing_Street"] = objeto[clave];
+            //     break;
+            //     case "Empresa donde labora":
+            //     objetoMapeado["Empresa_donde_Labora"] = objeto[clave];
+            //     break;
+            //     case "Estado Civil":
+            //     objetoMapeado["Estado_Civil"] = objeto[clave];
+            //     break;
+            //     case "Estado de Facturacion":
+            //     objetoMapeado["Estado_de_Facturacion"] = objeto[clave];
+            //     break;
+            //     case "Estado para correspondencia":
+            //     objetoMapeado["Mailing_State"] = objeto[clave];
+            //     break;
+            //     case "Folio":
+            //     objetoMapeado["Folio"] = objeto[clave];
+            //     break;
+            //     case "Forma de Pago":
+            //     objetoMapeado["Forma_de_Pago"] = objeto[clave];
+            //     break;
+            //     case "Fuente de Prospecto":
+            //     objetoMapeado["Lead_Source"] = objeto[clave];
+            //     break;
+            //     case "Importe Cobrado":
+            //     objetoMapeado["Importe_Cobrado"] = objeto[clave];
+            //     break;
+            //     case "Ingresos Mensuales":
+            //     objetoMapeado["Ingresos_Mensuales"] = objeto[clave];
+            //     break;
+            //     case "Lenguaje de contacto":
+            //     objetoMapeado["Lenguaje_de_Contacto"] = objeto[clave];
+            //     break;
+            //     case "Lenguaje de Marketing":
+            //     objetoMapeado["Lenguaje_de_Marketing"] = objeto[clave];
+            //     break;
+            //     case "Lenguaje Secundario":            // Suponiendo que el valor de Lenguaje_Secundario es una cadena separada por comas
+            //     if (typeof valor === 'string') {
+            //     objetoMapeado["Lenguaje_Secundario"] = [valor.trim()]; // Convertir a arreglo
+            //     } else if (Array.isArray(valor)) {
+            //         objetoMapeado["Lenguaje_Secundario"] = valor; // Si ya es un arreglo, no hacemos nada
+            //     } else {
+            //         objetoMapeado["Lenguaje_Secundario"] = []; // Si no es cadena ni arreglo, asignamos un arreglo vacío
+            //     }
+            // break;  
+            //     case "Moneda":
+            //     objetoMapeado["Currency"] = objeto[clave];
+            //     break;
+            //     case "Móvil":
+            //     objetoMapeado["Mobile"] = objeto[clave];
+            //     break;
+            //     case "Municipio":
+            //     objetoMapeado["Municipio"] = objeto[clave];
+            //     break;
+            //     case "Municipio de Facturacion":
+            //     objetoMapeado["Municipio_de_Facturacion"] = objeto[clave];
+            //     break;
+            //     case "Nacionalidad":
+            //     objetoMapeado["Pa_s_de_Nacimiento"] = objeto[clave];
+            //     break;
             //     case "CoOwnProsID":
-            //         objetoMapeado["CoOwnprosID"] = objeto[clave];
-            //         break;
-                
+            //     objetoMapeado["CoOwnprosID"] = objeto[clave]
+            //     break;
+            //     case "Tipo de Contacto":
+            //     objetoMapeado["Tipo_de_Contacto"] = objeto[clave]; // No estaba en la lista inicial
+            //     break;
+            
             // }
+            switch (clave) {
+                case "4 Digitos":
+                    objetoMapeado["Digitos"] = objeto[clave];
+                    break;
+                // case "Apellido Paterno":
+                //     objetoMapeado["X"] = objeto[clave];
+                //     break;
+                case "Apellidos":
+                    objetoMapeado["Last_Name"] = objeto[clave];
+                    break;
+                case "Calificacion":
+                    objetoMapeado["Calificacion"] = objeto[clave];
+                    break;
+                case "Calle de Facturacion":
+                    objetoMapeado["Calle_de_Facturacion"] = objeto[clave];
+                    break;
+                case "Calle para Correspondencia":
+                    objetoMapeado["Calle_para_Correspondencia"] = objeto[clave];
+                    break;
+                // case "Campaña Principal":
+                //     objetoMapeado["Campa_a_Principal"] = objeto[clave];
+                //     break;
+                case "Centro de Servicio":
+                    objetoMapeado["Centro_de_Servicio"] = objeto[clave];
+                    break;
+                case "Ciudad de Facturación":
+                    objetoMapeado["Ciudad_de_Facturacion"] = objeto[clave];
+                    break;
+                case "Ciudad para correspondencia":
+                    objetoMapeado["Mailing_City"] = objeto[clave];
+                    break;
+                case "Código Postal de Facturación":
+                    objetoMapeado["PostalCode"] = objeto[clave];
+                    break;
+                case "Código postal para correspondencia":
+                    objetoMapeado["Mailing_Zip"] = objeto[clave];
+                    break;
+                case "Colonia":
+                    objetoMapeado["Colonia"] = objeto[clave];
+                    break;
+                case "Colonia de Facturación":
+                    objetoMapeado["Colonia_de_Facturacion"] = objeto[clave];
+                    break;
+                // case "Coowner":
+                //     objetoMapeado["CoOwner"] = objeto[clave];
+                //     break;
+                case "coprospect_bridge_id":
+                    objetoMapeado["coprospect_bridge_id"] = objeto[clave];
+                    break;
+                case "Correo electrónico":
+                    objetoMapeado["Email"] = objeto[clave];
+                    break;
+                case "Correo electrónico secundario":
+                    objetoMapeado["Secondary_Email"] = objeto[clave];
+                    break;
+                case "Domicilio para correspondencia":
+                    objetoMapeado["Mailing_Street"] = objeto[clave];
+                    break;
+                case "Empresa donde labora":
+                    objetoMapeado["Empresa_donde_Labora"] = objeto[clave];
+                    break;
+                case "Estado Civil":
+                    objetoMapeado["Estado_Civil"] = objeto[clave];
+                    break;
+                case "Estado de Facturacion":
+                    objetoMapeado["Estado_de_Facturacion"] = objeto[clave];
+                    break;
+                case "Estado para correspondencia":
+                    objetoMapeado["Mailing_State"] = objeto[clave];
+                    break;
+                case "Fecha de nacimiento":
+                    objetoMapeado["Date_of_Birth"] = objeto[clave];
+                    break;
+                case "Folio":
+                    objetoMapeado["Folio"] = objeto[clave];
+                    break;
+                case "Forma de Pago":
+                    objetoMapeado["Forma_de_Pago"] = objeto[clave];
+                    break;
+                case "Fuente de Prospecto":
+                    objetoMapeado["Lead_Source"] = objeto[clave];
+                    break;
+                // case "Hora de creación":
+                //     objetoMapeado["X"] = objeto[clave];
+                //     break;
+                // case "ID":
+
+                //     objetoMapeado["X"] = objeto[clave];
+                //     break;
+                case "Importe Cobrado":
+                    objetoMapeado["Importe_Cobrado"] = objeto[clave];
+                    break;
+                case "Ingresos Mensuales":
+                    objetoMapeado["Ingresos_Mensuales"] = objeto[clave];
+                    break;
+                case "Lenguaje de contacto":
+                    objetoMapeado["Lenguaje_de_Contacto"] = objeto[clave];
+                    break;
+                case "Lenguaje de Marketing":
+                    objetoMapeado["Lenguaje_de_Marketing"] = objeto[clave];
+                    break;
+                case "Lenguaje Secundario":
+                    objetoMapeado["Lenguaje_Secundario"] = objeto[clave];
+                    break;
+                case "Moneda":
+                    objetoMapeado["Currency"] = objeto[clave];
+                    break;
+                case "Móvil":
+                    objetoMapeado["Mobile"] = objeto[clave];
+                    break;
+                case "Municipio":
+                    objetoMapeado["Municipio"] = objeto[clave];
+                    break;
+                case "Municipio de Facturacion":
+                    objetoMapeado["Municipio_de_Facturacion"] = objeto[clave];
+                    break;
+                case "Nacionalidad":
+                    objetoMapeado["Pa_s_de_Nacimiento"] = objeto[clave];
+                    break;
+                case "No. Exterior de Facturación":
+                    objetoMapeado["No_Exterior_de_Facturaci_n"] = objeto[clave];
+                    break;
+                case "No. Interior de Facturacion":
+                    objetoMapeado["No_Interior_de_Facturacion"] = objeto[clave];
+                    break;
+                case "Nombre":
+                    objetoMapeado["First_Name"] = objeto[clave];
+                    break;
+                case "Numero Autorización":
+                    objetoMapeado["Numero_Autorizaci_n"] = objeto[clave];
+                    break;
+                case "Numero de Noches":
+                    objetoMapeado["Numero_de_Noches"] = objeto[clave];
+                    break;
+                case "Número de prospecto":
+                    objetoMapeado["Numero_de_Prospecto"] = objeto[clave];
+                    break;
+                case "Numero Exterior":
+                    objetoMapeado["Numero_Exterior"] = objeto[clave];
+                    break;
+                case "Numero Interior":
+                    objetoMapeado["Numero_Interior"] = objeto[clave];
+                    break;
+                case "Numero_de_prospecto_netcenter":
+                    objetoMapeado["Numero_de_prospecto_netcenter"] = objeto[clave];
+                    break;
+                case "Owner ID":
+                    objetoMapeado["Numero_de_Socio"] = objeto[clave];
+                    break;
+                case "owner_bridge_id":
+                    objetoMapeado["owner_bridge_id"] = objeto[clave];
+                    break;
+                case "País de Facturación":
+                    objetoMapeado["Pais_de_Facturacion"] = objeto[clave];
+                    break;
+                case "País para correspondencia":
+                    objetoMapeado["Mailing_Country"] = objeto[clave];
+                    break;
+                case "prospect_bridge_id":
+                    objetoMapeado["prospect_bridge_id"] = objeto[clave];
+                    break;
+                case "Régimen Fiscal":
+                    objetoMapeado["Residencia_Fiscal"] = objeto[clave];
+                    break;
+                case "Residencia Fiscal":
+                    objetoMapeado["Regimen_Fiscal"] = objeto[clave];
+                    break;
+                case "RFC":
+                    objetoMapeado["RFC"] = objeto[clave];
+                    break;
+                case "Saludo":
+                    objetoMapeado["Salutation"] = objeto[clave];
+                    break;
+                case "Sexo":
+                    objetoMapeado["Sexo"] = objeto[clave];
+                    break;
+                case "Tasa de cambio":
+                    objetoMapeado["Exchange_Rate"] = objeto[clave];
+                    break;
+                case "Teléfono":
+                    objetoMapeado["Phone"] = objeto[clave];
+                    break;
+                case "Telefono particular":
+                    objetoMapeado["Home_Phone"] = objeto[clave];
+                    break;
+                case "Terminal":
+                    objetoMapeado["Terminal"] = objeto[clave];
+                    break;
+                case "Tipo de Contacto":
+                    objetoMapeado["Tipo_de_Contacto"] = objeto[clave];
+                    break;
+                // case "Título":
+                //     objetoMapeado["Title"] = objeto[clave];
+                //     break;
+                case "Uso de CFDI":
+                    objetoMapeado["Uso_de_CFDI"] = objeto[clave];
+                    break;
+                case "Vigencia":
+                    objetoMapeado["Vigencia"] = objeto[clave];
+                    break;
+                case "CoOwnProsID":
+                    objetoMapeado["CoOwnprosID"] = objeto[clave];
+                    break;
+                default:
+                    // Puedes manejar el caso cuando no se encuentra una coincidencia
+                    break;
+            }
+            
+            
+                
+
+            
 
             }
             }
@@ -405,10 +408,7 @@ async zohoIDsUpdateContacts(objeto: any): Promise<ContactosApi> {
                     try {
                         const response: any = await this.consume.fetchData(criteriaBase, module)
                             .pipe(
-                                catchError((error) => {
-                                    console.error('Error en la petición de Campaigns:', error);
-                                    return of(null);
-                                })
+                                
                             ).toPromise();
         
                         if (response?.data?.length > 0) {
@@ -433,21 +433,21 @@ async zohoIDsUpdateContacts(objeto: any): Promise<ContactosApi> {
                     try {
                         const response: any = await this.consume.fetchData(criteriaBase, module)
                             .pipe(
-                                catchError((error) => {
-                                    console.error('Error en la petición de Coowner:', error);
-                                    return of(null);
-                                })
+                                // catchError((error) => {
+                                //     console.error('Error en la petición de Coowner:', error);
+                                //     return of(null);
+                                // })
                             ).toPromise();
         
                         if (response?.data?.length > 0) {
-                            const zohoid = response.data[0].id;
+                            let zohoid = response.data[0].id;
                             objetoMapeado["CoOwner"] = { "id": zohoid };
                             console.log('ID obtenido de Coowner:', zohoid);
                         } else {
                             console.error('No se encontró un Coowner con el ID proporcionado', response);
                         }
                     } catch (error) {
-                        console.error('Error procesando la petición de Coowner:', error);
+                        // console.error('Error procesando la petición de Coowner:', error);
                     }
                     break;
         

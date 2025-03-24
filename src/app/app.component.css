@@ -1,92 +1,56 @@
-.example-spacer {
-    flex: 1 1 auto;
+    .sidenav-container {
+        height: 100%;
     }
     
-    /* Estilos para personalizar todo el toolbar */
-.custom-toolbar {
-    background: linear-gradient(45deg, #077327, #02460d); /* Degradado naranja-rojo */
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 10px 20px;
-    border-bottom: 3px solid #07288d; /* Línea inferior */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Sombra */
-    }
-    
-    /* Estilos para los íconos dentro del toolbar */
-    .custom-toolbar mat-icon {
-        font-size: 32px; /* Tamaño grande */
+    .custom-toolbar {
+        background-color: #08872a; /* Color del fondo del toolbar */
         color: white;
-        transition: transform 0.3s ease, color 0.3s ease;
+        padding: 0 16px;
+        display: flex;
+        justify-content: space-between; /* Asegura que los elementos se distribuyan correctamente */
+        align-items: center; /* Centra los elementos verticalmente */
     }
     
-    /* Cambio de color e interacción en hover */
-    .custom-toolbar mat-icon:hover {
-        color: #ffccbc; /* Naranja claro */
-        transform: scale(1.2); /* Efecto de agrandamiento */
-    }
-    
-    /* Estilos para separar elementos dentro del toolbar */
-    .toolbar-spacer {
-        flex: 1; /* Empuja los elementos hacia los extremos */
-    }
-    
-    /* Ajustes responsivos */
-    @media (max-width: 600px) {
-        .custom-toolbar {
-        font-size: 16px;
-        padding: 8px 15px;
-        }
-        .custom-toolbar mat-icon {
-        font-size: 28px;
-        }
-    }
-
-        /* 🔹 Estilos generales para todos los mat-icon */
-    .custom-icon {
-        font-size: 36px; /* Tamaño grande */
-        color: #ffffff; /* Blanco por defecto */
-        transition: color 0.3s ease, transform 0.3s ease;
-    }
-    
-    /* 🔥 Efecto de hover: Cambio de color y escala */
-    .custom-icon:hover {
-        color: #ffcc80; /* Naranja claro */
-        transform: scale(1.2); /* Agrandamiento al pasar el mouse */
-    }
-    
-    /* 🎭 Íconos con fondo redondeado */
     .custom-icon-round {
-        background: rgba(255, 255, 255, 0.1); /* Fondo semi-transparente */
-        padding: 8px;
         border-radius: 50%;
-        transition: background 0.3s ease, transform 0.3s ease;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s, transform 0.3s;
+        width: 40px; /* Ajusta el tamaño del botón */
+        height: 40px; /* Ajusta el tamaño del botón */
+        display: flex;
+        justify-content: center; /* Centra el ícono horizontalmente */
+        align-items: center; /* Centra el ícono verticalmente */
     }
     
-    /* 🎯 Hover en iconos redondeados */
+    .custom-icon {
+        color: #2196f3; /* Color del ícono */
+        font-size: 24px; /* Ajusta el tamaño del ícono */
+        transition: transform 0.2s;
+    }
+    
+    /* Efecto cuando el ícono es presionado o el mouse pasa sobre el ícono */
     .custom-icon-round:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: scale(1.3);
+        background-color: #f0f0f0; /* Fondo al pasar el ratón */
+        transform: scale(1.1); /* Aumenta ligeramente el tamaño al hacer hover */
     }
     
-    /* 🌙 Variante para modo oscuro */
-    .dark-theme .custom-icon {
-        color: #90caf9; /* Azul claro */
+    .custom-icon-round:active {
+        background-color: #e1e1e1; /* Fondo cuando se hace clic */
+    }
+    .custom-icon-round{
+        margin-right: 1em;
     }
     
-    .dark-theme .custom-icon:hover {
-        color: #64b5f6; /* Azul más brillante */
+    .toolbar-spacer {
+        flex: 1 1 auto;
     }
     
-    /* ⚡ Animación de pulsación */
-    @keyframes pulse {
-        0% {
-        transform: scale(1);
-        }
-        50% {
-        transform: scale
-        }  
+    mat-sidenav {
+        width: 250px;
     }
-    span{
-        padding-left: 1em;
+    
+    mat-sidenav-content {
+        padding: 20px;
     }
+    

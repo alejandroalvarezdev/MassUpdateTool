@@ -39,7 +39,7 @@ export interface OportunidadesApi {
         Morosidad_Morgage?: string;                  // Moneda
         Reason_For_Loss__s?: string;                 // Lista de selección
         Contact_Name?: ObjConId;                       // Buscar
-        Deal_Name?: ObjConId;                          // Línea única
+        Deal_Name?: string;                          // Línea única
         Nota_de_Cancelacion?: string;                // Multilínea (pequeño)
         Oportunidad_upgraded?: ObjConId;               // Buscar
       
