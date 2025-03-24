@@ -13,7 +13,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
 //CSV Parser
 import Papa from 'papaparse';
-import { concatMap,finalize, from } from 'rxjs';
+import { concatMap,finalize, from,BehaviorSubject, map } from 'rxjs';
 //SQID
 import Sqids from 'sqids';
 // Mapper services  
@@ -31,6 +31,7 @@ import { Estimaciones } from '../../models/estimaciones.model';
 import { Prospectos } from '../../models/prospectos.model';
 import { ProspectosMaperService } from '../../services/prospectos-maper.service';
 import { LoaderComponent } from "../../addOn/loader/loader.component";
+import { CounterComponent } from '../../addOn/counter/counter.component';
 type TipoOperacion = 'upsert' | 'zohoidModification';
 
 
@@ -47,7 +48,8 @@ type TipoOperacion = 'upsert' | 'zohoidModification';
     MatSlideToggleModule,
     MatCardModule,
     MatIconModule,
-    LoaderComponent
+    LoaderComponent,
+    CounterComponent
 ],
   templateUrl: './single-post.component.html',
   styleUrl: './single-post.component.css'
@@ -72,6 +74,12 @@ export class SinglePostComponent implements OnInit {
   isChecked = false;
   //loader manager
     loading: boolean = false; // Por defecto, el loader se muestra
+    // Progress manager
+    progressLaunch: number = 0; // Progreso para el proceso de launchData
+    progressUpload: number = 0; // Progreso para el proceso de uploadZohoIDs
+  // Counter Manager
+  activateCounter:boolean = false;
+
 
 
 //Squids
@@ -92,6 +100,7 @@ export class SinglePostComponent implements OnInit {
       });
     }
     ngOnInit() {
+      this.activateCounter = true;
       const sqids = new Sqids({
         alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
       })
@@ -102,6 +111,7 @@ export class SinglePostComponent implements OnInit {
       console.warn(id);
       
     }
+
 
   onFileChange(event: any): void {
     const file = event.target.files[0];
@@ -132,29 +142,81 @@ export class SinglePostComponent implements OnInit {
       console.log('Form Submitted!', this.form.value);
 
       this.sendDataToAPI();
+      
     } else {
       console.log('Form is invalid');
     }
   }
   //Orquestador
   sendDataToAPI(): void {
-    from(this.segmentedRecords) // Emitir cada registro individualmente
+    const progressLaunchSubject = new BehaviorSubject(0); // Progreso para launchData
+    const progressUploadSubject = new BehaviorSubject(0); // Progreso para uploadZohoIDs
+
+    // Suscribir al progreso de launchData
+    progressLaunchSubject.subscribe(progress => {
+      this.progressLaunch = progress; // Actualiza el progreso de launchData
+    });
+
+    // Suscribir al progreso de uploadZohoIDs
+    progressUploadSubject.subscribe(progress => {
+      this.progressUpload = progress; // Actualiza el progreso de uploadZohoIDs
+    });
+
+    // Primer flujo: launchData
+    from(this.segmentedRecords)
       .pipe(
-        concatMap((record, index) => this.launchData(record, index)), // Procesa cada registro en orden
+        concatMap((record, index) => this.launchData(record, index)),
+        map((value, index) => {
+          const progress = ((index + 1) / this.segmentedRecords.length) * 100;
+          progressLaunchSubject.next(progress); // Emitir el progreso de launchData
+          return value;
+        }),
         finalize(() => {
-          this.esModoUpsert = 'zohoidModification'; 
+          this.esModoUpsert = 'zohoidModification';
           console.log('Todos los registros han sido procesados por Upsert');
-          // Después de que todos los registros han sido procesados, ejecutamos la segunda función
-          from(this.segmentedRecords) // Emitir cada registro nuevamente
+
+          // Segundo flujo: uploadZohoIDs
+          from(this.segmentedRecords)
             .pipe(
-              concatMap((record, index) => this.uploadZohoIDs(record, index)) // Ejecutar otra función
+              concatMap((record, index) => this.uploadZohoIDs(record, index)),
+              map((value, index) => {
+                const progress = ((index + 1) / this.segmentedRecords.length) * 100;
+                progressUploadSubject.next(progress); // Emitir el progreso de uploadZohoIDs
+                return value;
+              })
             )
-            .subscribe(); // No olvides suscribirte a este segundo observable
+            .subscribe({
+              next: () => {},
+              error: (err) => {
+                console.error('Error en el flujo de uploadZohoIDs:', err);
+                progressUploadSubject.complete(); // Completar el progreso si hay error
+              },
+              complete: () => {
+                console.log('Todos los registros han sido cargados a Zoho');
+                progressUploadSubject.complete(); // Completar el progreso cuando termine
+              }
+            });
         })
       )
-      .subscribe(); // Primero, la suscripción principal
+      .subscribe({
+        next: () => {},
+        error: (err) => {
+          console.error('Error procesando los registros de launchData:', err);
+          progressLaunchSubject.complete(); // Completar si hay error
+        },
+        complete: () => {
+          console.log('Todos los registros han sido procesados');
+          progressLaunchSubject.complete(); // Completar cuando termine
+        }
+      });
   }
-
+  updateProgressBar(progress: number): void {
+    // Implementa esta función para actualizar la interfaz de usuario
+    // Podría ser un elemento HTML con una barra de progreso, o cualquier otro tipo de visualización
+    console.log(`Progreso: ${progress}%`);
+    // Aquí actualizamos la barra de progreso visualmente, ejemplo:
+    // document.getElementById('progressBar').style.width = `${progress}%`;
+  }
   // Map & Parse Objects
   map2ApiObject(obj: any, objType: string) {
     let result:OportunidadesApi|EstimacionesAPI|ContactosApi|ProspectosApi|undefined; 

@@ -1,7 +1,7 @@
 
 <mat-slide-toggle [(ngModel)]="isChecked">Send manager</mat-slide-toggle>
 <app-loader *ngIf="loading"></app-loader> <!-- Mostrar el loader -->
-
+<!-- <app-counter [activateCounter]="activateCounter"></app-counter> -->
 
 
 <div class="container">
@@ -30,6 +30,21 @@
 <div class="process">
     <h3 *ngIf="loading">Procesando</h3>
 </div>
+<!-- Barra de progreso -->
+
+<!-- Barra de progreso para launchData -->
+<div class="progress-container">
+    <div class="progress-bar" [ngStyle]="{ 'width': progressLaunch + '%' }"></div>
+    </div>
+    <p>Progreso de enviar datos: {{ progressLaunch | number: '1.0-0' }}%</p>
+    
+    <!-- Barra de progreso para uploadZohoIDs -->
+    <div class="progress-container">
+        <div class="progress-bar" [ngStyle]="{ 'width': progressUpload + '%' }"></div>
+    </div>
+    <p>Progreso de relacionar módulo: {{ progressUpload | number: '1.0-0' }}%</p>
+    
+
 <div class="encode">
     
     <p>Encoded with squids:{{this.encodesquids}}</p>

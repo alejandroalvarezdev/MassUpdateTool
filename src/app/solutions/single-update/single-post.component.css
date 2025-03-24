@@ -73,3 +73,38 @@ pre{
         font-size: 1.5em;
         justify-content: center;
     }
+/* Barra de progreso (Contenedor) */
+.progress-container {
+    width: 80%; /* Contenedor con un ancho del 80% */
+    height: 20px;
+    background-color: #f0f0f0; /* Fondo gris claro */
+    border-radius: 25px; /* Bordes redondeados */
+    overflow: hidden;
+    margin: 0 auto; /* Centrar la barra horizontalmente */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave para un efecto de profundidad */
+    display: flex;
+    justify-content: flex-start; /* Asegurarse de que la barra de progreso comience desde la izquierda */
+  }
+  
+  /* Barra de progreso (Cargando) */
+  .progress-bar {
+    height: 100%;
+    background-color: #4caf50; /* Verde para el progreso de launchData */
+    width: 0%; /* Comienza con 0% y luego se ajustará dinámicamente */
+    transition: width 0.3s ease; /* Transición suave cuando el progreso cambia */
+  }
+  
+  /* Barra de progreso para uploadZohoIDs */
+  .progress-bar.upload-progress {
+    background-color: #2196f3; /* Azul para el progreso de uploadZohoIDs */
+  }
+  
+  /* Etiquetas de progreso */
+  p {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin: 5px 0;
+    text-align: center; /* Centrado del texto */
+  }
+  
