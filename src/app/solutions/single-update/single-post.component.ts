@@ -129,10 +129,14 @@ export class SinglePostComponent implements OnInit {
   }
   segmentData(): void {
     this.segmentedRecords = []; // Reiniciar antes de segmentar
-
-    for (let i = 0; i < this.csvRecords.length; i += 100) {
-      this.segmentedRecords.push(this.csvRecords.slice(i, i + 100));
+    if (this.csvRecords.length < 100) {
+      this.segmentedRecords = this.csvRecords
+    }else{
+      for (let i = 0; i < this.csvRecords.length; i += 100) {
+        this.segmentedRecords.push(this.csvRecords.slice(i, i + 100));
+      }
     }
+    
 
     console.log('Registros segmentados:', this.segmentedRecords);
     this.datamodel = this.segmentedRecords.pop();
@@ -151,7 +155,7 @@ export class SinglePostComponent implements OnInit {
   sendDataToAPI(): void {
     const progressLaunchSubject = new BehaviorSubject(0); // Progreso para launchData
     const progressUploadSubject = new BehaviorSubject(0); // Progreso para uploadZohoIDs
-
+    let under10storage:Array<any> = [];
     // Suscribir al progreso de launchData
     progressLaunchSubject.subscribe(progress => {
       this.progressLaunch = progress; // Actualiza el progreso de launchData
@@ -161,6 +165,10 @@ export class SinglePostComponent implements OnInit {
     progressUploadSubject.subscribe(progress => {
       this.progressUpload = progress; // Actualiza el progreso de uploadZohoIDs
     });
+    under10storage.push(this.segmentedRecords);
+    if (this.csvRecords.length < 100) {
+      this.segmentedRecords = under10storage;
+    }
 
     // Primer flujo: launchData
     from(this.segmentedRecords)
