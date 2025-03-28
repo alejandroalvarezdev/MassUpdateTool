@@ -253,6 +253,13 @@ mapearContactos(objeto:Contactos): ContactosApi {
                     break;
                 case "Lenguaje Secundario":
                     objetoMapeado["Lenguaje_Secundario"] = objeto[clave];
+                    if (typeof valor === 'string') {
+                            objetoMapeado["Lenguaje_Secundario"] = [valor.trim()]; // Convertir a arreglo
+                            } else if (Array.isArray(valor)) {
+                                objetoMapeado["Lenguaje_Secundario"] = valor; // Si ya es un arreglo, no hacemos nada
+                            } else {
+                                objetoMapeado["Lenguaje_Secundario"] = []; // Si no es cadena ni arreglo, asignamos un arreglo vacío
+                            }
                     break;
                 case "Moneda":
                     objetoMapeado["Currency"] = objeto[clave];

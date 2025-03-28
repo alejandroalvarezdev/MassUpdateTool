@@ -251,7 +251,7 @@ export class SinglePostComponent implements OnInit {
           });
                   
           // Agregamos campos adicionales
-          objetoOrdenadoPor["duplicate_check_fields"] = ["owner_bridge_id"];
+          // objetoOrdenadoPor["duplicate_check_fields"] = ["owner_bridge_id"];
           // objetoOrdenadoPor["trigger"] = [];
 
           result = objetoOrdenadoPor;  // Asignamos el objeto final a `result`
@@ -282,7 +282,7 @@ export class SinglePostComponent implements OnInit {
             });
         
             // Agregamos campos adicionales
-            objetoOrdenadoCon["duplicate_check_fields"] = ["owner_bridge_id"];
+            // objetoOrdenadoCon["duplicate_check_fields"] = ["owner_bridge_id"];
             // objetoOrdenadoCon["trigger"] = [];
         
             result = objetoOrdenadoCon;  // Asignamos el objeto final a `result`
@@ -303,7 +303,7 @@ export class SinglePostComponent implements OnInit {
           propiedadesOrdenadasOp.forEach(([clave, valor]) => {
               objetoOrdenadoOp[clave] = valor;
           });
-          objetoOrdenadoOp["duplicate_check_fields"] = ["Deal_Name"];
+          // objetoOrdenadoOp["duplicate_check_fields"] = ["Deal_Name"];
           // objetoOrdenadoOp["trigger"] = [];  // Esto desactiva los triggers
 
           result = objetoOrdenadoOp; // Aquí se asigna el objeto ordenado a result
@@ -331,7 +331,7 @@ export class SinglePostComponent implements OnInit {
               });
 
               // Agregamos campos adicionales
-              objetoOrdenadoEst["duplicate_check_fields"] = ["MortgageID"];
+              // objetoOrdenadoEst["duplicate_check_fields"] = ["MortgageID"];
         // objetoOrdenadoEst["trigger"] = [];
 
         result = objetoOrdenadoEst;  // Asignamos el objeto final a `result`
@@ -373,7 +373,7 @@ export class SinglePostComponent implements OnInit {
                   });
                   
                   // Agregamos campos adicionales al objeto
-                  objetoOrdenadoCon["duplicate_check_fields"] = ["owner_bridge_id"]; // Campo adicional
+                  // objetoOrdenadoCon["duplicate_check_fields"] = ["owner_bridge_id"]; // Campo adicional
                   // objetoOrdenadoCon["trigger"] = []; // Otro campo adicional
                   
                   // Asignamos el objeto final ordenado a 'result'
@@ -403,7 +403,7 @@ export class SinglePostComponent implements OnInit {
               });
           
               // Agregamos campos adicionales al objeto
-              objetoOrdenadoOp["duplicate_check_fields"] = ["contract_bridge_id"]; // Campo adicional
+              // objetoOrdenadoOp["duplicate_check_fields"] = ["contract_bridge_id"]; // Campo adicional
               // objetoOrdenadoOp["trigger"] = []; // Otro campo adicional
           
               // Asignamos el objeto final ordenado a 'result'
@@ -434,7 +434,7 @@ export class SinglePostComponent implements OnInit {
               });
           
               // Agregamos campos adicionales al objeto
-              objetoOrdenadoEst["duplicate_check_fields"] = ["MortgageID"]; // Campo adicional
+              // objetoOrdenadoEst["duplicate_check_fields"] = ["MortgageID"]; // Campo adicional
               // objetoOrdenadoEst["trigger"] = []; // Otro campo adicional
           
               // Asignamos el objeto final ordenado a 'result'
@@ -494,6 +494,7 @@ export class SinglePostComponent implements OnInit {
         let payload: any = {};  // Cambiar a un objeto, no un arreglo
         let segmentedRecords: Array<any> = record; 
         let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
+      
         
         segmentedRecords.forEach(r => {
           // Mapeamos el objeto 
@@ -505,7 +506,23 @@ export class SinglePostComponent implements OnInit {
   
         // Asignamos directamente la propiedad "data" a payload sin corchetes extra
         payload.data = dataArray;
+        switch (this.form.value.name) {
+          case 'Contacts':
+            payload.duplicate_check_fields = ["owner_bridge_id"];
+            break;
+          case 'Deals':
+            payload.duplicate_check_fields= ["Deal_Name"];
+            break;
+          case 'Estimaciones':
+          payload.duplicate_check_fields = ["MortgageID"];
+          break;
+          case 'Leads':
+          payload.duplicate_check_fields = ["prospect_bridge_id"];
+          break;
+        }
         payload.trigger = [];
+      
+
   
         // Si `this.isChecked` es true, enviamos el registro a la API
         if (this.isChecked == true) {
@@ -544,6 +561,20 @@ export class SinglePostComponent implements OnInit {
     let dataArray: Array<any> = [];  // Aquí vamos a acumular los objetos transformados
     
     payload.data = await this.processRecords(segmentedRecords);
+    switch (this.form.value.name) {
+      case 'Contacts':
+        payload.duplicate_check_fields = ["owner_bridge_id"];
+        break;
+      case 'Deals':
+        payload.duplicate_check_fields= ["Deal_Name"];
+        break;
+      case 'Estimaciones':
+      payload.duplicate_check_fields = ["MortgageID"];
+      break;
+      case 'Leads':
+      payload.duplicate_check_fields = ["prospect_bridge_id"];
+      break;
+    }
     payload.trigger = [];
     console.warn(await payload);
     this.loading = false; 

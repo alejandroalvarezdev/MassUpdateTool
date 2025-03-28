@@ -15,9 +15,7 @@ export class OportunidadesMaperService {
   mapearOportunidad(objeto: Oportunidades): OportunidadesApi {
     
     const objetoMapeado: OportunidadesApi = {
-
-        Stage: "Iniciado",                          // Lista de selección
-        Closing_Date: "2025-01-01"                 // Fecha
+        Stage: "Iniciado",                          // Lista de selección               // Fecha
   };
   
   for (let clave in objeto) {
@@ -202,9 +200,12 @@ async zohoIDsUpdateDeal(objeto: any): Promise<OportunidadesApi> {
             let module = '';
 
             switch (clave) {
-              
+
+              case "Fecha de cierre":
+              objetoMapeado["Closing_Date"] = objeto[clave];
+                  break;
               // Nombre de Contacto / Co-Propietario / Fuente de Campaña / Sala / Finanza Aceptada / Oportunidad Upgraded / Simulador Upgraded
-              case "ObjNombre de Contacto":
+              case "Nombre de Contacto":
                 module = 'Contacts';
                 let trimmedText: string = valor;  // Suponiendo que "valor" tiene el texto original
                 trimmedText = trimmedText.substring(2);  // Asignamos el resultado de substring(2) 
@@ -231,11 +232,23 @@ async zohoIDsUpdateDeal(objeto: any): Promise<OportunidadesApi> {
                     // console.error('Error procesando la petición de Coowner:', error);
                 }
                 break;
-              
-              
+              case 'Co-Propietario':                
+              objetoMapeado["Co_Propietario"] = objeto[clave];
+              break;
+              case 'Finanzas Aceptada': 
+                objetoMapeado["Finanzas_Aceptada"] = objeto[clave];
+              break;
+              case'Fuente de Campaña': 
+                objetoMapeado["Campaign_Source"] = objeto[clave];
+              break;
+              case'Oportunidad upgraded': 
+                objetoMapeado["Oportunidad_upgraded"] = objeto[clave];
+              break;
+
               case "contract_bridge_id":
                   objetoMapeado["contract_bridge_id"] = objeto[clave];
                   break;
+              
                 
         
                 // Otros casos pueden ser agregados aquí según sea necesario
