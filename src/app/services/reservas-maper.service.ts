@@ -19,11 +19,11 @@ export class ReservasService {
             // Verificamos si el valor es válido
             let valor = objeto[clave as keyof Reservas];
              // Convertir "true" o "false" (en formato string) a booleano
-            if (valor === "true") {
-                valor = true;
-            } else if (valor === "false") {
-                valor = false;
-            }
+                if (valor === "true") {
+                    valor = true;
+                } else if (valor === "false") {
+                    valor = false;
+                }
             if (valor === undefined || valor === null || valor === "" || (typeof valor === 'number' && valor === 0)) {
                 continue; // No mapeamos la propiedad si es vacía o 0
             }
@@ -93,8 +93,18 @@ export class ReservasService {
                 //     objetoMapeado['Lead'] = objeto[clave];
                 //     break;
                 case 'Reserva Pagada':
-                    
-                    objetoMapeado['Reserva_Pagada'] = objeto[clave];
+                    // Convertir valor a booleano (asegurándonos que siempre sea un booleano)
+                    valor = this.convertirValor(valor);
+                    objetoMapeado['Reserva_Pagada'] =  objeto[clave];; // Asignar solo si es un booleano
+
+                    if (typeof valor === 'boolean') {
+                      objetoMapeado['Reserva_Pagada'] = valor; // Asignar solo si es un booleano
+                      console.log("Reserva Pagada", valor); // Para depurar el valor
+                    } else {
+                      // Si el valor no es un booleano, se puede dejar sin asignar o asignar undefined
+                      objetoMapeado['Reserva_Pagada'] = undefined; // Dejar como undefined si no es un booleano
+                        console.log('Valor inválido para "Reserva_Pagada". Se asignará undefined.');
+                    }
                     break;
                 case 'ReservaID_netcenter':
                     objetoMapeado['CampaignID_nectcenter'] = objeto[clave];
@@ -272,4 +282,17 @@ export class ReservasService {
         return objetoMapeado;
     }
 
+    convertirValor(valor: string | number | boolean): string | number | boolean {
+            // Si es un string "true" o "false", convertirlo a booleano
+            if (typeof valor === 'string') {
+            if (valor === 'true') return true;
+            if (valor === 'false') return false;
+            }
+            // Si es un string que representa un número, convertirlo a número
+            if (typeof valor === 'string' && !isNaN(Number(valor))) {
+            return Number(valor);
+            }
+            // Retornar el valor tal cual si ya es número o booleano
+            return valor;
+        }
 }

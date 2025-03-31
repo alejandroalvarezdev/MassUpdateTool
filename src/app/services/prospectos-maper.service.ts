@@ -20,9 +20,9 @@ export class ProspectosMaperService {
                 if (objeto.hasOwnProperty(clave)) {
                     // Verificamos si el valor es válido
                     const valor = objeto[clave as keyof Prospectos];
-                    if (valor === undefined || valor === null || valor === "" || (typeof valor === 'number' && valor === 0)) {
+                    if (valor === undefined || valor === null ) {
                         continue; // No mapeamos la propiedad si es vacía o 0
-                        }
+                      }
 
                             switch (clave) {
                             case "4 Digitos":
