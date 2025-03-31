@@ -1,0 +1,56 @@
+export interface Reservas {
+        Adultos: number;
+        Apellidos: string;
+        Campaña: string;
+        Certificado: string;
+        'Costo Certificado': number;
+        'Costo de la reserva': number;
+        Destino: string;
+        'Edades menores': string;
+        Estado: string;
+        SiteId: string;
+        Hotel: string;
+        ID: string;
+        Infantes: number;
+        Llegada: string;
+        Menores: string;
+        Moneda: string;
+        Noches: number;
+        Nombre: string;
+        'Numero de habitaciones': number;
+        Owner: string;
+        Prospecto: string;
+        'Reserva Pagada': boolean;
+        ReservaID_netcenter: string;
+        'Sala de Presentación': string;
+        Salida: string;
+        'Tarifa Preferencial': boolean;
+        'Tipo de HabitaciÃ³n': string;
+        'Tipo de reserva': string;
+        'TW Poliza': string;
+        '1 AutorizaciÃ³n': string;
+        '1 Banco': string;
+        '1 Digitos': string;
+        '1 Fecha': string;
+        '1 Monto': number;
+        '1 Tipo de Tarjeta': string;
+        '1 Titular': string;
+        '2 AutorizaciÃ³n': string;
+        '2 Banco': string;
+        '2 Digitos': string;
+        '2 Fecha': string;
+        '2 Monto': number;
+        '2 Tipo de Tarjeta': string;
+        '2 Titular': string;
+        '3 AutorizaciÃ³n': string;
+        '3 Banco': string;
+        '3 Digitos': string;
+        '3 Fecha': string;
+        '3 Monto': number;
+        '3 Tipo de Tarjeta': string;
+        '3 Titular': string;
+        Reserva: string;
+        'Fuente Reserva': string;
+      
+      
+}

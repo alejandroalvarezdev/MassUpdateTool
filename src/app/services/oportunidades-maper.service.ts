@@ -198,17 +198,152 @@ async zohoIDsUpdateDeal(objeto: any): Promise<OportunidadesApi> {
 
             let criteriaBase = '';
             let module = '';
-
+            let trimmedText:String;
             switch (clave) {
-
+              case "Nombre de Oportunidad":
+                objetoMapeado["Deal_Name"] = objeto[clave];
+                  break;
               case "Fecha de cierre":
               objetoMapeado["Closing_Date"] = objeto[clave];
                   break;
               // Nombre de Contacto / Co-Propietario / Fuente de Campaña / Sala / Finanza Aceptada / Oportunidad Upgraded / Simulador Upgraded
               case "Nombre de Contacto":
                 module = 'Contacts';
-                let trimmedText: string = valor;  // Suponiendo que "valor" tiene el texto original
+                trimmedText = valor;  // Suponiendo que "valor" tiene el texto original
                 trimmedText = trimmedText.substring(2);  // Asignamos el resultado de substring(2) 
+                
+                criteriaBase = `(Numero_de_Prospecto:equals:${trimmedText})`;
+    
+                try {
+                    const response: any = await this.consume.fetchData(criteriaBase, module)
+                        .pipe(
+                            // catchError((error) => {
+                            //     console.error('Error en la petición de Coowner:', error);
+                            //     return of(null);
+                            // })
+                        ).toPromise();
+    
+                    if (response?.data?.length > 0) {
+                        let zohoid = response.data[0].id;
+                        objetoMapeado["Contact_Name"] = { "id": zohoid };
+                        console.log('ID obtenido de Nombre de Contacto:', zohoid);
+                    } else {
+                        console.error('No se encontró un Coowner con el ID proporcionado', response);
+                    }
+                } catch (error) {
+                    // console.error('Error procesando la petición de Coowner:', error);
+                }
+                break;
+              case 'Co-Propietario':                
+              module = 'Contacts';
+              trimmedText = valor;  // Suponiendo que "valor" tiene el texto original
+              trimmedText = trimmedText.substring(2);  // Asignamos el resultado de substring(2) 
+              
+              criteriaBase = `(CoOwnprosID:equals:${trimmedText})`; 
+              try {
+                  const response: any = await this.consume.fetchData(criteriaBase, module)
+                      .pipe(
+                          // catchError((error) => {
+                          //     console.error('Error en la petición de Coowner:', error);
+                          //     return of(null);
+                          // })
+                      ).toPromise();
+  
+                  if (response?.data?.length > 0) {
+                      let zohoid = response.data[0].id;
+                      objetoMapeado["Co_Propietario"] = { "id": zohoid };
+                      console.log('ID obtenido de Co-Propietario:', zohoid);
+                  } else {
+                      console.error('No se encontró un Co-Propietario con el ID proporcionado', response);
+                  }
+              } catch (error) {
+                  // console.error('Error procesando la petición de Coowner:', error);
+              }
+              
+              break;
+              case 'Finanzas Aceptada':   
+              module = 'Estimaciones';
+              trimmedText = valor;  // Suponiendo que "valor" tiene el texto original
+              trimmedText = trimmedText.substring(1);  // Asignamos el resultado de substring(2) 
+              
+              criteriaBase = `(MortgageID:equals:${trimmedText})`;
+  
+              try {
+                  const response: any = await this.consume.fetchData(criteriaBase, module)
+                      .pipe(
+                          // catchError((error) => {
+                          //     console.error('Error en la petición de Coowner:', error);
+                          //     return of(null);
+                          // })
+                      ).toPromise();
+  
+                  if (response?.data?.length > 0) {
+                      let zohoid = response.data[0].id;
+                      objetoMapeado["Finanzas_Aceptada"] ={ "id": zohoid };
+                      console.log('ID obtenido de Finanza Aceptada:', zohoid);
+                  } else {
+                      console.error('No se encontró una Finanza Aceptada con el ID proporcionado', response);
+                  }
+              } catch (error) {
+                  // console.error('Error procesando la petición de Coowner:', error);
+              }
+              break;
+              case'Fuente de Campaña': 
+              module = 'Campaigns';
+              
+              criteriaBase = `(CampaignID_tsw:equals:${valor})`;
+  
+              try {
+                  const response: any = await this.consume.fetchData(criteriaBase, module)
+                      .pipe(
+                          // catchError((error) => {
+                          //     console.error('Error en la petición de Coowner:', error);
+                          //     return of(null);
+                          // })
+                      ).toPromise();
+  
+                  if (response?.data?.length > 0) {
+                      let zohoid = response.data[0].id;
+                      objetoMapeado["Campaign_Source"] = { "id": zohoid };
+                      console.log('ID obtenido de Fuente de Campaña:', zohoid);
+                  } else {
+                      console.error('No se encontró una Fuente de Campaña con el ID proporcionado', response);
+                  }
+              } catch (error) {
+                  // console.error('Error procesando la petición de Coowner:', error);
+              }
+              break;
+              case'Oportunidad upgraded': 
+              module = 'Deals';
+              trimmedText = valor;  // Suponiendo que "valor" tiene el texto original
+              trimmedText = trimmedText.substring(1);  // Asignamos el resultado de substring(2) 
+              
+              criteriaBase = `(ContractID:equals:${trimmedText})`;
+  
+              try {
+                  const response: any = await this.consume.fetchData(criteriaBase, module)
+                      .pipe(
+                          // catchError((error) => {
+                          //     console.error('Error en la petición de Coowner:', error);
+                          //     return of(null);
+                          // })
+                      ).toPromise();
+  
+                  if (response?.data?.length > 0) {
+                      let zohoid = response.data[0].id;
+                      objetoMapeado["Contact_Name"] = { "id": zohoid };
+                      console.log('ID obtenido de Coowner:', zohoid);
+                  } else {
+                      console.error('No se encontró un Coowner con el ID proporcionado', response);
+                  }
+              } catch (error) {
+                  // console.error('Error procesando la petición de Coowner:', error);
+              }
+              break;
+              case 'Sala':
+                module = 'Salas';
+                trimmedText= valor;  // Suponiendo que "valor" tiene el texto original
+                trimmedText = trimmedText.substring(1);  // Asignamos el resultado de substring(2) 
                 
                 criteriaBase = `(CoOwnprosID:equals:${trimmedText})`;
     
@@ -223,28 +358,16 @@ async zohoIDsUpdateDeal(objeto: any): Promise<OportunidadesApi> {
     
                     if (response?.data?.length > 0) {
                         let zohoid = response.data[0].id;
-                        objetoMapeado["Contact_Name"] = { "id": zohoid };
-                        console.log('ID obtenido de Coowner:', zohoid);
+                        objetoMapeado["Sala"] ={ "id": zohoid };;
+                        console.log('ID obtenido de Sala:', zohoid);
                     } else {
-                        console.error('No se encontró un Coowner con el ID proporcionado', response);
+                        console.error('No se encontró una Sala con el ID proporcionado', response);
                     }
                 } catch (error) {
                     // console.error('Error procesando la petición de Coowner:', error);
                 }
-                break;
-              case 'Co-Propietario':                
-              objetoMapeado["Co_Propietario"] = objeto[clave];
-              break;
-              case 'Finanzas Aceptada': 
-                objetoMapeado["Finanzas_Aceptada"] = objeto[clave];
-              break;
-              case'Fuente de Campaña': 
-                objetoMapeado["Campaign_Source"] = objeto[clave];
-              break;
-              case'Oportunidad upgraded': 
-                objetoMapeado["Oportunidad_upgraded"] = objeto[clave];
-              break;
 
+                break;
               case "contract_bridge_id":
                   objetoMapeado["contract_bridge_id"] = objeto[clave];
                   break;

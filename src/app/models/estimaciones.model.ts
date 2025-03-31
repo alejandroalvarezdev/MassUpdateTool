@@ -24,7 +24,7 @@ export interface Estimaciones {
         "Equity transferred": number;  // Moned
         "Etiqueta": string;  // Línea únic
         "Fecha de primera Mensualidad": Date;  // Fech
-        "Fecha del Primer Uso": Date;  // Fech
+        "Fecha Primer Uso": Date;  // Fech
         "Fecha Expiración": Date;  // Fech
         "Fecha Primer Pago": Date;  // Fech
         "Fecha Segundo Pago": Date;  // Fech

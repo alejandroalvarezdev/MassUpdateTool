@@ -74,7 +74,7 @@ export class EstimacionesMaperService {
                 objetoMapeado['annual_fee'] = objeto[clave];
                 break;
             case 'Down Payment':
-                objetoMapeado['minimum_down_payment_amount'] = objeto[clave];
+                objetoMapeado['idp_percentage'] = objeto[clave];
                 break;
             case 'Enganche Inicial':
                 objetoMapeado['minimum_down_payment_amount'] = objeto[clave];
@@ -91,7 +91,7 @@ export class EstimacionesMaperService {
             case 'Fecha de primera Mensualidad':
                 objetoMapeado['date_first_financing'] = objeto[clave];
                 break;
-            case 'Fecha del Primer Uso':
+            case 'Fecha Primer Uso':
                 objetoMapeado['Fecha_del_Primer_Uso'] = objeto[clave];
                 break;
             case 'Fecha Expiración':
@@ -173,7 +173,20 @@ export class EstimacionesMaperService {
                     objetoMapeado['MortgageID'] = objeto[clave]
                 break;
             // Continúa agregando el resto de las propiedades necesarias en el mismo patrón
-            
+            case'Tipo de membresía':
+                objetoMapeado["membership_type"] = objeto[clave];
+            break;
+            case'Tipo de Venta':
+                objetoMapeado["payment_method"] = objeto[clave]; 
+            break; 
+            case'Precio Venta': 
+                objetoMapeado["sale_price"] = objeto[clave];
+                break;  
+            case'Precio Tablet':
+                objetoMapeado["tablet_price"] = objeto[clave]; 
+            break; 
+            case'Tipo de Contrato': 
+            objetoMapeado["type_of_sale"] = objeto[clave];
         }
         }
     }
@@ -208,7 +221,7 @@ export class EstimacionesMaperService {
                     case 'Oportunidad':
                         module = 'Deals';
                         trimmedText = valor.substring(2);  // Modificamos el valor para este caso
-                        criteriaBase = `(ContractID:equals:${valor})`;
+                        criteriaBase = `(ContractID:equals:${trimmedText})`;
                         
                         try {
                             const response: any = await this.consume.fetchData(criteriaBase, module)
@@ -228,10 +241,10 @@ export class EstimacionesMaperService {
                         }
                         break;
                         // Pendiente a definir
-                    case 'Nombre de la Sala Pendiente a definir':
+                    case 'Sala':
                         trimmedText = valor.substring(1);  // Modificamos el valor para este caso
                         module = 'Salas';
-                        criteriaBase = `(ContractID:equals:${valor})`;
+                        criteriaBase = `(ContractID:equals:${trimmedText})`;
                         // t_site donde siteid >= 1000 => clientCustom.dbo.cat_office_tsw 
                         try {
                             const response: any = await this.consume.fetchData(criteriaBase, module)
@@ -247,14 +260,14 @@ export class EstimacionesMaperService {
                                 // console.error('No se encontró campaña con el ID proporcionado', response);
                             }
                         } catch (error) {
-                            console.error('Error procesando la petición de Campaigns:', error);
+                            console.error('Error procesando la petición de Salas:', error);
                         }
                         break;
                     case 'Tipo Tablet':
                         module = 'Products';
                         trimmedText = valor;  // Suponiendo que "valor" tiene el texto original
                         trimmedText = trimmedText.substring(1);  // Asignamos el resultado de substring(2) 
-                        criteriaBase = `(prem_inv_id:equals:${valor})`;
+                        criteriaBase = `(prem_inv_id:equals:${trimmedText})`;
                         // t_site donde siteid >= 1000 => clientCustom.dbo.cat_office_tsw 
                         try {
                             const response: any = await this.consume.fetchData(criteriaBase, module)
@@ -277,7 +290,7 @@ export class EstimacionesMaperService {
                         module = 'Deals';
                         trimmedText = valor;  // Suponiendo que "valor" tiene el texto original
                         trimmedText = trimmedText.substring(1);  // Asignamos el resultado de substring(2) 
-                        criteriaBase = `(ContractID:equals:${valor})`;
+                        criteriaBase = `(ContractID:equals:${trimmedText})`;
                         // t_site donde siteid >= 1000 => clientCustom.dbo.cat_office_tsw 
                         try {
                             const response: any = await this.consume.fetchData(criteriaBase, module)

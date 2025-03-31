@@ -32,6 +32,9 @@ import { Prospectos } from '../../models/prospectos.model';
 import { ProspectosMaperService } from '../../services/prospectos-maper.service';
 import { LoaderComponent } from "../../addOn/loader/loader.component";
 import { CounterComponent } from '../../addOn/counter/counter.component';
+import { Reservas } from '../../models/reservas.model';
+import { ReservasService } from '../../services/reservas-maper.service';
+import { ReservasApi } from '../../models/reservas-api.model';
 type TipoOperacion = 'upsert' | 'zohoidModification';
 
 
@@ -92,7 +95,8 @@ export class SinglePostComponent implements OnInit {
     private estimacionesMap:EstimacionesMaperService,
     private oportunidadesMap:OportunidadesMaperService,
     private contactosMap:ContactosMaperService,
-    private prospectosMap:ProspectosMaperService
+    private prospectosMap:ProspectosMaperService,
+    private reservasMap:ReservasService
   ){
       this.form = this.fb.group({
         name: ['', Validators.required],
@@ -338,6 +342,36 @@ export class SinglePostComponent implements OnInit {
 
   break;
 
+  case 'Reservas':
+    console.log(this.esModoUpsert);
+
+    let objetoMepeadoRsrv: ReservasApi;
+    const objetoReservas = obj as unknown as Reservas;
+
+    // Si no es 'zohoidModification', simplemente mapeamos el objeto
+    objetoMepeadoRsrv = this.reservasMap.mapearReserva(objetoReservas);
+
+    // Ordenamos las propiedades de la misma manera
+    let propiedadesOrdenadasRsrv = Object.entries(objetoMepeadoRsrv).sort((a, b) => {
+        if (a[0] === 'Name') return -1; // Mueve 'owner_bridge_id' al principio
+        return 0; // Mantén el orden de las demás propiedades
+    });
+
+    // Creamos el objeto ordenado
+    let objetoOrdenadoRsrv: any = {};
+    propiedadesOrdenadasRsrv.forEach(([clave, valor]) => {
+        objetoOrdenadoRsrv[clave] = valor;
+    });
+
+    // Agregamos campos adicionales
+    // objetoOrdenadoRsrv["duplicate_check_fields"] = ["MortgageID"];
+    // objetoOrdenadoRsrv["trigger"] = [];
+
+    result = objetoOrdenadoRsrv;  // Asignamos el objeto final a `result`
+
+break;
+
+
 
         
 
@@ -446,6 +480,38 @@ export class SinglePostComponent implements OnInit {
             });
           
           break;
+
+        case 'Reservas':
+          const objetoReservas = obj as unknown as Reservas;
+          let objetoMapeadoRsrv: any;
+
+          objetoMapeadoRsrv = await this.reservasMap.zohoIDsUpdateReservas(objetoReservas)
+            .then((resultado: any) => {
+              let propiedadesOrdenadasRsrv = Object.entries(resultado).sort((a, b) => {
+                if (a[0] === 'Name') return -1; // Mueve 'owner_bridge_id' al principio
+                return 0; // Mantén el orden de las demás propiedades
+              });
+
+              // Creamos un nuevo objeto con las propiedades ordenadas
+              let objetoOrdenadoRsrv: any = {};
+              propiedadesOrdenadasRsrv.forEach(([clave, valor]) => {
+                objetoOrdenadoRsrv[clave] = valor; // Asignamos cada propiedad al nuevo objeto
+              });
+
+              // Agregamos campos adicionales al objeto
+              // objetoOrdenadoRsrv["duplicate_check_fields"] = ["MortgageID"]; // Campo adicional
+              // objetoOrdenadoRsrv["trigger"] = []; // Otro campo adicional
+
+              // Asignamos el objeto final ordenado a 'result'
+              result = objetoOrdenadoRsrv;
+            })
+            .catch((error) => {
+              console.error(error);
+              return {} as ReservasApi; // 👈 Retornamos un objeto vacío en caso de error
+            });
+
+  break;
+
           
 
         default:
@@ -511,7 +577,7 @@ export class SinglePostComponent implements OnInit {
             payload.duplicate_check_fields = ["owner_bridge_id"];
             break;
           case 'Deals':
-            payload.duplicate_check_fields= ["Deal_Name"];
+            payload.duplicate_check_fields= ["ContractID"];
             break;
           case 'Estimaciones':
           payload.duplicate_check_fields = ["MortgageID"];
@@ -519,6 +585,10 @@ export class SinglePostComponent implements OnInit {
           case 'Leads':
           payload.duplicate_check_fields = ["prospect_bridge_id"];
           break;
+          case 'Reservas':
+          payload.duplicate_check_fields = ["Name"];
+          break;
+
         }
         payload.trigger = [];
       
@@ -566,7 +636,7 @@ export class SinglePostComponent implements OnInit {
         payload.duplicate_check_fields = ["owner_bridge_id"];
         break;
       case 'Deals':
-        payload.duplicate_check_fields= ["Deal_Name"];
+        payload.duplicate_check_fields= ["ContractID"];
         break;
       case 'Estimaciones':
       payload.duplicate_check_fields = ["MortgageID"];
@@ -574,6 +644,9 @@ export class SinglePostComponent implements OnInit {
       case 'Leads':
       payload.duplicate_check_fields = ["prospect_bridge_id"];
       break;
+      case 'Reservas': 
+      payload.duplicate_check_fields = ["Name"];
+      break; 
     }
     payload.trigger = [];
     console.warn(await payload);
