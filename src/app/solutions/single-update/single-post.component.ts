@@ -265,13 +265,12 @@ export class SinglePostComponent implements OnInit {
           });
                   
           // Agregamos campos adicionales
-          // objetoOrdenadoPor["duplicate_check_fields"] = ["owner_bridge_id"];
+          objetoOrdenadoPor["Tag"] = "Script";
           // objetoOrdenadoPor["trigger"] = [];
 
           result = objetoOrdenadoPor;  // Asignamos el objeto final a `result`
 
           break;
-
 
       case 'Contacts':
           console.log(this.esModoUpsert);
@@ -296,7 +295,7 @@ export class SinglePostComponent implements OnInit {
             });
         
             // Agregamos campos adicionales
-            // objetoOrdenadoCon["duplicate_check_fields"] = ["owner_bridge_id"];
+            objetoOrdenadoCon["Tag"] = "Script";
             // objetoOrdenadoCon["trigger"] = [];
         
             result = objetoOrdenadoCon;  // Asignamos el objeto final a `result`
@@ -317,7 +316,7 @@ export class SinglePostComponent implements OnInit {
           propiedadesOrdenadasOp.forEach(([clave, valor]) => {
               objetoOrdenadoOp[clave] = valor;
           });
-          // objetoOrdenadoOp["duplicate_check_fields"] = ["Deal_Name"];
+          objetoOrdenadoOp["Tag"] = "Script";
           // objetoOrdenadoOp["trigger"] = [];  // Esto desactiva los triggers
 
           result = objetoOrdenadoOp; // Aquí se asigna el objeto ordenado a result
@@ -345,14 +344,14 @@ export class SinglePostComponent implements OnInit {
               });
 
               // Agregamos campos adicionales
-              // objetoOrdenadoEst["duplicate_check_fields"] = ["MortgageID"];
+              objetoOrdenadoEst["Tag"] = "Script"
         // objetoOrdenadoEst["trigger"] = [];
 
         result = objetoOrdenadoEst;  // Asignamos el objeto final a `result`
 
   break;
 
-  case 'Reservas':
+      case 'Reservas':
     console.log(this.esModoUpsert);
 
     let objetoMepeadoRsrv: ReservasApi;
@@ -374,16 +373,13 @@ export class SinglePostComponent implements OnInit {
     });
 
     // Agregamos campos adicionales
-    // objetoOrdenadoRsrv["duplicate_check_fields"] = ["MortgageID"];
+    objetoOrdenadoRsrv["duplicate_check_fields"] = "Script";
     // objetoOrdenadoRsrv["trigger"] = [];
 
     result = objetoOrdenadoRsrv;  // Asignamos el objeto final a `result`
 
 break;
 
-
-
-        
 
       default:
         console.log('Tipo no reconocido:', objType);
@@ -392,6 +388,9 @@ break;
     return result;
   }
   async map2ApiObjectZohoIDs(obj: any, objType: string) {
+
+    
+
     let result: OportunidadesApi | EstimacionesAPI | ContactosApi | ProspectosApi | undefined;
     console.warn(objType)
     switch (objType) {

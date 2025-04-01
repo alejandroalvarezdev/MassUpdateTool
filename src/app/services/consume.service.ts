@@ -41,4 +41,8 @@ export class ConsumeService {
     return this.http.post(url, JSON.stringify(data), { headers });
   }
 
+  tagRecord(){
+    
+  }
+
 }

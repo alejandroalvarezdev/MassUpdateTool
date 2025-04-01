@@ -41,9 +41,12 @@ export class ReservasService {
                 case 'Certificado':
                     objetoMapeado['Certificado'] = objeto[clave];
                     break;
-                case 'Costo Certificado':
-                    objetoMapeado['Costo_Certificado'] = objeto[clave];
-                    break;
+                    case 'Costo Certificado':
+                        let costo2Int = valor.toString();
+                        let costParsed = parseFloat(costo2Int); // Cambia parseInt a parseFloat
+                        objetoMapeado['Costo_Certificado'] = objeto[clave];
+                        objetoMapeado["Costo_Certificado"] = costParsed; // Convierte a string para eliminar ceros
+                        break;
                 case 'Costo de la reserva':
                     objetoMapeado['Costo_de_la_reserva'] = objeto[clave];
                     break;
@@ -75,7 +78,11 @@ export class ReservasService {
                     objetoMapeado["Menores"] = objeto[clave];
                     break;
                 case 'Moneda':
+                    let value2Curr= valor.toString();
+                    let valueTrimmed = value2Curr.trim();
                     objetoMapeado['Currency'] = objeto[clave];
+                    objetoMapeado['Currency'] = valueTrimmed;
+
                     break;
                 case 'Noches':
                     objetoMapeado['Noches'] = objeto[clave];
@@ -239,8 +246,9 @@ export class ReservasService {
                 switch (clave) {
                     
                     case 'SiteId':
+                        objetoMapeado["Hotel"] = objeto[clave];
                         module = 'Hoteles';
-                        criteriaBase = `(ContractID:equals:${valor})`;
+                        criteriaBase = `(Site_ID:equals:${valor})`;
                         
                         try {
                             const response: any = await this.consume.fetchData(criteriaBase, module)
@@ -259,28 +267,96 @@ export class ReservasService {
                             console.error('Error procesando la petición de Oportunidad:', error);
                         }
                         break;
-                    // case 'CampaÃƒa':
-                    //     module = 'Salas';
-                    //     criteriaBase = `(ContractID:equals:${valor})`;
-                    //     // t_site donde siteid >= 1000 => clientCustom.dbo.cat_office_tsw 
-                    //     try {
-                    //         const response: any = await this.consume.fetchData(criteriaBase, module)
-                    //             .pipe(
+                        case 'Sala de PresentaciÃ³n':
+                            objetoMapeado["Sala_de_Presentaci_n"] = objeto[clave];
+                        module = 'Salas';
+                        criteriaBase = `(origen_id:equals:${valor})`;
+                        
+                        try {
+                            const response: any = await this.consume.fetchData(criteriaBase, module)
+                                .pipe(
                                     
-                    //             ).toPromise();
+                                ).toPromise();
             
-                    //         if (response?.data?.length > 0) {
-                    //             const zohoid = response.data[0].id;
-                    //             objetoMapeado["deal"] = { "id": zohoid };
-                    //             // console.log('ID obtenido de Campaigns:', zohoid);
-                    //         } else {
-                    //             // console.error('No se encontró campaña con el ID proporcionado', response);
-                    //         }
-                    //     } catch (error) {
-                    //         console.error('Error procesando la petición de Salas:', error);
-                    //     }
-                    //     break;
+                            if (response?.data?.length > 0) {
+                                const zohoid = response.data[0].id;
+                                objetoMapeado["Sala_de_Presentaci_n"] = { "id": zohoid };
+                                // console.log('ID obtenido de Campaigns:', zohoid);
+                            } else {
+                                // console.error('No se encontró campaña con el ID proporcionado', response);
+                            }
+                        } catch (error) {
+                            console.error('Error procesando la petición de Oportunidad:', error);
+                        }
+                        break;
+                        case'Owner':
+                        module = 'Contacts';
+                        objetoMapeado["Contact"] = objeto[clave];
+                        trimmedText= valor;  // Suponiendo que "valor" tiene el texto original
+                        trimmedText = trimmedText.substring(2);  // Asignamos el resultado de substring(2) 
+                        
+                        criteriaBase = `(Numero_de_Socio:equals:${trimmedText})`;
+            
+                        try {
+                            const response: any = await this.consume.fetchData(criteriaBase, module)
+                                .pipe(
+                                    // catchError((error) => {
+                                    //     console.error('Error en la petición de Coowner:', error);
+                                    //     return of(null);
+                                    // })
+                                ).toPromise();
+            
+                            if (response?.data?.length > 0) {
+                                let zohoid = response.data[0].id;
+                                objetoMapeado["Contact"] ={ "id": zohoid };
+                                console.log('ID obtenido de Sala:', zohoid);
+                            } else {
+                                console.error('No se encontró una Sala con el ID proporcionado', response);
+                            }
+                        } catch (error) {
+                            // console.error('Error procesando la petición de Coowner:', error);
+                        }
+        
+                        break;
+                        case 'Lead':
+                            objetoMapeado["Lead"] =objeto[clave];
+                            module = 'Leads';
+                            trimmedText= valor;  // Suponiendo que "valor" tiene el texto original
+                            trimmedText = trimmedText.substring(1);  // Asignamos el resultado de substring(2) 
+                            
+                            criteriaBase = `(Numero_de_Prospecto:equals:${trimmedText})`;
                 
+                            try {
+                                const response: any = await this.consume.fetchData(criteriaBase, module)
+                                    .pipe(
+                                        // catchError((error) => {
+                                        //     console.error('Error en la petición de Coowner:', error);
+                                        //     return of(null);
+                                        // })
+                                    ).toPromise();
+                
+                                if (response?.data?.length > 0) {
+                                    let zohoid = response.data[0].id;
+                                    objetoMapeado["Lead"] ={ "id": zohoid };
+                                    console.log('ID obtenido de Sala:', zohoid);
+                                } else {
+                                    console.error('No se encontró una Sala con el ID proporcionado', response);
+                                }
+                            } catch (error) {
+                                // console.error('Error procesando la petición de Coowner:', error);
+                            }
+                
+                        break;
+                        case 'Reserva':
+                        objetoMapeado['Name'] = objeto[clave];
+                        break;
+                        case 'Estado':
+                        objetoMapeado['Estado'] = objeto[clave];
+                        break;
+                        case 'Menores':
+                        objetoMapeado["Menores"] = objeto[clave];
+                        break;
+
                 }
                 
             }

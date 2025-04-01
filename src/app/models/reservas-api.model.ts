@@ -47,14 +47,14 @@ export interface ReservasApi {
     Noches?: number;
     First_Name?: string;
     Numero_de_habitaciones?: number;
-    Contact?: string;
-    Lead?: string;
+    Contact?: ObjConId;
+    Lead?: ObjConId;
     Name?: string;
     Reserva_Pagada?: boolean;
 
     // Información adicional
     CampaignID_nectcenter?: string;
-    Sala_de_Presentaci_n?: string;
+    Sala_de_Presentaci_n?: ObjConId;
     Check_Out?: string;
     Tarifa_Preferencial?: boolean;
     Tipo_de_Habitaci_n?: string;
