@@ -69,6 +69,7 @@ export class SinglePostComponent implements OnInit {
   datamodel:any;
   // Esta variable define que flujo se correrá si el Upsert o la actualización de ZohoID's
   esModoUpsert : TipoOperacion = 'upsert'; 
+  invalidDataItems:Array<any>=[];
 
 
   //File Controller 
@@ -194,6 +195,15 @@ export class SinglePostComponent implements OnInit {
               map((value, index) => {
                 const progress = ((index + 1) / this.segmentedRecords.length) * 100;
                 progressUploadSubject.next(progress); // Emitir el progreso de uploadZohoIDs
+
+                /// Get Invalid Data
+                const resultado = this.invalidDataItems.map(index => this.segmentedRecords[index]);
+
+                console.log(resultado); // ['b', 'd']
+                console.warn("Indices",this.invalidDataItems);
+                console.warn("Data que fallo ",resultado);
+
+                
                 return value;
               })
             )
@@ -385,9 +395,32 @@ break;
     let result: OportunidadesApi | EstimacionesAPI | ContactosApi | ProspectosApi | undefined;
     console.warn(objType)
     switch (objType) {
-        case 'Leads':
-            // Lógica para cuando objType es "Leads"
-            break;
+      case 'Leads':
+        const objetoLeads = obj as unknown as Prospectos;  // Reemplazado 'Contactos' por 'Leads'
+        let objetoMapeadoLds: any;
+    
+        objetoMapeadoLds = await this.prospectosMap.zohoIDsUpdateProspects(objetoLeads)  // Reemplazado 'contactosMap' por 'leadsMap'
+            .then((resultado: any) => {
+                let propiedadesOrdenadasLds = Object.entries(resultado).sort((a, b) => {
+                    if (a[0] === 'owner_bridge_id') return -1; // Mueve 'owner_bridge_id' al principio
+                    return 0; // Mantén el orden de las demás propiedades
+                });
+                
+                // Creamos un nuevo objeto con las propiedades ordenadas
+                let objetoOrdenadoLds: any = {};
+                propiedadesOrdenadasLds.forEach(([clave, valor]) => {
+                    objetoOrdenadoLds[clave] = valor; // Asignamos cada propiedad al nuevo objeto
+                });
+                
+                // Asignamos el objeto final ordenado a 'result'
+                result = objetoOrdenadoLds;
+            })
+            .catch((error) => {
+                console.error(error);
+                return {} as ProspectosApi; // 👈 Retornamos un objeto vacío en caso de error
+            });
+        break;
+    
 
         case 'Contacts':
             const objetoContactos = obj as unknown as Contactos;
@@ -597,9 +630,22 @@ break;
         // Si `this.isChecked` es true, enviamos el registro a la API
         if (this.isChecked == true) {
           this.consume.upsertRecord(this.form.value.name, payload).subscribe(
-            (response) => {
-              console.log(`Registro ${index + 1} enviado con éxito`, response);
-              console.warn(payload)
+            (response:any) => {
+
+              console.log(`Registro enviado con éxito`, response);
+              
+              response.data.forEach((item: any, index: number) => {
+                console.log(`Item ${index + 1}:`);
+                console.log(`Code: ${item.code}`);
+
+                if (item.code === 'INVALID_DATA') {
+                  this.invalidDataItems.push(index); // Agregar el item al arreglo
+                  console.log(`Se encontró un item con INVALID_DATA`);
+        }
+              });
+        
+
+              console.warn("Payload Upsert Primario",payload)
               resolve(true);
             },
             (error) => {
@@ -607,6 +653,7 @@ break;
               console.error(`Failed payload  ${JSON.stringify(payload)}`);
               resolve(false);
             }
+            
           );
         }
   

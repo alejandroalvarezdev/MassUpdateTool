@@ -99,7 +99,7 @@ export class ReservasService {
 
                     if (typeof valor === 'boolean') {
                       objetoMapeado['Reserva_Pagada'] = valor; // Asignar solo si es un booleano
-                      console.log("Reserva Pagada", valor); // Para depurar el valor
+                    //   console.log("Reserva Pagada", valor); // Para depurar el valor
                     } else {
                       // Si el valor no es un booleano, se puede dejar sin asignar o asignar undefined
                       objetoMapeado['Reserva_Pagada'] = undefined; // Dejar como undefined si no es un booleano
@@ -116,8 +116,19 @@ export class ReservasService {
                     objetoMapeado['Check_Out'] = objeto[clave];
                     break;
                 case 'Tarifa Preferencial':
+
                     objetoMapeado['Tarifa_Preferencial'] = objeto[clave];
-                    break;
+                    
+                        if (typeof valor === 'boolean') {
+                            objetoMapeado['Tarifa_Preferencial'] = valor; // Asignar solo si es un booleano
+                        //   console.log("Reserva Pagada", valor); // Para depurar el valor
+                        } else {
+                            // Si el valor no es un booleano, se puede dejar sin asignar o asignar undefined
+                            objetoMapeado['Tarifa_Preferencial'] = undefined; // Dejar como undefined si no es un booleano
+                            console.log('Valor inválido para "Tarifa_Preferencial". Se asignará undefined.');
+                        }
+                        break
+                    
                 case 'Tipo de HabitaciÃ³n':
                     objetoMapeado['Tipo_de_Habitaci_n'] = objeto[clave];
                     break;

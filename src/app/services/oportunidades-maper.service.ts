@@ -15,7 +15,7 @@ export class OportunidadesMaperService {
   mapearOportunidad(objeto: Oportunidades): OportunidadesApi {
     
     const objetoMapeado: OportunidadesApi = {
-        Stage: "Iniciado",                          // Lista de selección               // Fecha
+        // Stage: "Iniciado",                          // Lista de selección               // Fecha
   };
   
   for (let clave in objeto) {
@@ -180,9 +180,9 @@ export class OportunidadesMaperService {
 }
 async zohoIDsUpdateDeal(objeto: any): Promise<OportunidadesApi> {
     const objetoMapeado:OportunidadesApi = {
-          "Stage":"Nuevo",
-          "Closing_Date":"2000-01-01",
-          "Deal_Name": "1-xxx"
+          // "Stage":"Nuevo",
+          // "Closing_Date":"2000-01-01",
+          // "Deal_Name": "1-xxx"
           
                 }; // Objeto donde mapeamos los valores obligatorios
 
@@ -202,6 +202,10 @@ async zohoIDsUpdateDeal(objeto: any): Promise<OportunidadesApi> {
             let module = '';
             let trimmedText:String;
             switch (clave) {
+              // Campos Obligatorios
+              case'Fase':
+              objetoMapeado["Stage"] = objeto[clave]; 
+              break;
               case "Nombre de Oportunidad":
                 objetoMapeado["Deal_Name"] = objeto[clave];
                   break;
@@ -209,6 +213,7 @@ async zohoIDsUpdateDeal(objeto: any): Promise<OportunidadesApi> {
               objetoMapeado["Closing_Date"] = objeto[clave];
                   break;
               // Nombre de Contacto / Co-Propietario / Fuente de Campaña / Sala / Finanza Aceptada / Oportunidad Upgraded / Simulador Upgraded
+              
               case "Nombre de Contacto":
                 module = 'Contacts';
                 trimmedText = valor;  // Suponiendo que "valor" tiene el texto original
