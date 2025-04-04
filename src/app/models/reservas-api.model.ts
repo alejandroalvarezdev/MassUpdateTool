@@ -47,7 +47,7 @@ export interface ReservasApi {
     Noches?: number;
     First_Name?: string;
     Numero_de_habitaciones?: number;
-    Contact?: ObjConId;
+    Contact?: any;
     Lead?: ObjConId;
     Name?: string;
     Reserva_Pagada?: boolean;

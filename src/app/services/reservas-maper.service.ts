@@ -110,7 +110,7 @@ export class ReservasService {
                     } else {
                       // Si el valor no es un booleano, se puede dejar sin asignar o asignar undefined
                       objetoMapeado['Reserva_Pagada'] = undefined; // Dejar como undefined si no es un booleano
-                        console.log('Valor inválido para "Reserva_Pagada". Se asignará undefined.');
+                        // console.log('Valor inválido para "Reserva_Pagada". Se asignará undefined.');
                     }
                     break;
                 case 'ReservaID_netcenter':
@@ -132,7 +132,7 @@ export class ReservasService {
                         } else {
                             // Si el valor no es un booleano, se puede dejar sin asignar o asignar undefined
                             objetoMapeado['Tarifa_Preferencial'] = undefined; // Dejar como undefined si no es un booleano
-                            console.log('Valor inválido para "Tarifa_Preferencial". Se asignará undefined.');
+                            // console.log('Valor inválido para "Tarifa_Preferencial". Se asignará undefined.');
                         }
                         break
                     
@@ -267,10 +267,12 @@ export class ReservasService {
                             console.error('Error procesando la petición de Oportunidad:', error);
                         }
                         break;
-                        case 'Sala de PresentaciÃ³n':
+                    case 'Sala de PresentaciÃ³n':
                             objetoMapeado["Sala_de_Presentaci_n"] = objeto[clave];
+                            trimmedText= valor;  // Suponiendo que "valor" tiene el texto original
+                            trimmedText = trimmedText.substring(1);  // Asignamos el resultado de substring(2) 
                         module = 'Salas';
-                        criteriaBase = `(origen_id:equals:${valor})`;
+                        criteriaBase = `(origen_id:equals:${trimmedText})`;
                         
                         try {
                             const response: any = await this.consume.fetchData(criteriaBase, module)
@@ -286,16 +288,17 @@ export class ReservasService {
                                 // console.error('No se encontró campaña con el ID proporcionado', response);
                             }
                         } catch (error) {
-                            console.error('Error procesando la petición de Oportunidad:', error);
+                            // console.error('Error procesando la petición de Oportunidad:', error);
                         }
                         break;
-                        case'Owner':
+                    case'Owner':
                         module = 'Contacts';
-                        objetoMapeado["Contact"] = objeto[clave];
+
+                        
                         trimmedText= valor;  // Suponiendo que "valor" tiene el texto original
                         trimmedText = trimmedText.substring(2);  // Asignamos el resultado de substring(2) 
                         
-                        criteriaBase = `(Numero_de_Socio:equals:${trimmedText})`;
+                        criteriaBase = `(Numero_de_Prospecto:equals:${trimmedText})`;
             
                         try {
                             const response: any = await this.consume.fetchData(criteriaBase, module)
@@ -305,20 +308,22 @@ export class ReservasService {
                                     //     return of(null);
                                     // })
                                 ).toPromise();
-            
+                                
                             if (response?.data?.length > 0) {
                                 let zohoid = response.data[0].id;
+                                
+                                objetoMapeado["Contact"] = objeto[clave];
                                 objetoMapeado["Contact"] ={ "id": zohoid };
                                 console.log('ID obtenido de Sala:', zohoid);
-                            } else {
-                                console.error('No se encontró una Sala con el ID proporcionado', response);
-                            }
+                            } 
                         } catch (error) {
-                            // console.error('Error procesando la petición de Coowner:', error);
+                            console.error('Error procesando la petición de Owner:', error);
+                            console.log(criteriaBase);
+
                         }
         
                         break;
-                        case 'Lead':
+                    case 'Lead':
                             objetoMapeado["Lead"] =objeto[clave];
                             module = 'Leads';
                             trimmedText= valor;  // Suponiendo que "valor" tiene el texto original
@@ -338,22 +343,22 @@ export class ReservasService {
                                 if (response?.data?.length > 0) {
                                     let zohoid = response.data[0].id;
                                     objetoMapeado["Lead"] ={ "id": zohoid };
-                                    console.log('ID obtenido de Sala:', zohoid);
+                                    // console.log('ID obtenido de Sala:', zohoid);
                                 } else {
-                                    console.error('No se encontró una Sala con el ID proporcionado', response);
+                                    // console.error('No se encontró una Sala con el ID proporcionado', response);
                                 }
                             } catch (error) {
                                 // console.error('Error procesando la petición de Coowner:', error);
                             }
                 
                         break;
-                        case 'Reserva':
+                    case 'Reserva':
                         objetoMapeado['Name'] = objeto[clave];
                         break;
-                        case 'Estado':
+                    case 'Estado':
                         objetoMapeado['Estado'] = objeto[clave];
                         break;
-                        case 'Menores':
+                    case 'Menores':
                         objetoMapeado["Menores"] = objeto[clave];
                         break;
 

@@ -68,6 +68,5 @@ export interface Contactos {
 "Uso de CFDI"?: string;                          // Lista de selección
 "Vigencia"?: number;                             // Número
 "CoOwnProsID"?: string;  
-            // Línea única
-
+"contactoID"?:string
 }

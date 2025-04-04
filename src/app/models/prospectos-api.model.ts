@@ -9,7 +9,7 @@ export interface ProspectosApi {
         Rating?: string;
         Calle?: string;
         Campana_Principal?: string;
-        Casa_Ofertas?: string;
+        Casa_Ofertas?: boolean;
         City?: string;
         Fuente_Aeropuertos?: string;
         Colonia?: string;
@@ -58,7 +58,8 @@ export interface ProspectosApi {
         Exchange_Rate?: number;
         Phone?: string;
         Terminal?: string;
-        Vigencia?: string;
+        Vigencia?: number;
         Zip_Code?:string
         Campa_a_Principal?:ObjConId
+        TEventoId?:number
 }

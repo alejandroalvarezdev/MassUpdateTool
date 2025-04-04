@@ -8,7 +8,7 @@ import { ObjConId } from "./obj-con-id.model";
     "Calificación": string;
     Calle: string;
     "Campaña Principal": ObjConId;
-    "Caza Ofertas": string;
+    "Caza Ofertas": any;
     Ciudad: string;
     "Ciudad Locación": string;
     "Código postal": string;
@@ -61,5 +61,7 @@ import { ObjConId } from "./obj-con-id.model";
     "Teléfono": string;
     Terminal: string;
     "Título": string;
-    "Vigencia (Meses)": string;
+    "Vigencia (Meses)": number;
+    "teventoid":number;
+
 }

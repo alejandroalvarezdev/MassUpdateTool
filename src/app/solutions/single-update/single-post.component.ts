@@ -137,8 +137,8 @@ export class SinglePostComponent implements OnInit {
     if (this.csvRecords.length < 100) {
       this.segmentedRecords = this.csvRecords
     }else{
-      for (let i = 0; i < this.csvRecords.length; i += 100) {
-        this.segmentedRecords.push(this.csvRecords.slice(i, i + 100));
+      for (let i = 0; i < this.csvRecords.length; i += 20) {
+        this.segmentedRecords.push(this.csvRecords.slice(i, i + 20));
       }
     }
     
@@ -265,7 +265,9 @@ export class SinglePostComponent implements OnInit {
           });
                   
           // Agregamos campos adicionales
-          objetoOrdenadoPor["Tag"] = "Script";
+          
+          objetoOrdenadoPor['Tag'] = [{"name":"Script"}]
+
           // objetoOrdenadoPor["trigger"] = [];
 
           result = objetoOrdenadoPor;  // Asignamos el objeto final a `result`
@@ -295,7 +297,7 @@ export class SinglePostComponent implements OnInit {
             });
         
             // Agregamos campos adicionales
-            objetoOrdenadoCon["Tag"] = "Script";
+            objetoOrdenadoCon['Tag'] = [{"name":"Script"}]
             // objetoOrdenadoCon["trigger"] = [];
         
             result = objetoOrdenadoCon;  // Asignamos el objeto final a `result`
@@ -316,7 +318,7 @@ export class SinglePostComponent implements OnInit {
           propiedadesOrdenadasOp.forEach(([clave, valor]) => {
               objetoOrdenadoOp[clave] = valor;
           });
-          objetoOrdenadoOp["Tag"] = "Script";
+          objetoOrdenadoOp['Tag'] = [{"name":"Script"}]
           // objetoOrdenadoOp["trigger"] = [];  // Esto desactiva los triggers
 
           result = objetoOrdenadoOp; // Aquí se asigna el objeto ordenado a result
@@ -373,8 +375,8 @@ export class SinglePostComponent implements OnInit {
     });
 
     // Agregamos campos adicionales
-    objetoOrdenadoRsrv["duplicate_check_fields"] = "Script";
     // objetoOrdenadoRsrv["trigger"] = [];
+    objetoOrdenadoRsrv['Tag'] = [{"name":"Script"}]
 
     result = objetoOrdenadoRsrv;  // Asignamos el objeto final a `result`
 
@@ -471,7 +473,8 @@ break;
               // Agregamos campos adicionales al objeto
               // objetoOrdenadoOp["duplicate_check_fields"] = ["contract_bridge_id"]; // Campo adicional
               // objetoOrdenadoOp["trigger"] = []; // Otro campo adicional
-          
+              objetoOrdenadoOp['Tag'] = [{"name":"Script"}]
+
               // Asignamos el objeto final ordenado a 'result'
               result = objetoOrdenadoOp;
             })
@@ -533,6 +536,7 @@ break;
               // Agregamos campos adicionales al objeto
               // objetoOrdenadoRsrv["duplicate_check_fields"] = ["MortgageID"]; // Campo adicional
               // objetoOrdenadoRsrv["trigger"] = []; // Otro campo adicional
+              objetoOrdenadoRsrv['Tag'] = [{"name":"Script"}]
 
               // Asignamos el objeto final ordenado a 'result'
               result = objetoOrdenadoRsrv;
@@ -606,7 +610,7 @@ break;
         payload.data = dataArray;
         switch (this.form.value.name) {
           case 'Contacts':
-            payload.duplicate_check_fields = ["owner_bridge_id"];
+            payload.duplicate_check_fields = ["contactoID"];
             break;
           case 'Deals':
             payload.duplicate_check_fields= ["ContractID"];
@@ -634,8 +638,8 @@ break;
               console.log(`Registro enviado con éxito`, response);
               
               response.data.forEach((item: any, index: number) => {
-                console.log(`Item ${index + 1}:`);
-                console.log(`Code: ${item.code}`);
+                // console.log(`Item ${index + 1}:`);
+                // console.log(`Code: ${item.code}`);
 
                 if (item.code === 'INVALID_DATA') {
                   this.invalidDataItems.push(index); // Agregar el item al arreglo
@@ -679,7 +683,7 @@ break;
     payload.data = await this.processRecords(segmentedRecords);
     switch (this.form.value.name) {
       case 'Contacts':
-        payload.duplicate_check_fields = ["owner_bridge_id"];
+        payload.duplicate_check_fields = ["contactoID"];
         break;
       case 'Deals':
         payload.duplicate_check_fields= ["ContractID"];
@@ -695,7 +699,7 @@ break;
       break; 
     }
     payload.trigger = [];
-    console.warn(await payload);
+    // console.warn(await payload);
     this.loading = false; 
 
     
@@ -703,7 +707,7 @@ break;
     if (this.isChecked) {
       try {
         const response = await this.consume.upsertRecord(this.form.value.name, payload).toPromise();
-        console.log(`Registro ${index + 1} enviado con éxito`, response);
+        console.log(`Update Zoho ID ${index + 1} enviado con éxito`, response);
         return true;
       } catch (error) {
         console.error(`Error al enviar el registro ${index + 1}`, error);

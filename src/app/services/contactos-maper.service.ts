@@ -241,6 +241,9 @@ mapearContactos(objeto:Contactos): ContactosApi {
                 case "CoOwnProsID":
                     objetoMapeado["CoOwnprosID"] = objeto[clave];
                     break;
+                case "contactoID":
+                objetoMapeado["contactoID"] = objetoMapeado[clave];
+                break; 
                 default:
                     // Puedes manejar el caso cuando no se encuentra una coincidencia
                     break;

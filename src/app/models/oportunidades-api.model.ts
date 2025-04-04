@@ -16,7 +16,7 @@ export interface OportunidadesApi {
         Cuota_Anual_USD?: string;                    // Decimal
       
         Equity?: string;                             // Moneda
-        Es_un_club_de_Semanas?: boolean;             // Booleano
+        Es_un_club_de_Semanas?: any;             // Booleano
         Estado_Civil?: string;                       // Lista de selección
         Tag?: string;                                // Línea única
         Stage?: string;                              // Lista de selección
@@ -29,7 +29,7 @@ export interface OportunidadesApi {
         Campaign_Source?: ObjConId;                    // Buscar
         Lead_Source?: string;                        // Lista de selección
         Hook?: boolean;                              // Booleano
-        Amount?: string;                             // Moneda
+        Amount?: any;                             // Moneda
         Ingresos_Mensuales?: string;                 // Lista de selección
         membership_type?: string;                    // Línea única
         Currency?: string;                           // Lista de selección

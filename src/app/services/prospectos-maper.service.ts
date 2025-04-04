@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ProspectosApi } from '../models/prospectos-api.model';
 import { Prospectos } from '../models/prospectos.model';
 import { ConsumeService } from './consume.service';
+import { ObjConId } from '../models/obj-con-id.model';
 
 @Injectable({
     providedIn: 'root'
@@ -19,7 +20,12 @@ export class ProspectosMaperService {
             for (let clave in objeto) {
                 if (objeto.hasOwnProperty(clave)) {
                     // Verificamos si el valor es válido
-                    const valor = objeto[clave as keyof Prospectos];
+                    let valor = objeto[clave as keyof Prospectos];
+                    if (valor === "true") {
+                        valor = true;
+                    } else if (valor === "false") {
+                        valor = false;
+                    }
                     if (valor === undefined || valor === null ) {
                         continue; // No mapeamos la propiedad si es vacía o 0
                         }
@@ -34,8 +40,17 @@ export class ProspectosMaperService {
                             case "Apellido Paterno":
                                 objetoMapeado["Apellido_Paterno"] = objeto[clave];
                                 break;
-                            case "Apellidos":
+                                case "Apellidos":
+                                // Elimina los espacios en blanco al principio y al final
+                                valor = valor.trim();
                                 objetoMapeado["Last_Name"] = objeto[clave];
+                                // Si el valor recortado está vacío, asigna un valor por defecto (en este caso, un punto ".")
+                                if (valor === '') {
+                                    objetoMapeado["Last_Name"] = ".";
+                                } else {
+                                    // Si el valor no está vacío, asigna el valor recortado
+                                    objetoMapeado["Last_Name"] = valor;
+                                }
                                 break;
                             case "Calificación":
                                 objetoMapeado["Rating"] = objeto[clave];
@@ -47,7 +62,9 @@ export class ProspectosMaperService {
                             //     objetoMapeado["Campana_Principal"] = objeto[clave];
                             //     break;
                             case "Caza Ofertas":
+                                valor = this.convertirValor(valor);
                                 objetoMapeado["Casa_Ofertas"] = objeto[clave];
+                                objetoMapeado["Casa_Ofertas"] = valor;
                                 break;
                             case "Ciudad":
                                 objetoMapeado["City"] = objeto[clave];
@@ -86,7 +103,19 @@ export class ProspectosMaperService {
                                 objetoMapeado["CP_Empresa_donde_labora"] = objeto[clave];
                                 break;
                             case "CP Fecha de Nacimiento":
+                                
+                                const dateParts = valor.split("-");
+
+                                // Si el año es menor que 1900 (por ejemplo, 0001), lo ajustamos a 1900
+                                if (parseInt(dateParts[0]) < 1900) {
+                                dateParts[0] = "1900";
+                                }
+
+                                // Unificamos la fecha de nuevo a formato "yyyy-MM-dd"
+                                const adjustedDateString = dateParts.join("-");
+
                                 objetoMapeado["CP_Fecha_de_Nacimiento"] = objeto[clave];
+                                objetoMapeado["CP_Fecha_de_Nacimiento"] = adjustedDateString;
                                 break;
                             case "CP Movil":
                                 objetoMapeado["CP_Movil"] = objeto[clave];
@@ -128,7 +157,9 @@ export class ProspectosMaperService {
                                 objetoMapeado["Lead_Source"] = objeto[clave];
                                 break;
                             case "Hook":
+                                valor = this.convertirValor(valor);
                                 objetoMapeado["Hook"] = objeto[clave];
+                                objetoMapeado["Hook"] = valor;
                                 break;
                             // case "ID":
                             //     objetoMapeado["ID"] = objeto[clave];
@@ -145,9 +176,9 @@ export class ProspectosMaperService {
                             case "Locacion":
                                 objetoMapeado["Locacion1"] = objeto[clave];
                                 break;
-                            case "Moneda":
-                                objetoMapeado["Currency"] = objeto[clave];
-                                break;
+                                case "Moneda":
+                                    objetoMapeado["Currency"] = objeto[clave] || "USD"; // Si objeto[clave] es vacío, asigna "MXN"
+                                    break;                                
                             case "Móvil":
                                 objetoMapeado["Mobile"] = objeto[clave];
                                 break;
@@ -203,8 +234,21 @@ export class ProspectosMaperService {
                             //     objetoMapeado["Titulo"] = objeto[clave];
                             //     break;
                             case "Vigencia (Meses)":
-                                objetoMapeado["Vigencia"] = objeto[clave];
+                                objetoMapeado["Vigencia"] = objeto[clave]
+                                valor = parseInt(valor);
+
+                                // Verificamos si el valor es un número válido
+                                if (!isNaN(valor)) {
+                                    objetoMapeado["Vigencia"] = valor;
+                                } else {
+                                    // Si no es un número válido, se asigna un valor por defecto o un mensaje de error
+                                    objetoMapeado["Vigencia"] = 0;  // O cualquier valor por defecto que desees
+                                    // console.warn("Valor de 'Vigencia' no es un número válido.");
+                                }
                                 break;
+                                case 'teventoid':
+                                objetoMapeado["TEventoId"] = objeto[clave];
+                                break; 
                             default:
                                 // Manejar caso por defecto si es necesario
                                 break;
@@ -279,7 +323,10 @@ export class ProspectosMaperService {
                             console.error('Error procesando la petición de Campaigns:', error);
                         }
                         break;
-            
+                    
+                    case 'prospect_bridge_id': 
+                    objetoMapeado["prospect_bridge_id"] = objeto[clave];
+                    break;
                     
             
                     // Otros casos pueden ser agregados aquí según sea necesario
@@ -294,4 +341,19 @@ export class ProspectosMaperService {
         // Devolvemos el objeto mapeado
         return objetoMapeado;
     }
+    
+    convertirValor(valor: string | number | boolean | ObjConId): string | number | boolean | ObjConId {
+        // Si es un string "true" o "false", convertirlo a booleano
+        if (typeof valor === 'string') {
+        if (valor === 'true') return true;
+        if (valor === 'false') return false;
+        }
+        // Si es un string que representa un número, convertirlo a número
+        if (typeof valor === 'string' && !isNaN(Number(valor))) {
+        return Number(valor);
+        }
+        // Retornar el valor tal cual si ya es número o booleano
+        return valor;
+    }
 }
+

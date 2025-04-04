@@ -24,7 +24,7 @@ export class OportunidadesMaperService {
       // Verificamos si el valor es válido
 
       //// 
-      const valor = objeto[clave as keyof Oportunidades];
+      let valor = objeto[clave as keyof Oportunidades];
       if (valor === undefined || valor === null ) {
         continue; // No mapeamos la propiedad si es vacía o 0
       }
@@ -62,7 +62,7 @@ export class OportunidadesMaperService {
         objetoMapeado["club"] = objeto[clave];
         break;
       case "Créditos Totales":
-        objetoMapeado["Cr_ditos_Totales"] = objeto[clave] !== undefined ? parseFloat(objeto[clave] as string) : 0;
+        objetoMapeado["Cr_ditos_Totales"] = objeto[clave] !== undefined && !isNaN(parseFloat(objeto[clave] as string)) ? parseFloat(objeto[clave] as string) : 0;
         break;
       case "Cross Reference":
         objetoMapeado["Cross_Reference"] = objeto[clave];
@@ -73,8 +73,21 @@ export class OportunidadesMaperService {
       case "Equity":
         objetoMapeado["Equity"] = objeto[clave];
         break;
-      case "Es un club de Semanas?":
-        objetoMapeado["Es_un_club_de_Semanas"] = objeto[clave];
+        case "Es un club de Semanas?":
+          objetoMapeado["Es_un_club_de_Semanas"] = objeto[clave];
+          // Verificamos si el valor es una cadena de texto "true" o "false"
+          if (valor === "true") {
+            valor = true;  // Si el valor es "true", lo asignamos como booleano true
+          } else if (valor === "false") {
+            valor = false;  // Si el valor es "false", lo asignamos como booleano false
+          } else if (valor === "" || valor === null || valor === undefined) {
+            valor = false;  // Si el valor está vacío, nulo o indefinido, lo asignamos como false
+          }
+        
+          // Asignamos el valor al objeto mapeado
+          objetoMapeado["Es_un_club_de_Semanas"] = valor;
+          break;
+        
         break;
       case "Estado Civil":
         objetoMapeado["Estado_Civil"] = objeto[clave];
@@ -113,7 +126,10 @@ export class OportunidadesMaperService {
         objetoMapeado["Hook"] = objeto[clave];
         break;
       case "Importe":
+        let value = valor.toString();
+
         objetoMapeado["Amount"] = objeto[clave];
+        objetoMapeado["Amount"] = parseInt(value);
         break;
       case "Ingresos Mensuales":
         objetoMapeado["Ingresos_Mensuales"] = objeto[clave];
@@ -123,6 +139,11 @@ export class OportunidadesMaperService {
         break;
       case "Moneda":
         objetoMapeado["Currency"] = objeto[clave];
+        if (valor === '') {
+          
+          objetoMapeado["Currency"] = "USD";
+        }
+        
         break;
       case "Morosidad AR (USD)":
         objetoMapeado["Morosidad_AR_USD"] = objeto[clave];

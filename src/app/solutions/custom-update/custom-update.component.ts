@@ -78,13 +78,13 @@ updateOptions: any[] = [
   }
   segmentData(): void {
     this.segmentedRecords = []; // Reiniciar antes de segmentar
-
-    for (let i = 0; i < this.csvRecords.length; i += 100) {
-      this.segmentedRecords.push(this.csvRecords.slice(i, i + 100));
+    if (this.csvRecords.length < 100) {
+      this.segmentedRecords = this.csvRecords
+    }else{
+      for (let i = 0; i < this.csvRecords.length; i += 20) {
+        this.segmentedRecords.push(this.csvRecords.slice(i, i + 20));
+      }
     }
-
-    console.log('Registros segmentados:', this.segmentedRecords);
-    this.datamodel = this.segmentedRecords.pop();
   }
 
   sendDataToAPI(): void {
@@ -100,6 +100,8 @@ updateOptions: any[] = [
     return new Promise(resolve => {
       setTimeout(() => {
         const payload = { data: block };
+        console.warn(payload);
+        
         this.consume.massiveUpdate(this.form.value.name,payload).subscribe(
           (response) => {
             console.log(`Bloque ${index + 1} enviado con éxito`, response);

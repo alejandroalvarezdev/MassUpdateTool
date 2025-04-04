@@ -65,6 +65,7 @@ export interface ContactosApi {
 "Vigencia"?: number;                            // Número
 "CoOwnprosID"?: string; 
 "Calificacion"?:string; 
-"Date_of_Birth"?:string                        // Línea única
+"Date_of_Birth"?:string     
+"contactoID"?:string                   // Línea única
 
 }
