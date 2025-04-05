@@ -62,4 +62,23 @@
         .datamodel{
             font-size: 2em;
         }
+        .controllers {
+            display: flex;
+            flex-direction: column; /* Cambia la dirección del flex a columna */
+            justify-content: flex-start; /* Alinea los elementos al inicio */
+            align-items: flex-start; /* Alinea los elementos al inicio horizontalmente */
+            border: 10px solid #ac1010;
+            height: auto; /* Se ajusta al contenido */
+            padding: 10px; /* Agrega algo de espaciado interno */
+        }
+        
+        mat-slide-toggle {
+            margin-bottom: 10px; /* Agrega un espacio de 10px entre cada elemento */
+        }
+        
+        mat-slide-toggle:last-child {
+            margin-bottom: 0; /* Elimina el margen inferior al último elemento */
+        }
+        
+        
         

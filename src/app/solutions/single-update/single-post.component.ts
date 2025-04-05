@@ -35,6 +35,9 @@ import { CounterComponent } from '../../addOn/counter/counter.component';
 import { Reservas } from '../../models/reservas.model';
 import { ReservasService } from '../../services/reservas-maper.service';
 import { ReservasApi } from '../../models/reservas-api.model';
+import { CreditosvApi } from '../../models/creditosv-api.model';
+import { Creditosv } from '../../models/creditosv.model';
+import { CreditosvMapperService } from '../../services/creditosv-mapper.service';
 type TipoOperacion = 'upsert' | 'zohoidModification';
 
 
@@ -70,7 +73,9 @@ export class SinglePostComponent implements OnInit {
   // Esta variable define que flujo se correrá si el Upsert o la actualización de ZohoID's
   esModoUpsert : TipoOperacion = 'upsert'; 
   invalidDataItems:Array<any>=[];
-
+ // Flow Control
+  uploadRecords:boolean = true;
+  setRelationships:boolean = true; 
 
   //File Controller 
   selectedFile: File | null = null;
@@ -97,7 +102,8 @@ export class SinglePostComponent implements OnInit {
     private oportunidadesMap:OportunidadesMaperService,
     private contactosMap:ContactosMaperService,
     private prospectosMap:ProspectosMaperService,
-    private reservasMap:ReservasService
+    private reservasMap:ReservasService,
+    private creditosMap:CreditosvMapperService
   ){
       this.form = this.fb.group({
         name: ['', Validators.required],
@@ -175,62 +181,68 @@ export class SinglePostComponent implements OnInit {
       this.segmentedRecords = under10storage;
     }
 
-    // Primer flujo: launchData
-    from(this.segmentedRecords)
-      .pipe(
-        concatMap((record, index) => this.launchData(record, index)),
-        map((value, index) => {
-          const progress = ((index + 1) / this.segmentedRecords.length) * 100;
-          progressLaunchSubject.next(progress); // Emitir el progreso de launchData
-          return value;
-        }),
-        finalize(() => {
-          this.esModoUpsert = 'zohoidModification';
-          console.log('Todos los registros han sido procesados por Upsert');
+    // Define las banderas para controlar el flujo
 
-          // Segundo flujo: uploadZohoIDs
-          from(this.segmentedRecords)
-            .pipe(
-              concatMap((record, index) => this.uploadZohoIDs(record, index)),
-              map((value, index) => {
-                const progress = ((index + 1) / this.segmentedRecords.length) * 100;
-                progressUploadSubject.next(progress); // Emitir el progreso de uploadZohoIDs
 
-                /// Get Invalid Data
-                const resultado = this.invalidDataItems.map(index => this.segmentedRecords[index]);
+if (this.uploadRecords) {
+  from(this.segmentedRecords)
+    .pipe(
+      concatMap((record, index) => this.launchData(record, index)),
+      map((value, index) => {
+        const progress = ((index + 1) / this.segmentedRecords.length) * 100;
+        progressLaunchSubject.next(progress); // Emitir el progreso de launchData
+        return value;
+      }),
+      finalize(() => {
+        this.esModoUpsert = 'zohoidModification';
+        console.log('Todos los registros han sido procesados por Upsert');
+      })
+    )
+    .subscribe({
+      next: () => {},
+      error: (err) => {
+        console.error('Error procesando los registros de launchData:', err);
+        progressLaunchSubject.complete(); // Completar si hay error
+      },
+      complete: () => {
+        console.log('Todos los registros han sido procesados');
+        progressLaunchSubject.complete(); // Completar cuando termine
+      }
+    });
+}
 
-                console.log(resultado); // ['b', 'd']
-                console.warn("Indices",this.invalidDataItems);
-                console.warn("Data que fallo ",resultado);
+// Ejecutar el segundo flujo independientemente del primero
+if (this.setRelationships) {
+  from(this.segmentedRecords)
+    .pipe(
+      concatMap((record, index) => this.uploadZohoIDs(record, index)),
+      map((value, index) => {
+        const progress = ((index + 1) / this.segmentedRecords.length) * 100;
+        progressUploadSubject.next(progress); // Emitir el progreso de uploadZohoIDs
 
-                
-                return value;
-              })
-            )
-            .subscribe({
-              next: () => {},
-              error: (err) => {
-                console.error('Error en el flujo de uploadZohoIDs:', err);
-                progressUploadSubject.complete(); // Completar el progreso si hay error
-              },
-              complete: () => {
-                console.log('Todos los registros han sido cargados a Zoho');
-                progressUploadSubject.complete(); // Completar el progreso cuando termine
-              }
-            });
-        })
-      )
-      .subscribe({
-        next: () => {},
-        error: (err) => {
-          console.error('Error procesando los registros de launchData:', err);
-          progressLaunchSubject.complete(); // Completar si hay error
-        },
-        complete: () => {
-          console.log('Todos los registros han sido procesados');
-          progressLaunchSubject.complete(); // Completar cuando termine
-        }
-      });
+        // Obtener los datos inválidos
+        const resultado = this.invalidDataItems.map(index => this.segmentedRecords[index]);
+
+        console.log(resultado); // ['b', 'd']
+        console.warn("Indices", this.invalidDataItems);
+        console.warn("Data que falló", resultado);
+
+        return value;
+      })
+    )
+    .subscribe({
+      next: () => {},
+      error: (err) => {
+        console.error('Error en el flujo de uploadZohoIDs:', err);
+        progressUploadSubject.complete(); // Completar el progreso si hay error
+      },
+      complete: () => {
+        console.log('Todos los registros han sido cargados a Zoho');
+        progressUploadSubject.complete(); // Completar el progreso cuando termine
+      }
+    });
+}
+
   }
   updateProgressBar(progress: number): void {
     // Implementa esta función para actualizar la interfaz de usuario
@@ -381,6 +393,35 @@ export class SinglePostComponent implements OnInit {
     result = objetoOrdenadoRsrv;  // Asignamos el objeto final a `result`
 
 break;
+      case 'CreditosV':
+        console.log(this.esModoUpsert);
+        
+        let objetoMepeadoCrv: CreditosvApi;
+        const objetoCreditosV = obj as unknown as Creditosv;
+
+        // Si no es 'zohoidModification', simplemente mapeamos el objeto
+        objetoMepeadoCrv = this.creditosMap.mapearCreditoV(objetoCreditosV);
+                    
+        // Ordenamos las propiedades de la misma manera
+        let propiedadesOrdenadasCrv = Object.entries(objetoMepeadoCrv).sort((a, b) => {
+          if (a[0] === 'owner_bridge_id') return -1; // Mueve 'owner_bridge_id' al principio
+          return 0; // Mantén el orden de las demás propiedades
+        });
+                    
+        // Creamos el objeto ordenado
+        let objetoOrdenadoCrv: any = {};
+        propiedadesOrdenadasCrv.forEach(([clave, valor]) => {
+          objetoOrdenadoPor[clave] = valor;
+        });
+                    
+        // Agregamos campos adicionales
+        objetoOrdenadoCrv['Tag'] = [{"name":"Script"}]
+
+        // objetoOrdenadoPor["trigger"] = [];
+
+        result = objetoOrdenadoCrv;  // Asignamos el objeto final a `result`
+
+        break;
 
 
       default:
@@ -430,7 +471,7 @@ break;
             objetoMapeadoCon   = await this.contactosMap.zohoIDsUpdateContacts(objetoContactos)
                 .then((resultado:any) => {
                   let propiedadesOrdenadasCon = Object.entries(resultado).sort((a, b) => {
-                    if (a[0] === 'owner_bridge_id') return -1; // Mueve 'owner_bridge_id' al principio
+                    if (a[0] === 'contactoID') return -1; // Mueve 'owner_bridge_id' al principio
                     return 0; // Mantén el orden de las demás propiedades
                   });
                   
@@ -697,6 +738,10 @@ break;
       case 'Reservas': 
       payload.duplicate_check_fields = ["Name"];
       break; 
+      case 'Creditos_Vacacionales': 
+      payload.duplicate_check_fields = ["Name"];
+
+      break; 
     }
     payload.trigger = [];
     // console.warn(await payload);
@@ -707,7 +752,7 @@ break;
     if (this.isChecked) {
       try {
         const response = await this.consume.upsertRecord(this.form.value.name, payload).toPromise();
-        console.log(`Update Zoho ID ${index + 1} enviado con éxito`, response);
+        console.warn(`Update Zoho ID ${index + 1} enviado con éxito`, response);
         return true;
       } catch (error) {
         console.error(`Error al enviar el registro ${index + 1}`, error);
@@ -718,7 +763,7 @@ break;
   
     // Si `this.isChecked` es false, solo mostramos el payload en consola
     if (!this.isChecked) {
-      // console.warn("Payload Zoho Udpade", payload);
+      console.warn(`Update Zoho ID ${index + 1} Payload`, payload);
     }
   
     return true; // Al final resolvemos la promesa

@@ -1,110 +1,129 @@
-.container {
-    text-align: center;
-    margin-top: 50px;
-}
+    .container {
+        text-align: center;
+        margin-top: 50px;
+    }
 
-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-}
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
 
-button:hover {
-    background-color: #0056b3;
-}
-pre{
-    /* display: flex;
-    justify-content: center; */
-    padding-left: 15rem;
-}
+    button:hover {
+        background-color: #0056b3;
+    }
+    pre{
+        /* display: flex;
+        justify-content: center; */
+        padding-left: 15rem;
+    }
 
-/* Form */
-.form-container {
-    max-width: 400px; /* Limita el ancho del formulario */
-    margin: 50px auto; /* Centra el formulario horizontalmente y agrega margen superior */
-    padding: 20px; /* Espaciado interno */
-    background-color: #040404; /* Fondo blanco */
-    border: 1px solid #ddd; /* Borde sutil */
-    border-radius: 8px; /* Bordes redondeados */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra sutil para profundidad */
-    display: flex;
-    flex-direction: column;
-    gap: 15px; /* Espacio entre los elementos del formulario */
-    }
-    
-    .form-container mat-form-field {
-        width: 100%; /* Asegura que los campos de entrada ocupen todo el ancho */
-    }
-    
-    .form-container button {
-        width: 100%; /* El botón ocupará todo el ancho */
-        padding: 10px; /* Espaciado dentro del botón */
-        font-size: 16px; /* Tamaño de fuente */
-        border-radius: 4px; /* Bordes redondeados */
-    }
-    
-    .form-container .mat-form-field {
-        margin-bottom: 20px; /* Espaciado inferior entre los campos */
-    }
-    
-    .mat-form-field label {
-        font-weight: bold; /* Hace que las etiquetas sean más prominentes */
-    }
-    
-    mat-error {
-        color: red; /* Color rojo para los mensajes de error */
-        font-size: 12px; /* Tamaño pequeño para los mensajes de error */
-    }
-    .datamodel{
-        font-size: 2em;
-    }
-    .encode{
-        color: aliceblue;
+    /* Form */
+    .form-container {
+        max-width: 400px; /* Limita el ancho del formulario */
+        margin: 50px auto; /* Centra el formulario horizontalmente y agrega margen superior */
+        padding: 20px; /* Espaciado interno */
+        background-color: #040404; /* Fondo blanco */
+        border: 1px solid #ddd; /* Borde sutil */
+        border-radius: 8px; /* Bordes redondeados */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra sutil para profundidad */
         display: flex;
-        justify-content: center;
-    }
-    .process{
-        color:aliceblue;
+        flex-direction: column;
+        gap: 15px; /* Espacio entre los elementos del formulario */
+        }
+        
+        .form-container mat-form-field {
+            width: 100%; /* Asegura que los campos de entrada ocupen todo el ancho */
+        }
+        
+        .form-container button {
+            width: 100%; /* El botón ocupará todo el ancho */
+            padding: 10px; /* Espaciado dentro del botón */
+            font-size: 16px; /* Tamaño de fuente */
+            border-radius: 4px; /* Bordes redondeados */
+        }
+        
+        .form-container .mat-form-field {
+            margin-bottom: 20px; /* Espaciado inferior entre los campos */
+        }
+        
+        .mat-form-field label {
+            font-weight: bold; /* Hace que las etiquetas sean más prominentes */
+        }
+        
+        mat-error {
+            color: red; /* Color rojo para los mensajes de error */
+            font-size: 12px; /* Tamaño pequeño para los mensajes de error */
+        }
+        .datamodel{
+            font-size: 2em;
+        }
+        .encode{
+            color: aliceblue;
+            display: flex;
+            justify-content: center;
+        }
+        .process{
+            color:aliceblue;
+            display: flex;
+            font-size: 1.5em;
+            justify-content: center;
+        }
+    /* Barra de progreso (Contenedor) */
+    .progress-container {
+        width: 80%; /* Contenedor con un ancho del 80% */
+        height: 20px;
+        background-color: #f0f0f0; /* Fondo gris claro */
+        border-radius: 25px; /* Bordes redondeados */
+        overflow: hidden;
+        margin: 0 auto; /* Centrar la barra horizontalmente */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave para un efecto de profundidad */
         display: flex;
-        font-size: 1.5em;
-        justify-content: center;
+        justify-content: flex-start; /* Asegurarse de que la barra de progreso comience desde la izquierda */
     }
-/* Barra de progreso (Contenedor) */
-.progress-container {
-    width: 80%; /* Contenedor con un ancho del 80% */
-    height: 20px;
-    background-color: #f0f0f0; /* Fondo gris claro */
-    border-radius: 25px; /* Bordes redondeados */
-    overflow: hidden;
-    margin: 0 auto; /* Centrar la barra horizontalmente */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave para un efecto de profundidad */
-    display: flex;
-    justify-content: flex-start; /* Asegurarse de que la barra de progreso comience desde la izquierda */
-  }
-  
-  /* Barra de progreso (Cargando) */
-  .progress-bar {
-    height: 100%;
-    background-color: #4caf50; /* Verde para el progreso de launchData */
-    width: 0%; /* Comienza con 0% y luego se ajustará dinámicamente */
-    transition: width 0.3s ease; /* Transición suave cuando el progreso cambia */
-  }
-  
-  /* Barra de progreso para uploadZohoIDs */
-  .progress-bar.upload-progress {
-    background-color: #2196f3; /* Azul para el progreso de uploadZohoIDs */
-  }
-  
-  /* Etiquetas de progreso */
-  p {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #333;
-    margin: 5px 0;
-    text-align: center; /* Centrado del texto */
-  }
-  
+    
+    /* Barra de progreso (Cargando) */
+    .progress-bar {
+        height: 100%;
+        background-color: #4caf50; /* Verde para el progreso de launchData */
+        width: 0%; /* Comienza con 0% y luego se ajustará dinámicamente */
+        transition: width 0.3s ease; /* Transición suave cuando el progreso cambia */
+    }
+    
+    /* Barra de progreso para uploadZohoIDs */
+    .progress-bar.upload-progress {
+        background-color: #2196f3; /* Azul para el progreso de uploadZohoIDs */
+    }
+    
+    /* Etiquetas de progreso */
+    p {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin: 5px 0;
+        text-align: center; /* Centrado del texto */
+    }
+
+    .controllers {
+        display: flex;
+        flex-direction: column; /* Cambia la dirección del flex a columna */
+        justify-content: flex-start; /* Alinea los elementos al inicio */
+        align-items: flex-start; /* Alinea los elementos al inicio horizontalmente */
+        border: 1px solid #000;
+        height: auto; /* Se ajusta al contenido */
+        padding: 10px; /* Agrega algo de espaciado interno */
+    }
+    
+    mat-slide-toggle {
+        margin-bottom: 10px; /* Agrega un espacio de 10px entre cada elemento */
+    }
+    
+    mat-slide-toggle:last-child {
+        margin-bottom: 0; /* Elimina el margen inferior al último elemento */
+    }
+    
+    

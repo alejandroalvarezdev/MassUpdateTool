@@ -314,12 +314,12 @@ async zohoIDsUpdateContacts(objeto: any): Promise<ContactosApi> {
                     }
                     break;
         
-                case "Coowner":
+                case "COcontactoID":
                     module = 'Contacts';
                     let trimmedText: string = valor;  // Suponiendo que "valor" tiene el texto original
                     trimmedText = trimmedText.substring(2);  // Asignamos el resultado de substring(2) 
                     
-                    criteriaBase = `(CoOwnprosID:equals:${trimmedText})`;
+                    criteriaBase = `(contactoID:equals:${trimmedText})`;
         
                     try {
                         const response: any = await this.consume.fetchData(criteriaBase, module)

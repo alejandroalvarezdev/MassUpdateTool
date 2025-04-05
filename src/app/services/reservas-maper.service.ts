@@ -291,14 +291,14 @@ export class ReservasService {
                             // console.error('Error procesando la petición de Oportunidad:', error);
                         }
                         break;
-                    case'Owner':
+                    case'contactoID':
                         module = 'Contacts';
 
                         
                         trimmedText= valor;  // Suponiendo que "valor" tiene el texto original
                         trimmedText = trimmedText.substring(2);  // Asignamos el resultado de substring(2) 
                         
-                        criteriaBase = `(Numero_de_Prospecto:equals:${trimmedText})`;
+                        criteriaBase = `(contactoID:equals:${trimmedText})`;
             
                         try {
                             const response: any = await this.consume.fetchData(criteriaBase, module)

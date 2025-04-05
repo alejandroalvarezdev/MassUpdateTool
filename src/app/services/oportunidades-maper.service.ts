@@ -235,12 +235,12 @@ async zohoIDsUpdateDeal(objeto: any): Promise<OportunidadesApi> {
                   break;
               // Nombre de Contacto / Co-Propietario / Fuente de Campaña / Sala / Finanza Aceptada / Oportunidad Upgraded / Simulador Upgraded
               
-              case "Nombre de Contacto":
+              case "contactoID":
                 module = 'Contacts';
                 trimmedText = valor;  // Suponiendo que "valor" tiene el texto original
                 trimmedText = trimmedText.substring(2);  // Asignamos el resultado de substring(2) 
                 
-                criteriaBase = `(Numero_de_Prospecto:equals:${trimmedText})`;
+                criteriaBase = `(contactoID:equals:${trimmedText})`;
     
                 try {
                     const response: any = await this.consume.fetchData(criteriaBase, module)
@@ -262,12 +262,12 @@ async zohoIDsUpdateDeal(objeto: any): Promise<OportunidadesApi> {
                     // console.error('Error procesando la petición de Coowner:', error);
                 }
                 break;
-              case 'Co-Propietario':                
+              case 'COcontactoID':                
               module = 'Contacts';
               trimmedText = valor;  // Suponiendo que "valor" tiene el texto original
               trimmedText = trimmedText.substring(2);  // Asignamos el resultado de substring(2) 
               
-              criteriaBase = `(CoOwnprosID:equals:${trimmedText})`; 
+              criteriaBase = `(contactoID:equals:${trimmedText})`; 
               try {
                   const response: any = await this.consume.fetchData(criteriaBase, module)
                       .pipe(
